@@ -1,0 +1,109 @@
+import { Link } from 'react-router-dom'
+import { Heart, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Linkedin, ArrowRight } from 'lucide-react'
+
+const quickLinks = [
+  { label: 'About Us', path: '/about' },
+  { label: 'Our Services', path: '/services' },
+  { label: 'Awards', path: '/awards' },
+  { label: 'Patient FAQ', path: '/faq' },
+  { label: 'Press Release', path: '/press' },
+]
+
+const socials = [
+  { icon: Facebook, label: 'Facebook', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: '#' },
+  { icon: Instagram, label: 'Instagram', href: '#' },
+  { icon: Youtube, label: 'YouTube', href: '#' },
+  { icon: Linkedin, label: 'LinkedIn', href: '#' },
+]
+
+export default function Footer() {
+  return (
+    <footer className="bg-neutral-900 text-neutral-300">
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <Link to="/" className="flex items-center gap-3 mb-5 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-teal-500 rounded-xl flex items-center justify-center">
+                <Heart size={20} className="text-white" fill="white" />
+              </div>
+              <div>
+                <div className="font-display font-bold text-xl text-white">Medicare</div>
+                <div className="text-xs text-teal-400 font-medium tracking-wider">CLINIC</div>
+              </div>
+            </Link>
+            <p className="text-sm text-neutral-400 leading-relaxed mb-6">
+              Providing world-class homeopathic care with compassion and innovation since 1985. Your health is our highest priority.
+            </p>
+            <div className="flex items-center gap-3">
+              {socials.map(({ icon: Icon, label, href }) => (
+                <a key={label} href={href} aria-label={label}
+                  className="w-9 h-9 bg-neutral-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
+                  <Icon size={15} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-display font-semibold text-white mb-5 text-base">Quick Links</h4>
+            <ul className="space-y-2.5">
+              {quickLinks.map(({ label, path }) => (
+                <li key={path}>
+                  <Link to={path} className="text-sm text-neutral-400 hover:text-teal-400 transition-colors flex items-center gap-2 group">
+                    <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h4 className="font-display font-semibold text-white mb-5 text-base">Contact Us</h4>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <MapPin size={16} className="text-teal-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-neutral-400">42, Healthcare Avenue,<br />Connaught Place,<br />New Delhi – 110001</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone size={16} className="text-teal-400 flex-shrink-0" />
+                <div>
+                  <a href="tel:+911145678900" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors block">+91-11-4567-8900</a>
+                  <a href="tel:+911145678901" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors block">+91-11-4567-8901</a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail size={16} className="text-teal-400 flex-shrink-0" />
+                <a href="mailto:info@medicare-clinic.com" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors">
+                  info@medicare-clinic.com
+                </a>
+              </div>
+            </div>
+            <div className="mt-6 p-4 bg-primary-600/20 border border-primary-500/30 rounded-xl">
+              <p className="text-xs text-primary-300 font-semibold mb-1">Emergency Helpline</p>
+              <a href="tel:+911145670000" className="text-white font-bold text-lg">+91-11-4567-0000</a>
+              <p className="text-xs text-neutral-400 mt-0.5">Available 24/7</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-neutral-800">
+        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-neutral-500">© 2025 Medicare Clinic. All rights reserved.</p>
+          <div className="flex items-center gap-5">
+            <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Privacy Policy</a>
+            <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Terms of Service</a>
+            <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Disclaimer</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}

@@ -1,0 +1,134 @@
+import { useState, useEffect } from 'react'
+import { Quote, ChevronLeft, ChevronRight } from 'lucide-react'
+import PageHero from '../components/common/PageHero'
+import StarRating from '../components/common/StarRating'
+import { SkeletonCard } from '../components/common/LoadingSkeleton'
+import { testimonials } from '../data/mockData'
+
+const PER_PAGE = 6
+
+export default function Testimonials() {
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState([])
+  const [page, setPage] = useState(1)
+  const [filter, setFilter] = useState('All')
+
+  const treatments = ['All', ...new Set(testimonials.map(t => t.treatment))]
+
+  useEffect(() => {
+    const t = setTimeout(() => { setData(testimonials); setLoading(false) }, 900)
+    return () => clearTimeout(t)
+  }, [])
+
+  const filtered = data.filter(t => filter === 'All' || t.treatment === filter)
+  const totalPages = Math.ceil(filtered.length / PER_PAGE)
+  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+
+  return (
+    <div>
+      <PageHero
+        title="Patient Testimonials"
+        subtitle="Real stories from real patients — their experiences drive everything we do."
+        breadcrumbs={[{ label: 'Testimonials' }]}
+      />
+
+      {/* Stats strip */}
+      <div className="bg-primary-700 py-10">
+        <div className="max-w-4xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
+          {[
+            { value: '4.9/5', label: 'Average Rating' },
+            { value: '50,000+', label: 'Happy Patients' },
+            { value: '98%', label: 'Recommend Us' },
+          ].map(s => (
+            <div key={s.label}>
+              <div className="text-3xl font-display font-bold text-white mb-1">{s.value}</div>
+              <div className="text-primary-200 text-sm">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <section className="py-16 bg-neutral-50">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Filter */}
+          <div className="flex flex-wrap gap-2 mb-10 justify-center">
+            {treatments.map(t => (
+              <button
+                key={t}
+                onClick={() => { setFilter(t); setPage(1) }}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  filter === t ? 'bg-primary-600 text-white shadow-soft' : 'bg-white text-neutral-600 hover:bg-primary-50 hover:text-primary-600 border border-neutral-200'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
+            </div>
+          ) : paginated.length === 0 ? (
+            <div className="text-center py-16 text-neutral-400">No testimonials found.</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginated.map(t => (
+                <div key={t.id} className="card p-7 flex flex-col hover:-translate-y-1 transition-all duration-300">
+                  <div className="flex items-center justify-between mb-5">
+                    <Quote size={28} className="text-primary-200" />
+                    <StarRating rating={t.rating} size={15} />
+                  </div>
+                  <p className="text-neutral-600 leading-relaxed text-sm flex-1 mb-6 italic">"{t.text}"</p>
+                  <div className="flex items-center gap-3 pt-5 border-t border-neutral-100">
+                    <div className="w-11 h-11 bg-gradient-to-br from-primary-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                      {t.avatar}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-800 text-sm">{t.name}</div>
+                      <div className="text-xs text-neutral-500">{t.location} · {t.date}</div>
+                    </div>
+                    <div className="ml-auto">
+                      <span className="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-semibold rounded-full">{t.treatment}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-12">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="w-10 h-10 rounded-xl border-2 border-neutral-200 flex items-center justify-center text-neutral-500 hover:border-primary-300 hover:text-primary-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i + 1)}
+                  className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all ${
+                    page === i + 1 ? 'bg-primary-600 text-white shadow-soft' : 'border-2 border-neutral-200 text-neutral-600 hover:border-primary-300 hover:text-primary-600'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="w-10 h-10 rounded-xl border-2 border-neutral-200 flex items-center justify-center text-neutral-500 hover:border-primary-300 hover:text-primary-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  )
+}
