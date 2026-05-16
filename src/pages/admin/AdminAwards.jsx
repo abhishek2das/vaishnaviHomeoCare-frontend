@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, X, Plus, Trophy } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
 
 export default function AdminAwards() {
-  // Mock data for awards
-  const initialAwards = [
-    { id: 1, name: 'Excellence in Patient Care', year: 2023, description: 'Awarded by the National Healthcare Association for maintaining the highest standards in patient satisfaction.' },
-    { id: 2, name: 'Best Multi-Specialty Hospital', year: 2022, description: 'Recognized for providing comprehensive care across various medical disciplines under one roof.' },
-    { id: 3, name: 'Green Hospital Initiative Award', year: 2021, description: 'Honored for implementing sustainable and eco-friendly practices in daily hospital operations.' },
-    { id: 4, name: 'Outstanding Innovation in Surgery', year: 2021, description: 'Awarded for pioneering minimally invasive surgical techniques that reduce recovery time.' },
-  ];
 
-  const [awards, setAwards] = useState(initialAwards);
+  const [awards, setAwards] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,11 +14,69 @@ export default function AdminAwards() {
   const [formData, setFormData] = useState({
     id: null, name: '', year: new Date().getFullYear(), description: ''
   });
+  
+  const fetchAwards = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(API_ENDPOINTS.AWARDS.GET_ALL);
+      if (!res.ok) throw new Error('Failed to load awards');
+      const data = await res.json();
+      const items = Array.isArray(data) ? data : data.content || [];
+      setAwards(items);
+    } catch (err) {
+      setError(err.message || 'Unable to fetch awards');
+      setAwards([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Handlers
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this award?')) {
-      setAwards(awards.filter(a => a.id !== id));
+  useEffect(() => {
+    fetchAwards();
+  }, []);
+  
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: formData.name,
+        year: formData.year,
+        description: formData.description
+      };
+  
+      try {
+        const res = await fetch(
+          modalMode === 'add'
+            ? API_ENDPOINTS.AWARDS.CREATE
+            : API_ENDPOINTS.AWARDS.UPDATE(formData.id),
+          {
+            method: modalMode === 'add' ? 'POST' : 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }
+        );
+  
+        if (!res.ok) {
+          throw new Error(`Failed to ${modalMode === 'add' ? 'create' : 'update'} award`);
+        }
+  
+        await fetchAwards();
+        setIsModalOpen(false);
+      } catch (err) {
+        alert(err.message || 'Unable to save award');
+      }
+  };
+  
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this award?')) return;
+    try {
+      const res = await fetch(API_ENDPOINTS.AWARDS.DELETE(id), {
+        method: 'DELETE'
+      });
+      if (!res.ok) throw new Error('Failed to delete award');
+      fetchAwards(); 
+    } catch (err) {
+      alert(err.message || 'Unable to delete award');
     }
   };
 
@@ -46,16 +100,6 @@ export default function AdminAwards() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (modalMode === 'add') {
-      const newAward = { ...formData, id: Date.now() };
-      setAwards([newAward, ...awards]);
-    } else if (modalMode === 'edit') {
-      setAwards(awards.map(a => a.id === formData.id ? formData : a));
-    }
-    setIsModalOpen(false);
-  };
 
   return (
     <div className="p-6">

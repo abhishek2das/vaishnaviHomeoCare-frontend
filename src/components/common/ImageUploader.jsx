@@ -9,6 +9,8 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
   const [error, setError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
   const buildImageUrl = (url) => {
@@ -44,6 +46,36 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
     setSelectedFile(file || null);
   };
 
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(selectedFile);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [selectedFile]);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) setSelectedFile(file);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  };
+
   const handleUpload = async () => {
     if (!selectedFile) {
       alert('Please select an image to upload.');
@@ -75,6 +107,14 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
     onClose();
   };
 
+  const isGalleryVideo = (item) => {
+    if (!item) return false;
+    const t = String(item.type || '').toLowerCase();
+    if (t.includes('video')) return true;
+    const url = String(item.url || '').toLowerCase();
+    return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg');
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -97,33 +137,48 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
               onClick={() => setActiveTab('upload')}
               className={`px-4 py-2 rounded-full ${activeTab === 'upload' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700'}`}
             >
-              Upload Image
+              Upload Media
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('gallery')}
               className={`px-4 py-2 rounded-full ${activeTab === 'gallery' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700'}`}
             >
-              Use Existing Image
+              Use Existing
             </button>
           </div>
 
           {activeTab === 'upload' ? (
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center">
+              <div className="space-y-4">
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                className={`rounded-2xl border border-dashed p-6 text-center ${dragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-white'}`}
+                style={{ cursor: 'pointer' }}
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <Upload size={32} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-sm text-gray-500 mb-4">Select an image file to upload to the gallery.</p>
+                <p className="text-sm text-gray-500 mb-2">Drag & drop an image or video here, or click to select.</p>
+                <p className="text-xs text-gray-400">Supports JPG, PNG, MP4</p>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/*,video/*"
                   onChange={handleFileChange}
-                  className="mx-auto"
+                  className="hidden"
                 />
               </div>
               {selectedFile && (
                 <div className="rounded-xl border border-gray-200 p-4 bg-gray-50">
                   <p className="text-sm text-gray-700">Selected file: <span className="font-medium">{selectedFile.name}</span></p>
+                  <div className="mt-3">
+                    {selectedFile.type.startsWith('image/') ? (
+                      <img src={previewUrl} alt="preview" className="max-h-48 mx-auto rounded-lg" />
+                    ) : (
+                      <video src={previewUrl} className="max-h-48 mx-auto rounded-lg" controls />
+                    )}
+                  </div>
                 </div>
               )}
               <div className="flex justify-end gap-3">
@@ -140,7 +195,7 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
                   disabled={uploading}
                   className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
                 >
-                  {uploading ? 'Uploading...' : 'Upload & Use Image'}
+                  {uploading ? 'Uploading...' : 'Upload & Use'}
                 </button>
               </div>
             </div>
@@ -157,22 +212,26 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
                   {gallery.map((item) => (
                     <div key={item.id} className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                       <div className="h-40 bg-gray-100 overflow-hidden">
-                        <img
-                          src={buildImageUrl(item.url)}
-                          alt={item.type}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
+                          {isGalleryVideo(item) ? (
+                            <video src={buildImageUrl(item.url)} className="h-full w-full object-cover" controls />
+                          ) : (
+                            <img
+                              src={buildImageUrl(item.url)}
+                              alt={item.type}
+                              className="h-full w-full object-cover"
+                            />
+                          )}
+                        </div>
                       <div className="p-4">
                         <p className="text-sm font-medium text-gray-800 truncate">{item.type}</p>
                         <p className="text-xs text-gray-500 mt-1 truncate">{item.url}</p>
-                        <button
-                          type="button"
-                          onClick={() => handleUseImage(item)}
-                          className="mt-4 w-full inline-flex items-center justify-center rounded-lg bg-green-600 text-white px-3 py-2 text-sm hover:bg-green-700"
-                        >
-                          Use this image
-                        </button>
+                              <button
+                                type="button"
+                                onClick={() => handleUseImage(item)}
+                                className="mt-4 w-full inline-flex items-center justify-center rounded-lg bg-green-600 text-white px-3 py-2 text-sm hover:bg-green-700"
+                              >
+                                Use this
+                              </button>
                       </div>
                     </div>
                   ))}

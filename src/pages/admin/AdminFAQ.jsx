@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, X, Plus, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
 
 export default function AdminFAQ() {
-  // Mock data for FAQs
-  const initialFaqs = [
-    { id: 1, question: 'What are the visiting hours?', answer: 'General visiting hours are from 10:00 AM to 8:00 PM. ICU visiting hours are strictly between 11:00 AM - 12:00 PM and 5:00 PM - 6:00 PM.' },
-    { id: 2, question: 'Do I need an appointment for a general checkup?', answer: 'While walk-ins are welcome for general consultations, we highly recommend booking an appointment to avoid long waiting times.' },
-    { id: 3, question: 'What insurance plans do you accept?', answer: 'We accept most major health insurance plans including Medicare, Blue Cross Blue Shield, Aetna, and Cigna. Please contact our billing department for specific coverage details.' },
-    { id: 4, question: 'Is parking available at the hospital?', answer: 'Yes, we have a multi-level parking facility available for patients and visitors. The first 2 hours are free of charge.' },
-    { id: 5, question: 'How can I get a copy of my medical records?', answer: 'You can request a copy of your medical records by filling out a release form at the Medical Records department or through our online patient portal.' },
-  ];
 
-  const [faqs, setFaqs] = useState(initialFaqs);
+  const [faqs, setFaqs] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,19 +15,77 @@ export default function AdminFAQ() {
   const [formData, setFormData] = useState({
     id: null, question: '', answer: ''
   });
+  
+  const fetchFaqs = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(API_ENDPOINTS.FAQS.GET_ALL);
+      if (!res.ok) throw new Error('Failed to load FAQs');
+      const data = await res.json();
+      const items = Array.isArray(data) ? data : data.content || [];
+      setFaqs(items);
+    } catch (err) {
+      setError(err.message || 'Unable to fetch FAQs');
+      setFaqs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFaqs();
+  }, []);
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const payload = {
+      question: formData.question,
+      answer: formData.answer
+    };
+
+    try {
+      const res = await fetch(
+        modalMode === 'add'
+          ? API_ENDPOINTS.FAQS.CREATE
+          : API_ENDPOINTS.FAQS.UPDATE(formData.id),
+        {
+          method: modalMode === 'add' ? 'POST' : 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`Failed to ${modalMode === 'add' ? 'create' : 'update'} FAQ`);
+      }
+
+      await fetchFaqs();
+      setIsModalOpen(false);
+    } catch (err) {
+      alert(err.message || 'Unable to save FAQ');
+    }
+  };
+  
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this FAQ?')) return;
+    try {
+      const res = await fetch(API_ENDPOINTS.FAQS.DELETE(id), {
+        method: 'DELETE'
+      });
+      if (!res.ok) throw new Error('Failed to delete FAQ');
+      fetchFaqs(); 
+    } catch (err) {
+      alert(err.message || 'Unable to delete FAQ');
+    }
+  };
+  
 
   // Handlers
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
-  const handleDelete = (e, id) => {
-    e.stopPropagation(); // Prevent accordion from toggling
-    if (window.confirm('Are you sure you want to delete this FAQ?')) {
-      setFaqs(faqs.filter(f => f.id !== id));
-      if (expandedId === id) setExpandedId(null);
-    }
-  };
 
   const openModal = (mode, faq = null, e = null) => {
     if (e) e.stopPropagation(); // Prevent accordion from toggling if editing
@@ -52,17 +105,6 @@ export default function AdminFAQ() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (modalMode === 'add') {
-      const newFaq = { ...formData, id: Date.now() };
-      setFaqs([newFaq, ...faqs]);
-    } else if (modalMode === 'edit') {
-      setFaqs(faqs.map(f => f.id === formData.id ? formData : f));
-    }
-    setIsModalOpen(false);
   };
 
   return (
@@ -91,11 +133,18 @@ export default function AdminFAQ() {
               return (
                 <div key={faq.id} className="transition-colors hover:bg-gray-50/50">
                   <div 
-                    className="p-5 flex items-center justify-between cursor-pointer select-none"
+                    className="p-4 flex items-center justify-between cursor-pointer select-none"
                     onClick={() => toggleExpand(faq.id)}
                   >
-                    <div className="flex items-center pr-4 flex-1">
-                      <HelpCircle size={20} className="text-[#2c543f] mr-4 flex-shrink-0" />
+                    <div className="flex items-center gap-2 pr-4 flex-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+	<path d="M0 0h24v24H0z" fill="none" />
+	<g fill="none" stroke="currentColor" stroke-width="2">
+		<rect width="14" height="14" x="5" y="5" rx="4" />
+		<path stroke-linecap="round" d="M12 15.52v-.01m-1.998-5.533C10.157 9.019 11 8.5 12 8.5s1.686.672 1.87 1.207c.183.535.144 1.344-.363 1.809s-.773.316-1.229.8a1.8 1.8 0 0 0-.278.432" />
+	</g>
+</svg>
+
                       <h3 className="text-gray-800 font-medium text-base">{faq.question}</h3>
                     </div>
                     

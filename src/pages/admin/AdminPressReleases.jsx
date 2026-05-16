@@ -149,6 +149,7 @@ export default function AdminPressReleases() {
           : API_ENDPOINTS.PRESS_RELEASES.UPDATE(formData.id),
         {
           method: modalMode === 'add' ? 'POST' : 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         }
       );
@@ -296,7 +297,7 @@ export default function AdminPressReleases() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className={`bg-white rounded-xl shadow-xl w-full ${modalMode === 'view' ? 'max-w-3xl' : 'max-w-4xl'} my-4 animate-in fade-in duration-200`}>
+          <div className={`bg-white rounded-xl shadow-xl w-full ${modalMode === 'view' ? 'max-w-3xl' : 'max-w-4xl'} my-4 animate-in fade-in duration-200 max-h-[90vh] overflow-hidden`}>
             
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 bg-slate-100 border-b border-slate-300 rounded-t-xl z-10 sticky top-0">
@@ -313,9 +314,11 @@ export default function AdminPressReleases() {
               </button>
             </div>
             
+            {/* Scrollable content area (keeps header sticky) */}
+            <div className="overflow-auto max-h-[calc(90vh-64px)]">
             {/* View Mode */}
             {modalMode === 'view' && (
-              <div className="p-0 overflow-hidden">
+              <div className="p-0">
                 {formData.coverImage && (
                   <div className="w-full h-64 bg-gray-100">
                     <img src={formData.coverImage} alt="Cover" className="w-full h-full object-cover" />
@@ -386,7 +389,7 @@ export default function AdminPressReleases() {
                       <div className="flex-1 flex flex-col">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Content <span className="text-red-500">*</span></label>
                       {/* Limit the editor content area to a fixed height and make it scrollable */}
-                      <style>{`.quill-scrollable .ql-editor { max-height: 270px; overflow: auto; }`}</style>
+                      <style>{`.quill-scrollable .ql-editor { max-height: 200px; overflow: auto; }`}</style>
                       <ReactQuill
                         theme="snow"
                         value={formData.content}
@@ -416,6 +419,7 @@ export default function AdminPressReleases() {
                 </div>
               </form>
             )}
+            </div>
             <ImageUploader
               isOpen={isImageUploaderOpen}
               onClose={() => setIsImageUploaderOpen(false)}
