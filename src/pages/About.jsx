@@ -44,10 +44,10 @@ export default function About() {
               <Link to="/appointment" className="btn-primary">Book a Consultation <ArrowRight size={16} /></Link>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <img src="https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=400&h=300&fit=crop" alt="Clinic lobby" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
-              <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&h=300&fit=crop" alt="Doctors" className="rounded-2xl object-cover w-full h-48 shadow-soft mt-6" />
-              <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=400&h=300&fit=crop" alt="Equipment" className="rounded-2xl object-cover w-full h-48 shadow-soft -mt-6" />
-              <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&h=300&fit=crop" alt="Patient care" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
+              <img src="https://images.unsplash.com/photo-1725267882596-2d08e560b250?q=80&w=1353&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Clinic lobby" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
+              <img src="https://images.unsplash.com/photo-1638988562241-0e40dffe16ee?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Doctors" className="rounded-2xl object-cover w-full h-48 shadow-soft mt-6" />
+              <img src="https://media.istockphoto.com/id/2206195187/photo/close-up-of-a-female-chemist-making-a-medicine-in-a-laboratory.webp?a=1&b=1&s=612x612&w=0&k=20&c=QFkbyxDARGtOzEczSzsg8QTfUiDyXZNcXCUyMDGoZcQ=" alt="Equipment" className="rounded-2xl object-cover w-full h-48 shadow-soft -mt-6" />
+              <img src="https://images.unsplash.com/photo-1758691462430-81160850496c?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Patient care" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
             </div>
           </div>
         </div>

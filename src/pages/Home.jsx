@@ -5,9 +5,9 @@ import { services, doctors, testimonials, awards } from '../data/mockData'
 import StarRating from '../components/common/StarRating'
 
 const stats = [
-  { value: '38+', label: 'Years of Excellence', icon: Award },
-  { value: '50,000+', label: 'Patients Treated', icon: Users },
-  { value: '120+', label: 'Expert Doctors', icon: Heart },
+  { value: '10+', label: 'Years of Excellence', icon: Award },
+  { value: '2,000+', label: 'Patients Treated', icon: Users },
+  { value: '15+', label: 'Expert Doctors', icon: Heart },
   { value: '25+', label: 'Specializations', icon: Shield },
 ]
 
@@ -58,20 +58,20 @@ export default function Home() {
                 Trusted Homeopathic Care Since 1985
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-neutral-900 leading-tight mb-6">
-                Holistic Care,{' '}
-                <span className="text-gradient-blue">Compassionate</span>{' '}
-                Healing
+                Gentle & Effective,{' '}
+                <span className="text-gradient-blue">Homeopathic</span>{' '}
+                Care for You.
               </h1>
               <p className="text-lg text-neutral-500 leading-relaxed mb-8 max-w-lg">
-                Experience world-class homeopathic care with our expert practitioners, natural remedies, and a patient-first approach that prioritizes your well-being.
+                Experience gentle and holistic healing through classical homeopathy. Personalized remedies for chronic illnesses, allergies, skin problems, and overall wellness with zero side effects.
               </p>
               <div className="flex flex-wrap gap-4 mb-10">
                 <Link to="/appointment" className="btn-primary text-base py-3.5 px-7">
                   <CalendarDays size={18} /> Book Appointment
                 </Link>
-                <a href="tel:+911145670000" className="btn-secondary text-base py-3.5 px-7">
+                {/* <a href="tel:+911145670000" className="btn-secondary text-base py-3.5 px-7">
                   <Phone size={18} /> Emergency: 24/7
-                </a>
+                </a> */}
               </div>
               <div className="flex flex-wrap gap-5">
                 {['NABH Accredited', 'ISO 9001:2015', 'JCI Certified'].map(badge => (
@@ -84,7 +84,7 @@ export default function Home() {
             {/* Hero Visual */}
             <div className="relative lg:flex justify-end hidden">
               <div className="relative w-full max-w-md">
-                <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=500&h=600&fit=crop"
+                <img src="https://images.unsplash.com/photo-1676803704427-496b1de33baa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt="Doctor consultation" className="rounded-3xl shadow-strong w-full object-cover"
                   style={{ height: '480px' }} />
                 {/* Floating cards */}
@@ -94,7 +94,7 @@ export default function Home() {
                       <Users size={18} className="text-teal-600" />
                     </div>
                     <div>
-                      <div className="font-bold text-neutral-800">50,000+</div>
+                      <div className="font-bold text-neutral-800">2,000+</div>
                       <div className="text-xs text-neutral-500">Happy Patients</div>
                     </div>
                   </div>
@@ -168,11 +168,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <img src="https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=600&h=500&fit=crop"
+              <img src="https://images.unsplash.com/photo-1660212588628-9e81267100e2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Clinic exterior" className="rounded-3xl shadow-strong w-full object-cover" style={{ height: '440px' }} />
               <div className="absolute -bottom-6 -right-6 bg-primary-600 rounded-2xl p-6 shadow-strong hidden md:block">
                 <div className="text-center text-white">
-                  <div className="text-4xl font-display font-bold mb-1">38+</div>
+                  <div className="text-4xl font-display font-bold mb-1">10+</div>
                   <div className="text-sm text-primary-200 font-medium">Years of Excellence</div>
                 </div>
               </div>

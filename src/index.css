@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.logo_font{
+  font-family: 'Sansita', sans-serif;
+}
+
 @layer base {
   * {
     scroll-behavior: smooth;

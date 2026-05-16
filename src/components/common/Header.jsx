@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown, Phone, Clock, MapPin, Heart } from 'lucide-react'
+import image from '../../assets/site_logo_v2.png'
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -52,16 +53,14 @@ export default function Header() {
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-medium py-2' : 'bg-white/95 backdrop-blur-sm py-3'}`}>
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+      <header className={`sticky top-0 z-50 transition-all duration-300 
+        ${scrolled ? 'm-2 top-2' : ''}`}>
+        <div className={`max-w-7xl py-4  rounded-full border-2  bg-white/60  backdrop-blur-md mx-auto px-4 flex items-center justify-between
+          ${scrolled ? 'shadow-lg' : ''}`}>
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-teal-500 rounded-xl flex items-center justify-center shadow-soft group-hover:shadow-glow-blue transition-all duration-300">
-              <Heart size={20} className="text-white" fill="white" />
-            </div>
-            <div>
-              <div className="font-display font-bold text-xl text-neutral-800 leading-tight">Medicare</div>
-              <div className="text-xs text-teal-600 font-medium tracking-wider">CLINIC</div>
+            <div className="w-48 flex items-center justify-center">
+              <img src={image} alt="Medicare Clinic Logo" className="w-full h-auto" />
             </div>
           </Link>
 
@@ -80,12 +79,12 @@ export default function Header() {
                   </button>
                 ) : (
                   <Link to={item.path} className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 block
-                    ${location.pathname === item.path ? 'text-primary-600 bg-primary-50' : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'}`}>
+                    ${location.pathname === item.path ? 'text-primary-700 font-bold bg-primary-100' : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'}`}>
                     {item.label}
                   </Link>
                 )}
                 {item.children && activeDropdown === item.label && (
-                  <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-strong border border-neutral-100 py-2 animate-fade-in z-50">
+                  <div className="absolute top-full left-0 mt-0 w-52 bg-white rounded-xl shadow-strong border-2 border-neutral-100 py-2 animate-fade-in z-50">
                     {item.children.map(child => (
                       <Link key={child.path} to={child.path}
                         className="block px-4 py-2.5 text-sm text-neutral-600 hover:text-primary-600 hover:bg-primary-50 transition-colors">

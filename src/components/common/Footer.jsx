@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Heart, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Linkedin, ArrowRight } from 'lucide-react'
-
+import image from '../../assets/site_logo_v2.png'
 const quickLinks = [
   { label: 'About Us', path: '/about' },
   { label: 'Our Services', path: '/services' },
@@ -26,13 +26,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-5 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-teal-500 rounded-xl flex items-center justify-center">
-                <Heart size={20} className="text-white" fill="white" />
+              <div className="w-64 brightness-0 invert flex items-center justify-center">
+                <img src={image} alt="Medicare Clinic Logo" />
               </div>
-              <div>
-                <div className="font-display font-bold text-xl text-white">Medicare</div>
-                <div className="text-xs text-teal-400 font-medium tracking-wider">CLINIC</div>
-              </div>
+             
             </Link>
             <p className="text-sm text-neutral-400 leading-relaxed mb-6">
               Providing world-class homeopathic care with compassion and innovation since 1985. Your health is our highest priority.
