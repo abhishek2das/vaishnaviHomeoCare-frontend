@@ -1,24 +1,51 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Plus, Eye, Trash2, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Plus, Eye, Trash2, X, Edit } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
 
 export default function PatientUpdatesView({ patient, onBack }) {
-  const [updates, setUpdates] = useState([
-    { id: 1, visitDate: '2023-10-25', nextVisitDate: '2023-11-10', prescription: 'Ibuprofen 400mg twice daily for 5 days. Muscle relaxant before bed.' },
-    { id: 2, visitDate: '2023-11-10', nextVisitDate: '2023-12-10', prescription: 'Continue Ibuprofen as needed. Added physiotherapy exercises.' }
-  ]);
-  
+  const [updates, setUpdates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState('add'); // 'add', 'view'
+  const [modalMode, setModalMode] = useState('add'); // 'add', 'view', 'edit'
   const [selectedUpdate, setSelectedUpdate] = useState(null);
-  
   const [formData, setFormData] = useState({
     visitDate: new Date().toISOString().split('T')[0],
     nextVisitDate: '',
     prescription: ''
   });
 
+  const normalizeResponse = (data) => {
+    if (Array.isArray(data)) return data;
+    if (data?.content && Array.isArray(data.content)) return data.content;
+    return [];
+  };
+
+  const fetchHistory = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.GET_ALL(patient.id));
+      if (!res.ok) throw new Error('Failed to fetch patient history');
+      const data = await res.json();
+      setUpdates(normalizeResponse(data));
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (patient?.id) {
+      fetchHistory();
+    }
+  }, [patient?.id]);
+
   const openAddModal = () => {
     setModalMode('add');
+    setSelectedUpdate(null);
     setFormData({
       visitDate: new Date().toISOString().split('T')[0],
       nextVisitDate: '',
@@ -33,9 +60,25 @@ export default function PatientUpdatesView({ patient, onBack }) {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this update?')) {
-      setUpdates(updates.filter(u => u.id !== id));
+  const openEditModal = (update) => {
+    setModalMode('edit');
+    setSelectedUpdate(update);
+    setFormData({
+      visitDate: update.visitDate || new Date().toISOString().split('T')[0],
+      nextVisitDate: update.nextVisitDate || '',
+      prescription: update.prescription || ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this update?')) return;
+    try {
+      const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.DELETE(id), { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete history item');
+      setUpdates(prev => prev.filter(u => u.id !== id));
+    } catch (err) {
+      alert(err.message || 'Unable to delete history item');
     }
   };
 
@@ -44,15 +87,38 @@ export default function PatientUpdatesView({ patient, onBack }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (modalMode === 'add') {
-      const newUpdate = {
-        ...formData,
-        id: Date.now()
-      };
-      setUpdates([newUpdate, ...updates]);
+    const body = {
+      visitDate: formData.visitDate,
+      nextVisitDate: formData.nextVisitDate,
+      prescription: formData.prescription
+    };
+
+    try {
+      if (modalMode === 'add') {
+        const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.CREATE(patient.id), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error('Failed to save history update');
+        const saved = await res.json();
+        setUpdates(prev => [saved, ...prev]);
+      } else if (modalMode === 'edit' && selectedUpdate) {
+        const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.UPDATE(selectedUpdate.id), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error('Failed to update history item');
+        const updated = await res.json();
+        setUpdates(prev => prev.map(item => item.id === selectedUpdate.id ? updated : item));
+      }
       setIsModalOpen(false);
+      setSelectedUpdate(null);
+    } catch (err) {
+      alert(err.message || 'Unable to save history update');
     }
   };
 
@@ -121,7 +187,19 @@ export default function PatientUpdatesView({ patient, onBack }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {updates.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="5" className="py-8 text-center text-gray-500">
+                    Loading visit history...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan="5" className="py-8 text-center text-red-500">
+                    {error}
+                  </td>
+                </tr>
+              ) : updates.length > 0 ? (
                 updates.map((update, index) => (
                   <tr key={update.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-6 text-sm text-gray-500">{index + 1}</td>
@@ -138,6 +216,13 @@ export default function PatientUpdatesView({ patient, onBack }) {
                           title="View Details"
                         >
                           <Eye size={16} />
+                        </button>
+                        <button 
+                          onClick={() => openEditModal(update)}
+                          className="text-yellow-500 hover:text-yellow-700 transition-colors p-1.5 bg-yellow-50 hover:bg-yellow-100 rounded"
+                          title="Edit Update"
+                        >
+                          <Edit size={16} />
                         </button>
                         <button 
                           onClick={() => handleDelete(update.id)}
@@ -168,14 +253,16 @@ export default function PatientUpdatesView({ patient, onBack }) {
           <div className="bg-white rounded-xl shadow-xl w-full my-4 max-w-2xl animate-in fade-in duration-200">
             <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-slate-100 border-slate-300 rounded-t-xl z-10">
               <h2 className="text-xl font-bold text-gray-800">
-                {modalMode === 'add' ? 'Add New Update' : 'Visit Details'}
+                {modalMode === 'add' && 'Add New Update'}
+                {modalMode === 'edit' && 'Edit Update'}
+                {modalMode === 'view' && 'Visit Details'}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X size={24} />
               </button>
             </div>
             
-            {modalMode === 'add' ? (
+            {(modalMode === 'add' || modalMode === 'edit') ? (
               <form onSubmit={handleSubmit} className="p-6 pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>

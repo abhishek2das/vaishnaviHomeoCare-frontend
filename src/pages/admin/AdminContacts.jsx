@@ -1,17 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Eye, Trash2, X, Filter, Mail } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
 
 export default function AdminContacts() {
-  // Mock data for contact inquiries
-  const initialContacts = [
-    { id: 1, name: 'Alice Walker', phone: '+1 234 567 8900', email: 'alice.w@example.com', message: 'I would like to inquire about the maternity packages you offer and if they are covered by Blue Cross insurance.', date: '2023-11-12' },
-    { id: 2, name: 'David Smith', phone: '+1 987 654 3210', email: 'dsmith88@example.com', message: 'I need to schedule an MRI scan but the online portal is not letting me pick a date for next week. Please assist.', date: '2023-11-11' },
-    { id: 3, name: 'Sophia Johnson', phone: '+1 555 123 4567', email: 'sophia.j@example.com', message: 'Do you offer online video consultations for pediatric care? My son is sick and I prefer not to bring him to the clinic.', date: '2023-11-10' },
-    { id: 4, name: 'James Brown', phone: '+1 444 987 6543', email: 'jbrown@example.com', message: 'I had a great experience during my last visit. Just wanted to leave a thank you note for Dr. Lee!', date: '2023-11-08' },
-    { id: 5, name: 'Emma Davis', phone: '+1 333 444 5555', email: 'emma.davis@example.com', message: 'Could you please send me a copy of my billing statement from my visit on Oct 15th?', date: '2023-11-05' },
-  ];
-
-  const [contacts, setContacts] = useState(initialContacts);
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -19,6 +13,32 @@ export default function AdminContacts() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
+
+  const fetchContacts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch(API_ENDPOINTS.CONTACTS.GET_ALL);
+      if (!res.ok) throw new Error('Failed to load contact inquiries.');
+
+      const data = await res.json();
+      const contactList = Array.isArray(data)
+        ? data
+        : data.content || data.contacts || [];
+
+      setContacts(contactList);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Unable to load contact inquiries.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
 
   // Filter logic
   const filteredContacts = useMemo(() => {
@@ -40,9 +60,17 @@ export default function AdminContacts() {
   }, [contacts, searchQuery, startDate, endDate]);
 
   // Handlers
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this message?')) {
-      setContacts(contacts.filter(c => c.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this message?')) {
+      return;
+    }
+
+    try {
+      const res = await fetch(API_ENDPOINTS.CONTACTS.DELETE(id), { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete contact inquiry.');
+      setContacts(prevContacts => prevContacts.filter(c => c.id !== id));
+    } catch (err) {
+      alert(err.message || 'Unable to delete contact inquiry.');
     }
   };
 
@@ -121,7 +149,19 @@ export default function AdminContacts() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filteredContacts.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-gray-500">
+                    Loading contact inquiries...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-red-500">
+                    {error}
+                  </td>
+                </tr>
+              ) : filteredContacts.length > 0 ? (
                 filteredContacts.map((contact, index) => (
                   <tr key={contact.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-6 text-sm text-gray-500">{index + 1}</td>

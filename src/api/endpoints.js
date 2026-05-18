@@ -8,6 +8,12 @@ export const API_ENDPOINTS = {
     UPDATE: (id) => `${BASE_URL}/patients/${id}`,
     DELETE: (id) => `${BASE_URL}/patients/${id}`,
   },
+  PATIENT_HISTORY: {
+    GET_ALL: (patientId) => `${BASE_URL}/patients/${patientId}/history`,
+    CREATE: (patientId) => `${BASE_URL}/patients/${patientId}/history`,
+    UPDATE: (historyId) => `${BASE_URL}/patients/history/${historyId}`,
+    DELETE: (historyId) => `${BASE_URL}/patients/history/${historyId}`,
+  },
   TESTIMONIALS: {
     GET_ALL: `${BASE_URL}/testimonials`,
     CREATE: `${BASE_URL}/testimonials`,
@@ -36,5 +42,35 @@ export const API_ENDPOINTS = {
     CREATE: `${BASE_URL}/faqs`, 
     UPDATE: (id) => `${BASE_URL}/faqs/${id}`,
     DELETE: (id) => `${BASE_URL}/faqs/${id}`,
+  },
+  CONTACTS: {
+    GET_ALL: `${BASE_URL}/contacts`,
+    CREATE: `${BASE_URL}/contacts`,
+    DELETE: (id) => `${BASE_URL}/contacts/${id}`,
+  },
+  APPOINTMENTS: {
+    GET_ALL: `${BASE_URL}/appointments`,
+    CREATE: `${BASE_URL}/appointments`,
+    UPDATE: (id) => `${BASE_URL}/appointments/${id}`,
+    DELETE: (id) => `${BASE_URL}/appointments/${id}`,
+  },
+  DASHBOARD: {
+    STATS: `${BASE_URL}/dashboard/stats`,
+    RECENT_APPOINTMENTS: (limit = 5) => `${BASE_URL}/dashboard/recent-appointments?limit=${limit}`,
+    RECENT_PATIENTS: (limit = 5) => `${BASE_URL}/dashboard/recent-patients?limit=${limit}`,
+  },
+  CMS: {
+    ABOUT: `${BASE_URL}/cms/about`,
+    STATS: {
+      GET_ALL: `${BASE_URL}/cms/stats`,
+      POST: `${BASE_URL}/cms/stats`,
+      UPDATE: (id) => `${BASE_URL}/cms/stats/${id}`,
+      DELETE: (id) => `${BASE_URL}/cms/stats?id=${id}`,
+    },
+    DOCTORS: {
+      GET_ALL: `${BASE_URL}/cms/doctors`,
+      POST: `${BASE_URL}/cms/doctors`,
+      DELETE: (id) => `${BASE_URL}/cms/doctors?id=${id}`,
+    },
   },
 };

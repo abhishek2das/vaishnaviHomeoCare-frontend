@@ -1,42 +1,86 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, Calendar, FileText, Image, Plus, Upload } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
 
 export default function AdminDashboard() {
-  const stats = [
-    { label: "Today's Appointments", value: '12', icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-100' },
-    { label: 'Total Patients', value: '1,248', icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
-    { label: 'Total Press Releases', value: '45', icon: FileText, color: 'text-purple-600', bg: 'bg-purple-100' },
-    { label: 'Total Gallery Items', value: '128', icon: Image, color: 'text-orange-600', bg: 'bg-orange-100' },
+  const [stats, setStats] = useState(null);
+  const [recentAppointments, setRecentAppointments] = useState([]);
+  const [recentPatients, setRecentPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const statConfig = [
+    { key: 'todayAppointments', label: "Today's Appointments", icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { key: 'totalPatients', label: 'Total Patients', icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
+    { key: 'totalPressReleases', label: 'Total Press Releases', icon: FileText, color: 'text-purple-600', bg: 'bg-purple-100' },
+    { key: 'totalGalleryItems', label: 'Total Gallery Items', icon: Image, color: 'text-orange-600', bg: 'bg-orange-100' },
   ];
 
-  const recentAppointments = [
-    { id: 1, name: 'John Doe', date: '2023-10-27', time: '10:00 AM', status: 'Confirmed' },
-    { id: 2, name: 'Jane Smith', date: '2023-10-27', time: '11:30 AM', status: 'Pending' },
-    { id: 3, name: 'Michael Johnson', date: '2023-10-27', time: '02:00 PM', status: 'Confirmed' },
-    { id: 4, name: 'Emily Davis', date: '2023-10-27', time: '03:15 PM', status: 'Cancelled' },
-  ];
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-  const recentPatients = [
-    { id: 1, name: 'Robert Brown', lastVisit: '2023-10-25' },
-    { id: 2, name: 'William Wilson', lastVisit: '2023-10-24' },
-    { id: 3, name: 'Sarah Taylor', lastVisit: '2023-10-22' },
-    { id: 4, name: 'David Anderson', lastVisit: '2023-10-20' },
-  ];
+      const [statsRes, patientsRes, appointmentsRes] = await Promise.all([
+        fetch(API_ENDPOINTS.DASHBOARD.STATS),
+        fetch(API_ENDPOINTS.DASHBOARD.RECENT_PATIENTS(5)),
+        fetch(API_ENDPOINTS.DASHBOARD.RECENT_APPOINTMENTS(5)),
+      ]);
+
+      if (!statsRes.ok) throw new Error('Failed to load dashboard stats');
+      if (!patientsRes.ok) throw new Error('Failed to load recent patients');
+      if (!appointmentsRes.ok) throw new Error('Failed to load recent appointments');
+
+      const statsData = await statsRes.json();
+      const patientsData = await patientsRes.json();
+      const appointmentsData = await appointmentsRes.json();
+
+      setStats(statsData);
+      setRecentPatients(Array.isArray(patientsData) ? patientsData : []);
+      setRecentAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Unable to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const formatAppointmentDate = (iso) => {
+    if (!iso) return 'N/A';
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return iso;
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  };
+
+  const formatAppointmentTime = (iso) => {
+    if (!iso) return 'N/A';
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+      {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
       
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => (
+        {statConfig.map((stat, index) => (
           <div key={index} className="bg-white rounded-xl shadow-sm p-6 flex items-center border border-gray-100">
             <div className={`p-3 rounded-lg ${stat.bg} ${stat.color} mr-4`}>
               <stat.icon size={24} />
             </div>
             <div>
               <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
-              <h3 className="text-2xl font-bold text-gray-800">{stat.value}</h3>
+              <h3 className="text-2xl font-bold text-gray-800">
+                {stats ? stats[stat.key] : '0'}
+              </h3>
             </div>
           </div>
         ))}
@@ -59,22 +103,28 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {recentAppointments.map((app) => (
-                  <tr key={app.id}>
-                    <td className="py-3 text-sm text-gray-800 font-medium border-b border-gray-50">{app.name}</td>
-                    <td className="py-3 text-sm text-gray-600 border-b border-gray-50">{app.date}</td>
-                    <td className="py-3 text-sm text-gray-600 border-b border-gray-50">{app.time}</td>
-                    <td className="py-3 text-sm border-b border-gray-50">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        app.status === 'Confirmed' ? 'bg-green-100 text-green-700' :
-                        app.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {app.status}
-                      </span>
-                    </td>
+                {recentAppointments.length > 0 ? (
+                  recentAppointments.map((app) => (
+                    <tr key={app.id}>
+                      <td className="py-3 text-sm text-gray-800 font-medium border-b border-gray-50">{app.patientName || app.name || 'Unknown'}</td>
+                      <td className="py-3 text-sm text-gray-600 border-b border-gray-50">{formatAppointmentDate(app.appointmentDate)}</td>
+                      <td className="py-3 text-sm text-gray-600 border-b border-gray-50">{formatAppointmentTime(app.appointmentDate)}</td>
+                      <td className="py-3 text-sm border-b border-gray-50">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          app.status === 'Confirmed' ? 'bg-green-100 text-green-700' :
+                          app.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {app.status || 'Unknown'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="py-8 text-center text-gray-500 text-sm">No recent appointments available.</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -87,20 +137,26 @@ export default function AdminDashboard() {
           </div>
           <div className="p-6 flex-1">
             <div className="space-y-4">
-              {recentPatients.map((patient) => (
-                <div key={patient.id} className="flex items-center justify-between pb-4 border-b border-gray-50 last:border-0 last:pb-0">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">
-                      {patient.name.charAt(0)}
+              {recentPatients.length > 0 ? (
+                recentPatients.map((patient) => (
+                  <div key={patient.id} className="flex items-center justify-between pb-4 border-b border-gray-50 last:border-0 last:pb-0">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold mr-3">
+                        {patient.name?.charAt(0) || 'P'}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">{patient.name || 'Unknown Patient'}</p>
+                        <p className="text-xs text-gray-500">
+                          {patient.email || patient.phone || `${patient.age || 'N/A'} yrs${patient.gender ? ` • ${patient.gender}` : ''}`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">{patient.name}</p>
-                      <p className="text-xs text-gray-500">Last visit: {patient.lastVisit}</p>
-                    </div>
+                    <button className="text-sm text-[#1a3a2a] hover:underline font-medium">View</button>
                   </div>
-                  <button className="text-sm text-[#1a3a2a] hover:underline font-medium">View</button>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500 text-sm">No recent patients available.</div>
+              )}
             </div>
           </div>
         </div>

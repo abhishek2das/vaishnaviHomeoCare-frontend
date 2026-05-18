@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Edit, Trash2, X, Plus, Upload, ImageIcon, Save, CheckCircle } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
+import ImageUploader from '../../components/common/ImageUploader';
 
 export default function AdminCMS() {
   const location = useLocation();
@@ -14,16 +16,9 @@ export default function AdminCMS() {
     mission: 'Delivering exceptional patient care through innovation, empathy, and excellence.'
   });
 
-  const [statistics, setStatistics] = useState([
-    { id: 1, key: 'Patients Treated', value: '50,000+' },
-    { id: 2, key: 'Specialist Doctors', value: '150+' },
-    { id: 3, key: 'Years of Experience', value: '25' },
-  ]);
+  const [statistics, setStatistics] = useState([]);
 
-  const [doctors, setDoctors] = useState([
-    { id: 1, name: 'Dr. Sarah Johnson', specialist: 'Cardiologist', description: 'Over 15 years of experience in interventional cardiology.', image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=300&auto=format&fit=crop' },
-    { id: 2, name: 'Dr. Michael Chen', specialist: 'Neurologist', description: 'Specializes in treating complex neurological disorders.', image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=300&auto=format&fit=crop' },
-  ]);
+  const [doctors, setDoctors] = useState([]);
 
   // --- SERVICES DATA & STATE ---
   const [services, setServices] = useState([
@@ -35,19 +30,135 @@ export default function AdminCMS() {
   const [modalType, setModalType] = useState(null); // 'stat', 'doctor', 'service', null
   const [modalMode, setModalMode] = useState('add'); // 'add', 'edit'
   const [formData, setFormData] = useState({});
+  const [loadingAbout, setLoadingAbout] = useState(false);
+  const [loadingStats, setLoadingStats] = useState(false);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [cmsError, setCmsError] = useState(null);
+  const [showImageUploader, setShowImageUploader] = useState(false);
   const fileInputRef = useRef(null);
 
-  // --- SAVE HANDLERS (Simulated API calls) ---
-  const handleSaveText = (section) => {
-    alert(`${section} saved successfully!`);
+  const loadAboutContent = async () => {
+    setLoadingAbout(true);
+    setCmsError(null);
+
+    try {
+      const res = await fetch(API_ENDPOINTS.CMS.ABOUT);
+      if (!res.ok) throw new Error('Unable to fetch about content');
+
+      const data = await res.json();
+      setAboutDescription(data.description ?? aboutDescription);
+      setVisionMission(prev => ({
+        vision: data.vision ?? prev.vision,
+        mission: data.mission ?? prev.mission,
+      }));
+    } catch (error) {
+      console.error(error);
+      setCmsError(error.message || 'Failed to load content');
+    } finally {
+      setLoadingAbout(false);
+    }
+  };
+
+  const loadStatistics = async () => {
+    setLoadingStats(true);
+    try {
+      const res = await fetch(API_ENDPOINTS.CMS.STATS.GET_ALL);
+      if (!res.ok) throw new Error('Unable to fetch statistics');
+      const data = await res.json();
+      const stats = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
+      setStatistics(stats.map(item => ({ id: item.id, key: item.label ?? item.key, value: item.value })));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
+
+  const loadDoctors = async () => {
+    setLoadingDoctors(true);
+    try {
+      const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.GET_ALL);
+      if (!res.ok) throw new Error('Unable to fetch doctors');
+      const data = await res.json();
+      const doctorsData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
+      setDoctors(doctorsData.map(item => ({
+        id: item.id,
+        name: item.name,
+        specialist: item.specialist,
+        description: item.shortDescription ?? item.description,
+        image: item.imgUrl ?? item.image,
+      })));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAboutContent();
+    loadStatistics();
+    loadDoctors();
+  }, []);
+
+  const handleSaveText = async (section) => {
+    const payload = {
+      id: 9007199254740991,
+      description: aboutDescription,
+      vision: visionMission.vision,
+      mission: visionMission.mission,
+    };
+
+    try {
+      const res = await fetch(API_ENDPOINTS.CMS.ABOUT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorBody = await res.text();
+        throw new Error(errorBody || 'Failed to save about content');
+      }
+
+      const saved = await res.json();
+      setAboutDescription(saved.description ?? aboutDescription);
+      setVisionMission({
+        vision: saved.vision ?? visionMission.vision,
+        mission: saved.mission ?? visionMission.mission,
+      });
+      alert(`${section} saved successfully!`);
+    } catch (error) {
+      console.error(error);
+      alert(`Save failed: ${error.message || 'Unknown error'}`);
+    }
   };
 
   // --- CRUD HANDLERS ---
-  const handleDelete = (type, id) => {
-    if (window.confirm(`Are you sure you want to delete this ${type}?`)) {
-      if (type === 'stat') setStatistics(statistics.filter(s => s.id !== id));
-      if (type === 'doctor') setDoctors(doctors.filter(d => d.id !== id));
-      if (type === 'service') setServices(services.filter(s => s.id !== id));
+  const handleDelete = async (type, id) => {
+    if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
+
+    try {
+      if (type === 'stat') {
+        const res = await fetch(API_ENDPOINTS.CMS.STATS.DELETE(id), { method: 'DELETE' });
+        if (!res.ok) throw new Error('Unable to delete statistic');
+        setStatistics(statistics.filter(s => s.id !== id));
+      }
+
+      if (type === 'doctor') {
+        const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.DELETE(id), { method: 'DELETE' });
+        if (!res.ok) throw new Error('Unable to delete doctor');
+        setDoctors(doctors.filter(d => d.id !== id));
+      }
+
+      if (type === 'service') {
+        setServices(services.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error(error);
+      alert(`Delete failed: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -78,21 +189,91 @@ export default function AdminCMS() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { ...formData };
-    
-    if (modalMode === 'add') {
-      payload.id = Date.now();
-      if (modalType === 'stat') setStatistics([...statistics, payload]);
-      if (modalType === 'doctor') setDoctors([...doctors, payload]);
-      if (modalType === 'service') setServices([...services, payload]);
-    } else {
-      if (modalType === 'stat') setStatistics(statistics.map(s => s.id === payload.id ? payload : s));
-      if (modalType === 'doctor') setDoctors(doctors.map(d => d.id === payload.id ? payload : d));
-      if (modalType === 'service') setServices(services.map(s => s.id === payload.id ? payload : s));
+    try {
+      if (modalType === 'stat') {
+        const payload = {
+          label: formData.key,
+          value: formData.value,
+        };
+
+        const isEdit = modalMode === 'edit' && formData.id;
+        const url = isEdit
+          ? API_ENDPOINTS.CMS.STATS.UPDATE(formData.id)
+          : API_ENDPOINTS.CMS.STATS.POST;
+        const method = isEdit ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const errorBody = await res.text();
+          throw new Error(errorBody || 'Unable to save statistic');
+        }
+        const saved = await res.json();
+        const statItem = {
+          id: saved.id ?? formData.id ?? Date.now(),
+          key: saved.label ?? payload.label,
+          value: saved.value ?? payload.value,
+        };
+
+        if (modalMode === 'add') {
+          setStatistics([...statistics, statItem]);
+        } else {
+          setStatistics(statistics.map(s => s.id === statItem.id ? statItem : s));
+        }
+      }
+
+      if (modalType === 'doctor') {
+        const payload = {
+          name: formData.name,
+          specialist: formData.specialist,
+          shortDescription: formData.description,
+          imgUrl: formData.image,
+        };
+        const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.POST, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const errorBody = await res.text();
+          throw new Error(errorBody || 'Unable to save doctor');
+        }
+        const saved = await res.json();
+        const doctorItem = {
+          id: saved.id ?? payload.id,
+          name: saved.name ?? payload.name,
+          specialist: saved.specialist ?? payload.specialist,
+          description: saved.shortDescription ?? payload.shortDescription,
+          image: saved.imgUrl ?? payload.imgUrl,
+        };
+
+        if (modalMode === 'add') {
+          setDoctors([...doctors, doctorItem]);
+        } else {
+          setDoctors(doctors.map(d => d.id === doctorItem.id ? doctorItem : d));
+        }
+      }
+
+      if (modalType === 'service') {
+        const payload = { ...formData };
+        if (modalMode === 'add') {
+          payload.id = Date.now();
+          setServices([...services, payload]);
+        } else {
+          setServices(services.map(s => s.id === payload.id ? payload : s));
+        }
+      }
+
+      closeModal();
+    } catch (error) {
+      console.error(error);
+      alert(`Save failed: ${error.message || 'Unknown error'}`);
     }
-    closeModal();
   };
 
   return (
@@ -121,37 +302,22 @@ export default function AdminCMS() {
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
               placeholder="Enter the main about us text..."
             ></textarea>
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-6">
+              <div>
+                <label className="block text-lg font-bold text-gray-800">Our Vision</label>
+                <textarea rows="3" value={visionMission.vision} onChange={(e) => setVisionMission({...visionMission, vision: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
+                ></textarea>
+              </div>
+              <div>
+                <label className="block text-lg font-bold text-gray-800">Our Mission</label>
+                <textarea rows="3" value={visionMission.mission} onChange={(e) => setVisionMission({...visionMission, mission: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
+                ></textarea>
+              </div>
+            </div>
           </section>
 
-          {/* Section 2: Vision & Mission */}
-          <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-800">Vision & Mission</h2>
-              <button onClick={() => handleSaveText('Vision & Mission')} className="flex items-center text-sm font-medium bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition-colors shadow-sm">
-                <Save size={16} className="mr-2" /> Save
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Our Vision</label>
-                <textarea
-                  rows="3"
-                  value={visionMission.vision}
-                  onChange={(e) => setVisionMission({...visionMission, vision: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
-                ></textarea>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Our Mission</label>
-                <textarea
-                  rows="3"
-                  value={visionMission.mission}
-                  onChange={(e) => setVisionMission({...visionMission, mission: e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
-                ></textarea>
-              </div>
-            </div>
-          </section>
 
           {/* Section 3: Statistics */}
           <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -323,10 +489,9 @@ export default function AdminCMS() {
                           {formData.image ? <img src={formData.image} alt="Preview" className="w-full h-full object-cover"/> : <ImageIcon className="text-gray-400"/>}
                         </div>
                         <div className="flex-1">
-                          <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-50 flex items-center">
-                            <Upload size={14} className="mr-2"/> Upload Image
+                          <button type="button" onClick={() => setShowImageUploader(true)} className="text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-50 flex items-center">
+                            <Upload size={14} className="mr-2"/> Select Image
                           </button>
-                          <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
                         </div>
                       </div>
                     </div>
@@ -387,6 +552,15 @@ export default function AdminCMS() {
           </div>
         </div>
       )}
+
+      <ImageUploader
+        isOpen={showImageUploader}
+        onClose={() => setShowImageUploader(false)}
+        onImageSelected={(url) => {
+          setFormData(prev => ({ ...prev, image: url }));
+          setShowImageUploader(false);
+        }}
+      />
 
     </div>
   );

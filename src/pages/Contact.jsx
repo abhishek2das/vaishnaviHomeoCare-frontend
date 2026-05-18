@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Phone, Mail, MapPin, Clock, Send, User, MessageSquare, Loader, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
+import { API_ENDPOINTS } from '../api/endpoints'
 
 const contactDetails = [
   {
@@ -39,32 +40,90 @@ const contactDetails = [
 export default function Contact() {
   const [form, setForm] = useState({ name: '', mobile: '', email: '', subject: '', message: '' })
   const [errors, setErrors] = useState({})
+  const [submissionError, setSubmissionError] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim()) e.name = 'Name is required'
-    if (!/^[6-9]\d{9}$/.test(form.mobile)) e.mobile = 'Enter a valid 10-digit mobile number'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email'
-    if (!form.subject.trim()) e.subject = 'Subject is required'
-    if (!form.message.trim() || form.message.trim().length < 10) e.message = 'Message must be at least 10 characters'
+    const name = form.name.trim()
+    const email = form.email.trim()
+    const subject = form.subject.trim()
+    const message = form.message.trim()
+
+    if (!name) {
+      e.name = 'Name is required'
+    } else if (!/^[A-Za-z ]+$/.test(name)) {
+      e.name = 'Name can only include letters and spaces'
+    } else if (/\s{2,}/.test(name)) {
+      e.name = 'Name should not contain consecutive spaces'
+    }
+
+    if (!/^[6-9]\d{9}$/.test(form.mobile)) {
+      e.mobile = 'Enter a valid 10-digit mobile number'
+    }
+
+    if (!email) {
+      e.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      e.email = 'Enter a valid email'
+    }
+
+    if (!subject) {
+      e.subject = 'Subject is required'
+    }
+
+    if (!message) {
+      e.message = 'Message is required'
+    } else if (message.length < 10) {
+      e.message = 'Message must be at least 10 characters'
+    }
+
     return e
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const errs = validate()
-    if (Object.keys(errs).length > 0) { setErrors(errs); return }
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs)
+      return
+    }
+
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1500))
-    setLoading(false)
-    setSent(true)
+    setSubmissionError('')
+
+    const payload = {
+      name: form.name.trim(),
+      mobile: form.mobile,
+      email: form.email.trim(),
+      subject: form.subject.trim(),
+      message: form.message.trim(),
+    }
+
+    try {
+      const response = await fetch(API_ENDPOINTS.CONTACTS.CREATE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+
+      setSent(true)
+    } catch (error) {
+      setSubmissionError('Unable to send your message. Please try again later.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (field, value) => {
     setForm(p => ({ ...p, [field]: value }))
     if (errors[field]) setErrors(p => { const n = { ...p }; delete n[field]; return n })
+    if (submissionError) setSubmissionError('')
   }
 
   return (
@@ -134,7 +193,7 @@ export default function Contact() {
                   </div>
                   <h3 className="font-display font-bold text-neutral-800 mb-2">Message Sent!</h3>
                   <p className="text-neutral-500 text-sm mb-6">We'll get back to you within 24 hours on <span className="font-semibold">{form.email}</span>.</p>
-                  <button onClick={() => { setSent(false); setForm({ name: '', mobile: '', email: '', subject: '', message: '' }) }}
+                  <button onClick={() => { setSent(false); setForm({ name: '', mobile: '', email: '', subject: '', message: '' }); setSubmissionError('') }}
                     className="btn-secondary text-sm">Send Another</button>
                 </div>
               ) : (
@@ -193,6 +252,7 @@ export default function Contact() {
                       {errors.message && <p className="mt-1 text-xs text-rose-500">{errors.message}</p>}
                     </div>
 
+                    {submissionError && <p className="mt-1 text-xs text-rose-500">{submissionError}</p>}
                     <button type="submit" disabled={loading}
                       className="w-full btn-primary justify-center py-3.5 disabled:opacity-70 disabled:cursor-not-allowed">
                       {loading ? <><Loader size={17} className="animate-spin" /> Sending...</> : <><Send size={17} /> Send Message</>}

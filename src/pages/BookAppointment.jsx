@@ -1,19 +1,10 @@
 import { useState } from 'react'
-import { CalendarDays, CheckCircle, User, Phone, Mail, MapPin, MessageSquare, ChevronDown, Loader } from 'lucide-react'
+import { CalendarDays, CheckCircle, User, Phone, MessageSquare, Loader } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
-
-const departments = [
-  'Select Department',
-  'Cardiology', 'Neurology', 'Orthopedics', 'Gastroenterology',
-  'Dermatology', 'Endocrinology / Diabetes', 'Psychiatry / Mental Health',
-  'Gynecology & Obstetrics', 'Oncology', 'Pediatrics',
-  'Pulmonology', 'Nephrology', 'Ophthalmology', 'ENT',
-  'General Medicine', 'Emergency', 'Other',
-]
+import { API_ENDPOINTS } from '../api/endpoints'
 
 const initialForm = {
-  name: '', mobile: '', email: '', address: '',
-  department: '', date: '', message: '', terms: false,
+  name: '', mobile: '', date: '', message: '',
 }
 
 function FormField({ label, icon: Icon, error, children }) {
@@ -39,18 +30,30 @@ export default function BookAppointment() {
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim() || form.name.trim().length < 2) e.name = 'Please enter your full name (min 2 characters)'
-    if (!/^[6-9]\d{9}$/.test(form.mobile)) e.mobile = 'Please enter a valid 10-digit Indian mobile number'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Please enter a valid email address'
-    if (!form.address.trim()) e.address = 'Address is required'
-    if (!form.department || form.department === 'Select Department') e.department = 'Please select a department'
-    if (!form.date) e.date = 'Please choose a preferred date'
-    else {
+    if (!form.name.trim()) {
+      e.name = 'Please enter your full name'
+    } else if (form.name.trim().length < 2) {
+      e.name = 'Full name must be at least 2 characters'
+    } else if (!/^[A-Za-z ]+$/.test(form.name.trim())) {
+      e.name = 'Name can only contain letters and spaces'
+    }
+
+    if (!/^[6-9]\d{9}$/.test(form.mobile)) {
+      e.mobile = 'Please enter a valid 10-digit Indian mobile number'
+    }
+
+    if (!form.date) {
+      e.date = 'Please choose a preferred date'
+    } else {
       const selected = new Date(form.date)
       const today = new Date(); today.setHours(0, 0, 0, 0)
       if (selected < today) e.date = 'Please select a future date'
     }
-    if (!form.terms) e.terms = 'Please accept the terms to proceed'
+
+    if (form.message && form.message.trim().length > 0 && form.message.trim().length < 10) {
+      e.message = 'Please enter at least 10 characters for your message'
+    }
+
     return e
   }
 
@@ -58,10 +61,35 @@ export default function BookAppointment() {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
+
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1800))
-    setLoading(false)
-    setSubmitted(true)
+    try {
+      const payload = {
+        patientName: form.name.trim(),
+        phone: form.mobile,
+        appointmentDate: new Date(form.date).toISOString(),
+        status: 'Pending',
+        ...(form.message.trim() ? { message: form.message.trim() } : {}),
+      }
+
+      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.CREATE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(errText || 'Failed to submit appointment request')
+      }
+
+      setSubmitted(true)
+    } catch (error) {
+      console.error(error)
+      setErrors({ submit: error.message || 'Unable to create appointment request' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (field, value) => {
@@ -83,7 +111,7 @@ export default function BookAppointment() {
             </div>
             <h2 className="text-3xl font-display font-bold text-neutral-800 mb-4">Appointment Requested!</h2>
             <p className="text-neutral-500 leading-relaxed mb-3">
-              Thank you, <span className="font-semibold text-neutral-700">{form.name}</span>! Your appointment request for <span className="font-semibold text-primary-600">{form.department}</span> has been received.
+              Thank you, <span className="font-semibold text-neutral-700">{form.name}</span>! Your appointment request has been received.
             </p>
             <p className="text-neutral-500 text-sm mb-8">
               Our team will call you on <span className="font-semibold">{form.mobile}</span> within 2 hours to confirm your appointment on <span className="font-semibold">{form.date}</span>.
@@ -92,7 +120,6 @@ export default function BookAppointment() {
               <h4 className="font-semibold text-neutral-700 text-sm mb-3">Appointment Summary</h4>
               {[
                 { label: 'Name', value: form.name },
-                { label: 'Department', value: form.department },
                 { label: 'Preferred Date', value: form.date },
                 { label: 'Contact', value: form.mobile },
               ].map(item => (
@@ -161,41 +188,12 @@ export default function BookAppointment() {
                     </FormField>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-5">
-                    <FormField label="Email Address" icon={Mail} error={errors.email}>
-                      <input
-                        type="email" placeholder="you@example.com"
-                        value={form.email} onChange={e => handleChange('email', e.target.value)}
-                        className={`input-field pl-11 ${errors.email ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-100' : ''}`}
-                        aria-label="Email address" autoComplete="email"
-                      />
-                    </FormField>
-                    <FormField label="Preferred Date" icon={CalendarDays} error={errors.date}>
-                      <input
-                        type="date" min={today}
-                        value={form.date} onChange={e => handleChange('date', e.target.value)}
-                        className={`input-field pl-11 ${errors.date ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-100' : ''}`}
-                        aria-label="Preferred appointment date"
-                      />
-                    </FormField>
-                  </div>
-
-                  <FormField label="Department" icon={ChevronDown} error={errors.department}>
-                    <select
-                      value={form.department} onChange={e => handleChange('department', e.target.value)}
-                      className={`input-field pl-11 appearance-none cursor-pointer ${errors.department ? 'border-rose-400' : ''}`}
-                      aria-label="Select department"
-                    >
-                      {departments.map(d => <option key={d} value={d === 'Select Department' ? '' : d}>{d}</option>)}
-                    </select>
-                  </FormField>
-
-                  <FormField label="Address" icon={MapPin} error={errors.address}>
+                  <FormField label="Preferred Date" icon={CalendarDays} error={errors.date}>
                     <input
-                      type="text" placeholder="Your complete address"
-                      value={form.address} onChange={e => handleChange('address', e.target.value)}
-                      className={`input-field pl-11 ${errors.address ? 'border-rose-400' : ''}`}
-                      aria-label="Address" autoComplete="street-address"
+                      type="date" min={today}
+                      value={form.date} onChange={e => handleChange('date', e.target.value)}
+                      className={`input-field pl-11 ${errors.date ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-100' : ''}`}
+                      aria-label="Preferred appointment date"
                     />
                   </FormField>
 
@@ -208,30 +206,16 @@ export default function BookAppointment() {
                       <textarea
                         rows={4} placeholder="Briefly describe your symptoms or reason for visit..."
                         value={form.message} onChange={e => handleChange('message', e.target.value)}
-                        className="input-field pl-11 resize-none"
+                        className={`input-field pl-11 resize-none ${errors.message ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-100' : ''}`}
                         aria-label="Message or symptoms"
                       />
                     </div>
+                    {errors.message && <p className="mt-1.5 text-sm text-rose-500">• {errors.message}</p>}
                   </div>
 
-                  <div>
-                    <label className="flex items-start gap-3 cursor-pointer group">
-                      <input
-                        type="checkbox" checked={form.terms}
-                        onChange={e => handleChange('terms', e.target.checked)}
-                        className="mt-0.5 w-4 h-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-400"
-                      />
-                      <span className="text-sm text-neutral-600 leading-relaxed">
-                        I agree to the{' '}
-                        <a href="#" className="text-primary-600 hover:underline">Terms & Conditions</a>{' '}
-                        and{' '}
-                        <a href="#" className="text-primary-600 hover:underline">Privacy Policy</a>.
-                        I consent to Medicare Clinic contacting me for appointment-related communications.
-                      </span>
-                    </label>
-                    {errors.terms && <p className="mt-1.5 text-sm text-rose-500">• {errors.terms}</p>}
-                  </div>
-
+                  {errors.submit && (
+                    <p className="text-sm text-rose-500 mb-2">{errors.submit}</p>
+                  )}
                   <button
                     type="submit"
                     disabled={loading}

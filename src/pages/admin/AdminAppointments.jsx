@@ -1,41 +1,83 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Eye, Trash2, X, Filter } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
 
 export default function AdminAppointments() {
-  // Mock data for appointments
-  const initialAppointments = [
-    { id: 1, patientName: 'John Doe', phone: '+1 234 567 8900', date: '2023-11-15', time: '10:00 AM', service: 'General Checkup', status: 'Confirmed', email: 'john@example.com', doctor: 'Dr. Smith', notes: 'First time visit.' },
-    { id: 2, patientName: 'Jane Smith', phone: '+1 987 654 3210', date: '2023-11-15', time: '11:30 AM', service: 'Dental Cleaning', status: 'Pending', email: 'jane.smith@example.com', doctor: 'Dr. Lee', notes: 'Patient requested morning slot.' },
-    { id: 3, patientName: 'Michael Johnson', phone: '+1 555 123 4567', date: '2023-11-16', time: '02:00 PM', service: 'Cardiology Consult', status: 'Confirmed', email: 'mjohnson@example.com', doctor: 'Dr. Adams', notes: 'Follow-up on recent tests.' },
-    { id: 4, patientName: 'Emily Davis', phone: '+1 444 987 6543', date: '2023-11-16', time: '03:15 PM', service: 'Pediatrics', status: 'Cancelled', email: 'emily.d@example.com', doctor: 'Dr. Brown', notes: 'Cancelled due to sickness.' },
-    { id: 5, patientName: 'Robert Wilson', phone: '+1 333 444 5555', date: '2023-11-17', time: '09:00 AM', service: 'Orthopedics', status: 'Pending', email: 'rwilson@example.com', doctor: 'Dr. Taylor', notes: 'Knee pain.' },
-  ];
+  const initialAppointments = [];
 
   const [appointments, setAppointments] = useState(initialAppointments);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.GET_ALL);
+      if (!res.ok) throw new Error('Failed to load appointments');
+
+      const data = await res.json();
+      const appointmentList = Array.isArray(data) ? data : data.content || data.appointments || [];
+      const normalized = appointmentList.map(app => ({
+        ...app,
+        patientName: app.patientName || app.name || app.patient?.name || 'Unknown Patient',
+        phone: app.phone || app.mobile || app.patient?.phone || 'N/A',
+        appointmentDate: app.appointmentDate || app.date || app.datetime || null,
+        status: app.status || app.state || 'Pending',
+        notes: app.message || app.notes || app.description || '',
+      }));
+      setAppointments(normalized);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Unable to load appointments');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
   // Filter logic
-  const filteredAppointments = useMemo(() => {
-    return appointments.filter(app => {
-      const matchesSearch = app.patientName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            app.phone.includes(searchQuery);
-      const matchesStatus = statusFilter ? app.status === statusFilter : true;
-      const matchesDate = dateFilter ? app.date === dateFilter : true;
-      
-      return matchesSearch && matchesStatus && matchesDate;
+  const getAppointmentDateValue = (app) => {
+    if (app.appointmentDate) return app.appointmentDate;
+    if (app.date && app.time) return `${app.date} ${app.time}`;
+    return app.date || app.time || '';
+  };
+
+  const formatAppointmentDate = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return dateStr;
+    return date.toLocaleString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
-  }, [appointments, searchQuery, statusFilter, dateFilter]);
+  };
+
 
   // Handlers
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this appointment?')) {
-      setAppointments(appointments.filter(app => app.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this appointment?')) return;
+
+    try {
+      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.DELETE(id), { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete appointment');
+      setAppointments(prev => prev.filter(app => app.id !== id));
+    } catch (err) {
+      alert(err.message || 'Unable to delete appointment');
     }
   };
 
@@ -44,14 +86,39 @@ export default function AdminAppointments() {
     setIsModalOpen(true);
   };
 
-  const handleStatusChange = (e) => {
+  const handleStatusChange = async (e) => {
     const newStatus = e.target.value;
-    // Update local state for modal
-    setSelectedAppointment({ ...selectedAppointment, status: newStatus });
-    // Update main list
-    setAppointments(appointments.map(app => 
-      app.id === selectedAppointment.id ? { ...app, status: newStatus } : app
+    if (!selectedAppointment) return;
+
+    const appointmentId = selectedAppointment.id;
+    const previousStatus = selectedAppointment.status;
+
+    const updatedAppointment = { ...selectedAppointment, status: newStatus };
+    setSelectedAppointment(updatedAppointment);
+    setAppointments(prev => prev.map(app => 
+      app.id === appointmentId ? { ...app, status: newStatus } : app
     ));
+
+    const payloadBase = selectedAppointment.__raw || selectedAppointment;
+    const payload = { ...payloadBase, status: newStatus };
+
+    try {
+      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.UPDATE(appointmentId), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || 'Failed to update appointment status');
+      }
+    } catch (err) {
+      setSelectedAppointment(prev => ({ ...prev, status: previousStatus }));
+      setAppointments(prev => prev.map(app => 
+        app.id === appointmentId ? { ...app, status: previousStatus } : app
+      ));
+      alert(err.message || 'Unable to update appointment status');
+    }
   };
 
   // Utility to render status badge
@@ -122,24 +189,27 @@ export default function AdminAppointments() {
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">#</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Patient Name</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Phone</th>
-                <th className="py-3 px-6 font-semibold text-sm text-gray-600">Date & Time</th>
-                <th className="py-3 px-6 font-semibold text-sm text-gray-600">Service</th>
+                <th className="py-3 px-6 font-semibold text-sm text-gray-600">Appointment Date</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Status</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map((app, index) => (
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="py-8 text-center text-gray-500">Loading appointments...</td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan="6" className="py-8 text-center text-red-500">{error}</td>
+                </tr>
+              ) : appointments.length > 0 ? (
+                appointments.map((app, index) => (
                   <tr key={app.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-6 text-sm text-gray-500">{index + 1}</td>
                     <td className="py-3 px-6 text-sm text-gray-800 font-medium">{app.patientName}</td>
                     <td className="py-3 px-6 text-sm text-gray-600">{app.phone}</td>
-                    <td className="py-3 px-6 text-sm text-gray-600">
-                      <div>{app.date}</div>
-                      <div className="text-xs text-gray-400">{app.time}</div>
-                    </td>
-                    <td className="py-3 px-6 text-sm text-gray-600">{app.service}</td>
+                    <td className="py-3 px-6 text-sm text-gray-600">{formatAppointmentDate(getAppointmentDateValue(app))}</td>
                     <td className="py-3 px-6 text-sm">
                       {getStatusBadge(app.status)}
                     </td>
@@ -165,7 +235,7 @@ export default function AdminAppointments() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="py-8 text-center text-gray-500 text-sm">
+                  <td colSpan="6" className="py-8 text-center text-gray-500 text-sm">
                     No appointments found matching your criteria.
                   </td>
                 </tr>
@@ -196,25 +266,9 @@ export default function AdminAppointments() {
                   <p className="text-sm font-medium text-gray-500 mb-1">Phone</p>
                   <p className="text-gray-800">{selectedAppointment.phone}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Email</p>
-                  <p className="text-gray-800 break-all">{selectedAppointment.email || 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Doctor</p>
-                  <p className="text-gray-800">{selectedAppointment.doctor}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Date</p>
-                  <p className="text-gray-800">{selectedAppointment.date}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Time</p>
-                  <p className="text-gray-800">{selectedAppointment.time}</p>
-                </div>
                 <div className="col-span-2">
-                  <p className="text-sm font-medium text-gray-500 mb-1">Service</p>
-                  <p className="text-gray-800">{selectedAppointment.service}</p>
+                  <p className="text-sm font-medium text-gray-500 mb-1">Appointment Date</p>
+                  <p className="text-gray-800">{formatAppointmentDate(getAppointmentDateValue(selectedAppointment))}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-sm font-medium text-gray-500 mb-1">Status</p>
