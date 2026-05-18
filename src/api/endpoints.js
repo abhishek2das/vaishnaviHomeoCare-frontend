@@ -59,6 +59,12 @@ export const API_ENDPOINTS = {
     RECENT_APPOINTMENTS: (limit = 5) => `${BASE_URL}/dashboard/recent-appointments?limit=${limit}`,
     RECENT_PATIENTS: (limit = 5) => `${BASE_URL}/dashboard/recent-patients?limit=${limit}`,
   },
+  SERVICES: {
+    GET_ALL: `${BASE_URL}/cms/services`,
+    CREATE: `${BASE_URL}/cms/services`,
+    UPDATE: (id) => `${BASE_URL}/cms/services/${id}`,
+    DELETE: (id) => `${BASE_URL}/cms/services/${id}`,
+  },
   CMS: {
     ABOUT: `${BASE_URL}/cms/about`,
     STATS: {

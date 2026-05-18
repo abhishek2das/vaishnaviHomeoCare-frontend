@@ -33,9 +33,9 @@ export default function AdminCMS() {
   const [loadingAbout, setLoadingAbout] = useState(false);
   const [loadingStats, setLoadingStats] = useState(false);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [loadingServices, setLoadingServices] = useState(false);
   const [cmsError, setCmsError] = useState(null);
   const [showImageUploader, setShowImageUploader] = useState(false);
-  const fileInputRef = useRef(null);
 
   const loadAboutContent = async () => {
     setLoadingAbout(true);
@@ -95,10 +95,31 @@ export default function AdminCMS() {
     }
   };
 
+  const loadServices = async () => {
+    setLoadingServices(true);
+    try {
+      const res = await fetch(API_ENDPOINTS.SERVICES.GET_ALL);
+      if (!res.ok) throw new Error('Unable to fetch services');
+      const data = await res.json();
+      const servicesData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
+      setServices(servicesData.map(item => ({
+        id: item.id,
+        name: item.serviceName,
+        description: item.description,
+        image: item.imageUrl,
+      })));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingServices(false);
+    }
+  };
+
   useEffect(() => {
     loadAboutContent();
     loadStatistics();
     loadDoctors();
+    loadServices();
   }, []);
 
   const handleSaveText = async (section) => {
@@ -154,6 +175,8 @@ export default function AdminCMS() {
       }
 
       if (type === 'service') {
+        const res = await fetch(API_ENDPOINTS.SERVICES.DELETE(id), { method: 'DELETE' });
+        if (!res.ok) throw new Error('Unable to delete service');
         setServices(services.filter(s => s.id !== id));
       }
     } catch (error) {
@@ -181,13 +204,7 @@ export default function AdminCMS() {
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const imageUrl = URL.createObjectURL(file);
-      setFormData(prev => ({ ...prev, image: imageUrl }));
-    }
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -260,12 +277,39 @@ export default function AdminCMS() {
       }
 
       if (modalType === 'service') {
-        const payload = { ...formData };
+        const payload = {
+          serviceName: formData.name,
+          description: formData.description,
+          imageUrl: formData.image,
+        };
+
+        const isEdit = modalMode === 'edit' && formData.id;
+        const url = isEdit
+          ? API_ENDPOINTS.SERVICES.UPDATE(formData.id)
+          : API_ENDPOINTS.SERVICES.CREATE;
+        const method = isEdit ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const errorBody = await res.text();
+          throw new Error(errorBody || 'Unable to save service');
+        }
+        const saved = await res.json();
+        const serviceItem = {
+          id: saved.id ?? formData.id ?? Date.now(),
+          name: saved.serviceName ?? payload.serviceName,
+          description: saved.description ?? payload.description,
+          image: saved.imageUrl ?? payload.imageUrl,
+        };
+
         if (modalMode === 'add') {
-          payload.id = Date.now();
-          setServices([...services, payload]);
+          setServices([...services, serviceItem]);
         } else {
-          setServices(services.map(s => s.id === payload.id ? payload : s));
+          setServices(services.map(s => s.id === serviceItem.id ? serviceItem : s));
         }
       }
 
@@ -520,10 +564,9 @@ export default function AdminCMS() {
                           {formData.image ? <img src={formData.image} alt="Preview" className="w-full h-full object-cover"/> : <ImageIcon className="text-gray-400"/>}
                         </div>
                         <div className="flex-1">
-                          <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-50 flex items-center">
+                          <button type="button" onClick={() => setShowImageUploader(true)} className="text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-50 flex items-center">
                             <Upload size={14} className="mr-2"/> Upload Image
                           </button>
-                          <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
                         </div>
                       </div>
                     </div>
