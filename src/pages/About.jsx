@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Target, Eye, ArrowRight, MapPin, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
-import { API_ENDPOINTS } from '../api/endpoints'
+import { API_ENDPOINTS, getMediaUrl } from '../api/endpoints'
 import { teamMembers } from '../data/mockData'
 
 const networkStats = [
@@ -77,7 +77,7 @@ export default function About() {
           name: item.name ?? 'Doctor',
           specialist: item.specialist ?? item.role ?? '',
           description: item.shortDescription ?? item.description ?? '',
-          image: item.imgUrl ?? item.image ?? '',
+          image: getMediaUrl(item.imgUrl ?? item.image ?? ''),
         }))
 
         if (mappedDoctors.length > 0) setDoctors(mappedDoctors)
@@ -104,8 +104,8 @@ export default function About() {
   return (
     <div>
       <PageHero
-        title="About Medicare Clinic"
-        subtitle="Three decades of holistic healing, natural innovation, and compassionate care — built on a foundation of trust and clinical excellence."
+        title="About Vaishnavi Homeo Care"
+        subtitle="Empowering lives through natural healing and world-class homeopathic expertise since 1985."
         breadcrumbs={[{ label: 'About Us' }]}
       />
 
@@ -152,27 +152,27 @@ export default function About() {
               <p className="text-neutral-500 leading-relaxed">{vision}</p>
             </div>
             <div className="card p-8 border-t-4 border-teal-500 hover:-translate-y-1 transition-all">
-              <div className="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-6">
                 <Target size={28} className="text-teal-600" />
               </div>
               <h3 className="text-2xl font-display font-bold text-neutral-800 mb-4">Our Mission</h3>
               <p className="text-neutral-500 leading-relaxed">{mission}</p>
             </div>
           </div>
-          {/* Values */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { label: 'Patient First', desc: 'Every decision centers on the best outcome for our patients.', color: 'bg-primary-100 text-primary-600' },
-              { label: 'Integrity', desc: 'Transparency and honesty in all clinical and administrative practices.', color: 'bg-teal-100 text-teal-600' },
-              { label: 'Innovation', desc: 'Embracing new technologies and research to advance care.', color: 'bg-amber-100 text-amber-600' },
-              { label: 'Excellence', desc: 'Uncompromising standards in everything we do.', color: 'bg-rose-100 text-rose-600' },
-            ].map(val => (
-              <div key={val.label} className="card p-6 text-center hover:-translate-y-1 transition-all">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 ${val.color}`}>
-                  <CheckCircle size={22} />
+              { title: 'Patient Centricity', desc: 'Putting patients at the heart of everything we do.' },
+              { title: 'Clinical Excellence', desc: 'Delivering the highest standards of homeopathic care.' },
+              { title: 'Integrity & Ethics', desc: 'Maintaining transparency and professional honesty.' },
+            ].map(v => (
+              <div key={v.title} className="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-soft">
+                <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <CheckCircle size={20} />
                 </div>
-                <h4 className="font-display font-semibold text-neutral-800 mb-2">{val.label}</h4>
-                <p className="text-sm text-neutral-500 leading-relaxed">{val.desc}</p>
+                <div>
+                  <div className="font-bold text-neutral-800">{v.title}</div>
+                  <div className="text-xs text-neutral-500">{v.desc}</div>
+                </div>
               </div>
             ))}
           </div>
