@@ -1,13 +1,15 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Target, Eye, ArrowRight, MapPin, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
+import { API_ENDPOINTS } from '../api/endpoints'
 import { teamMembers } from '../data/mockData'
 
 const networkStats = [
-  { value: '3', label: 'Clinic Branches', sub: 'Across Delhi NCR' },
-  { value: '500+', label: 'Holistic Treatments', sub: 'Across all facilities' },
-  { value: '120+', label: 'Homeopathic Practitioners', sub: 'Across 25 specialties' },
-  { value: '1,200+', label: 'Support Staff', sub: 'Caregivers, technicians, admin' },
+  { value: '3', label: 'Clinic Branches',  },
+  { value: '500+', label: 'Holistic Treatments',  },
+  { value: '120+', label: 'Homeopathic Practitioners',  },
+  { value: '1,200+', label: 'Support Staff', },
 ]
 
 const locations = [
@@ -17,6 +19,88 @@ const locations = [
 ]
 
 export default function About() {
+  const [description, setDescription] = useState(
+    'Founded in 1985 by Dr. Ramesh Agarwal, Medicare Clinic began as a small wellness center with a singular mission: to provide affordable, world-class holistic healthcare to every individual, regardless of their background.'
+  )
+  const [vision, setVision] = useState(
+    'To be the most trusted and innovative healthcare institution in India, setting benchmarks in clinical outcomes, patient experience, and medical education that inspire healthcare systems worldwide.'
+  )
+  const [mission, setMission] = useState(
+    'To deliver compassionate, accessible, and evidence-based healthcare that improves lives. We commit to continuous innovation, dignifying every patient interaction, and developing future medical leaders.'
+  )
+  const [stats, setStats] = useState(networkStats)
+  const [doctors, setDoctors] = useState([])
+
+  useEffect(() => {
+    const loadAbout = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.CMS.ABOUT)
+        if (!res.ok) throw new Error('Unable to fetch about content')
+
+        const data = await res.json()
+        if (data.description) setDescription(data.description)
+        if (data.vision) setVision(data.vision)
+        if (data.mission) setMission(data.mission)
+      } catch (error) {
+        console.error('Failed to load about content:', error)
+      }
+    }
+
+    const loadStats = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.CMS.STATS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch statistics')
+
+        const data = await res.json()
+        const statsData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
+        const mappedStats = statsData.map((item, index) => ({
+          id: item.id ?? `${item.label ?? item.key ?? index}`,
+          label: item.label ?? item.key ?? 'Metric',
+          value: item.value ?? '',
+        }))
+
+        if (mappedStats.length > 0) setStats(mappedStats)
+      } catch (error) {
+        console.error('Failed to load stats:', error)
+      }
+    }
+
+    const loadDoctors = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch doctors')
+
+        const data = await res.json()
+        const doctorsData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
+        const mappedDoctors = doctorsData.map((item, index) => ({
+          id: item.id ?? `${item.name ?? item.specialist ?? index}`,
+          name: item.name ?? 'Doctor',
+          specialist: item.specialist ?? item.role ?? '',
+          description: item.shortDescription ?? item.description ?? '',
+          image: item.imgUrl ?? item.image ?? '',
+        }))
+
+        if (mappedDoctors.length > 0) setDoctors(mappedDoctors)
+      } catch (error) {
+        console.error('Failed to load doctors:', error)
+      }
+    }
+
+    loadAbout()
+    loadStats()
+    loadDoctors()
+  }, [])
+
+  const displayDoctors = doctors.length > 0
+    ? doctors
+    : teamMembers.map((member) => ({
+        id: member.id,
+        name: member.name,
+        specialist: member.role,
+        description: member.bio,
+        image: member.image,
+      }))
+
   return (
     <div>
       <PageHero
@@ -32,9 +116,8 @@ export default function About() {
             <div>
               <div className="section-label">Our Story</div>
               <h2 className="section-title mb-5">A Legacy Built on Compassion & Excellence</h2>
-              <p className="text-neutral-500 leading-relaxed mb-5">
-                Founded in 1985 by Dr. Ramesh Agarwal, Medicare Clinic began as a small wellness center with a singular mission: to provide affordable, world-class holistic healthcare to every individual, regardless of their background.
-              </p>
+              {/* Dynamic content */}
+              <p className="text-neutral-500 leading-relaxed mb-5">{description}</p>
               <p className="text-neutral-500 leading-relaxed mb-5">
                 Over 38 years, we have grown into one of India's most respected homeopathic clinic networks, with three branches across Delhi NCR, serving over 50,000 patients annually with the same commitment that drove our founding.
               </p>
@@ -66,18 +149,14 @@ export default function About() {
                 <Eye size={28} className="text-primary-600" />
               </div>
               <h3 className="text-2xl font-display font-bold text-neutral-800 mb-4">Our Vision</h3>
-              <p className="text-neutral-500 leading-relaxed">
-                To be the most trusted and innovative healthcare institution in India, setting benchmarks in clinical outcomes, patient experience, and medical education that inspire healthcare systems worldwide.
-              </p>
+              <p className="text-neutral-500 leading-relaxed">{vision}</p>
             </div>
             <div className="card p-8 border-t-4 border-teal-500 hover:-translate-y-1 transition-all">
               <div className="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
                 <Target size={28} className="text-teal-600" />
               </div>
               <h3 className="text-2xl font-display font-bold text-neutral-800 mb-4">Our Mission</h3>
-              <p className="text-neutral-500 leading-relaxed">
-                To deliver compassionate, accessible, and evidence-based healthcare that improves lives. We commit to continuous innovation, dignifying every patient interaction, and developing future medical leaders.
-              </p>
+              <p className="text-neutral-500 leading-relaxed">{mission}</p>
             </div>
           </div>
           {/* Values */}
@@ -107,11 +186,10 @@ export default function About() {
             <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">Our Network at a Glance</h2>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {networkStats.map(stat => (
-              <div key={stat.label} className="text-center">
+            {stats.map((stat) => (
+              <div key={stat.id} className="text-center">
                 <div className="text-4xl font-display font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-primary-100 font-semibold mb-1">{stat.label}</div>
-                <div className="text-primary-300 text-sm">{stat.sub}</div>
               </div>
             ))}
           </div>
@@ -137,19 +215,22 @@ export default function About() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <div className="section-label justify-center">Leadership</div>
-            <h2 className="section-title">Our Leadership Team</h2>
+            <div className="section-label justify-center">Doctors</div>
+            <h2 className="section-title">Our Medical Team</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map(member => (
-              <div key={member.id} className="text-center group">
+            {displayDoctors.map((doctor) => (
+              <div key={doctor.id} className="text-center group">
                 <div className="relative inline-block mb-4">
-                  <img src={member.image} alt={member.name}
-                    className="w-32 h-32 rounded-2xl object-cover mx-auto shadow-soft group-hover:shadow-medium transition-all" />
+                  <img
+                    src={doctor.image || 'https://images.unsplash.com/photo-1580281657521-8b7aa7c5d4f9?q=80&w=400&auto=format&fit=crop'}
+                    alt={doctor.name}
+                    className="w-32 h-32 rounded-2xl object-cover mx-auto shadow-soft group-hover:shadow-medium transition-all"
+                  />
                 </div>
-                <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{member.name}</h3>
-                <p className="text-sm text-teal-600 font-medium mb-1">{member.role}</p>
-                <p className="text-xs text-neutral-400">{member.bio}</p>
+                <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{doctor.name}</h3>
+                <p className="text-sm text-teal-600 font-medium mb-1">{doctor.specialist}</p>
+                <p className="text-xs text-neutral-400">{doctor.description}</p>
               </div>
             ))}
           </div>

@@ -4,25 +4,43 @@ import PageHero from '../components/common/PageHero'
 import StarRating from '../components/common/StarRating'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
 import { testimonials } from '../data/mockData'
+import { API_ENDPOINTS } from '../api/endpoints'
 
 const PER_PAGE = 6
 
 export default function Testimonials() {
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState([])
+  const [data, setData] = useState(testimonials)
   const [page, setPage] = useState(1)
-  const [filter, setFilter] = useState('All')
-
-  const treatments = ['All', ...new Set(testimonials.map(t => t.treatment))]
 
   useEffect(() => {
-    const t = setTimeout(() => { setData(testimonials); setLoading(false) }, 900)
-    return () => clearTimeout(t)
+    const loadTestimonials = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.TESTIMONIALS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch testimonials')
+
+        const testimonialsData = await res.json()
+        const parsed = Array.isArray(testimonialsData)
+          ? testimonialsData
+          : Array.isArray(testimonialsData.content)
+            ? testimonialsData.content
+            : []
+
+        if (parsed.length > 0) {
+          setData(parsed)
+        }
+      } catch (error) {
+        console.error('Failed to load testimonials:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTestimonials()
   }, [])
 
-  const filtered = data.filter(t => filter === 'All' || t.treatment === filter)
-  const totalPages = Math.ceil(filtered.length / PER_PAGE)
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+  const totalPages = Math.ceil(data.length / PER_PAGE)
+  const paginated = data.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   return (
     <div>
@@ -50,21 +68,6 @@ export default function Testimonials() {
 
       <section className="py-16 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Filter */}
-          <div className="flex flex-wrap gap-2 mb-10 justify-center">
-            {treatments.map(t => (
-              <button
-                key={t}
-                onClick={() => { setFilter(t); setPage(1) }}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  filter === t ? 'bg-primary-600 text-white shadow-soft' : 'bg-white text-neutral-600 hover:bg-primary-50 hover:text-primary-600 border border-neutral-200'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}

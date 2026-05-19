@@ -1,22 +1,38 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
-import { services } from '../data/mockData'
-
-const iconComponents = {
-  Heart: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>,
-  Sparkles: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>,
-  Activity: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
-  Bone: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>,
-  Brain: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>,
-  Zap: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
-  Droplets: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1M5.636 5.636l.707.707M17.657 17.657l.707.707M3 12h1m16 0h1M5.636 18.364l.707-.707M17.657 6.343l.707-.707" /></svg>,
-  Ribbon: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>,
-  Wind: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>,
-  Plus: () => <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>,
-}
+import { API_ENDPOINTS } from '../api/endpoints'
+import { services as fallbackServices } from '../data/mockData'
 
 export default function Services() {
+  const [serviceList, setServiceList] = useState(fallbackServices)
+
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.SERVICES.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch services')
+
+        const data = await res.json()
+        const servicesData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
+
+        if (servicesData.length > 0) {
+          setServiceList(servicesData.map((item) => ({
+            id: item.id,
+            title: item.serviceName ?? item.title,
+            description: item.description,
+            image: item.imageUrl,
+          })))
+        }
+      } catch (error) {
+        console.error('Failed to load services:', error)
+      }
+    }
+
+    loadServices()
+  }, [])
+
   return (
     <div>
       <PageHero
@@ -35,27 +51,27 @@ export default function Services() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-            {services.map((service) => {
-              const IconComp = iconComponents[service.icon]
-              const isBlue = service.color === 'blue'
-              return (
-                <div key={service.id} className="card p-7 group hover:-translate-y-1 transition-all duration-300">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-colors
-                    ${isBlue ? 'bg-primary-100 text-primary-600 group-hover:bg-primary-600 group-hover:text-white' : 'bg-teal-100 text-teal-600 group-hover:bg-teal-600 group-hover:text-white'}`}>
-                    {IconComp && <IconComp />}
-                  </div>
+            {serviceList.map((service) => (
+              <div key={service.id} className="card overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div className="h-52 overflow-hidden">
+                  <img
+                    src={service.image || 'https://images.unsplash.com/photo-1517638851339-4aab2aaaa97b?q=80&w=900&auto=format&fit=crop'}
+                    alt={service.title}
+                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-7">
                   <h3 className="text-xl font-display font-bold text-neutral-800 mb-3 group-hover:text-primary-600 transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-neutral-500 leading-relaxed mb-5 text-sm">{service.description}</p>
                   <Link to="/appointment"
-                    className={`inline-flex items-center gap-2 text-sm font-semibold transition-all group-hover:gap-3
-                      ${isBlue ? 'text-primary-600 hover:text-primary-700' : 'text-teal-600 hover:text-teal-700'}`}>
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-all group-hover:gap-3">
                     Book Consultation <ArrowRight size={14} />
                   </Link>
                 </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </section>

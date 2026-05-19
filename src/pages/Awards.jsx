@@ -3,6 +3,7 @@ import { Trophy, Award, Shield, Heart, Star, Leaf } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
 import { awards } from '../data/mockData'
+import { API_ENDPOINTS } from '../api/endpoints'
 
 const iconMap = { Trophy, Award, Shield, Heart, Star, Leaf }
 
@@ -15,15 +16,38 @@ const accreditations = [
 
 export default function Awards() {
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState([])
+  const [data, setData] = useState(awards)
 
   useEffect(() => {
-    // Simulate API fetch
-    const timer = setTimeout(() => {
-      setData(awards)
-      setLoading(false)
-    }, 1000)
-    return () => clearTimeout(timer)
+    const loadAwards = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.AWARDS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch awards')
+
+        const awardsData = await res.json()
+        const parsedAwards = Array.isArray(awardsData)
+          ? awardsData
+          : Array.isArray(awardsData.content)
+            ? awardsData.content
+            : []
+
+        if (parsedAwards.length > 0) {
+          setData(parsedAwards.map((item) => ({
+            id: item.id,
+            title: item.name,
+            year: item.year,
+            description: item.description,
+          })))
+        }
+      } catch (error) {
+        console.error('Failed to load awards:', error)
+        setData(awards)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadAwards()
   }, [])
 
   return (
@@ -85,7 +109,6 @@ export default function Awards() {
                         <h3 className="font-display font-bold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors leading-tight">
                           {award.title}
                         </h3>
-                        <p className="text-xs text-teal-600 font-semibold mb-2">{award.organization}</p>
                         <p className="text-sm text-neutral-500 leading-relaxed">{award.description}</p>
                       </div>
                     </div>
