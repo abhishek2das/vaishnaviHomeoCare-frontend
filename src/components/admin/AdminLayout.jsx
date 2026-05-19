@@ -75,13 +75,6 @@ export default function AdminLayout() {
     { name: 'Settings', path: '/admin/settings', icon: Settings },
   ];
 
-  const getPageTitle = () => {
-    if (location.pathname.startsWith('/admin/cms/about')) return 'CMS - About Us';
-    if (location.pathname.startsWith('/admin/cms/services')) return 'CMS - Services';
-    const currentItem = navItems.find(item => item.path === location.pathname || (item.path && item.path !== '/admin' && location.pathname.startsWith(item.path)));
-    return currentItem ? currentItem.name : 'Admin Panel';
-  };
-
   return (
     <div className="min-h-screen flex bg-gray-50 overflow-hidden">
       
@@ -122,7 +115,10 @@ export default function AdminLayout() {
                         <span className="truncate">{item.name}</span>
                       </div>
                       <span className="text-xs transition-transform duration-200" style={{ transform: isCmsOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                        ▼
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m17 10l-5 5l-5-5" />
+                        </svg>
                       </span>
                     </button>
                     {isCmsOpen && (
@@ -187,11 +183,10 @@ export default function AdminLayout() {
                 <Menu size={24} />
               </button>
             )}
-            <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">{getPageTitle()}</h1>
+            <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">Admin Panel</h1>
           </div>
            
 
-          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-medium text-gray-700">Admin User</p>
@@ -201,11 +196,7 @@ export default function AdminLayout() {
                 <User size={20} />
               </div>
             </div>
-            <div className="h-8 w-px bg-gray-200 hidden sm:block mx-2"></div>
-            <button className="text-gray-500 hover:text-red-600 transition-colors p-2 hidden sm:block" title="Logout">
-              <LogOut size={20} />
-            </button>
-          </div>
+         
         </header>
 
         {/* Main Outlet */}

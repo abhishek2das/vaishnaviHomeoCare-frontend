@@ -252,8 +252,14 @@ export default function AdminCMS() {
           shortDescription: formData.description,
           imgUrl: formData.image,
         };
-        const res = await fetchWithAuth(API_ENDPOINTS.CMS.DOCTORS.POST, {
-          method: 'POST',
+        const isEdit = modalMode === 'edit' && formData.id;
+        const url = isEdit
+          ? API_ENDPOINTS.CMS.DOCTORS.UPDATE(formData.id)
+          : API_ENDPOINTS.CMS.DOCTORS.POST;
+        const method = isEdit ? 'PUT' : 'POST';
+
+        const res = await fetchWithAuth(url, {
+          method,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
@@ -263,7 +269,7 @@ export default function AdminCMS() {
         }
         const saved = await res.json();
         const doctorItem = {
-          id: saved.id ?? payload.id,
+          id: saved.id ?? formData.id ?? Date.now(),
           name: saved.name ?? payload.name,
           specialist: saved.specialist ?? payload.specialist,
           description: saved.shortDescription ?? payload.shortDescription,

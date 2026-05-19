@@ -218,9 +218,9 @@ export default function About() {
             <div className="section-label justify-center">Doctors</div>
             <h2 className="section-title">Our Medical Team</h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {displayDoctors.map((doctor) => (
-              <div key={doctor.id} className="text-center group">
+              <div key={doctor.id} className="w-full max-w-[320px] sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] text-center group">
                 <div className="relative inline-block mb-4">
                   <img
                     src={doctor.image || 'https://images.unsplash.com/photo-1580281657521-8b7aa7c5d4f9?q=80&w=400&auto=format&fit=crop'}

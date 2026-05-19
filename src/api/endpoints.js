@@ -79,6 +79,7 @@ export const API_ENDPOINTS = {
     DOCTORS: {
       GET_ALL: `${BASE_URL}/cms/doctors`,
       POST: `${BASE_URL}/cms/doctors`,
+      UPDATE: (id) => `${BASE_URL}/cms/doctors/${id}`,
       DELETE: (id) => `${BASE_URL}/cms/doctors?id=${id}`,
     },
   },

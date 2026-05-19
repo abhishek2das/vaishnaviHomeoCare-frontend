@@ -99,7 +99,6 @@ export default function Header() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Link to="/enquiry" className="text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors">Enquiry</Link>
             <Link to="/appointment" className="btn-primary text-sm py-2.5 px-5">Book Appointment</Link>
           </div>
 

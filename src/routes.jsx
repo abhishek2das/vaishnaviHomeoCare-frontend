@@ -20,7 +20,6 @@ import PressRelease from './pages/PressRelease';
 import PhotoGallery from './pages/PhotoGallery';
 import VideoGallery from './pages/VideoGallery';
 import BookAppointment from './pages/BookAppointment';
-import Enquiry from './pages/Enquiry';
 import Contact from './pages/Contact';
 
 // Admin Layout & Pages
@@ -87,7 +86,6 @@ const router = createBrowserRouter([
       { path: '/gallery', element: <PhotoGallery /> },
       { path: '/videos', element: <VideoGallery /> },
       { path: '/appointment', element: <BookAppointment /> },
-      { path: '/enquiry', element: <Enquiry /> },
       { path: '/contact', element: <Contact /> },
     ],
   },
