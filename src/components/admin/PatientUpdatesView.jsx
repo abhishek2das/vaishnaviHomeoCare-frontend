@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Eye, Trash2, X, Edit } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function PatientUpdatesView({ patient, onBack }) {
   const [updates, setUpdates] = useState([]);
@@ -25,7 +26,7 @@ export default function PatientUpdatesView({ patient, onBack }) {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.GET_ALL(patient.id));
+      const res = await fetchWithAuth(API_ENDPOINTS.PATIENT_HISTORY.GET_ALL(patient.id));
       if (!res.ok) throw new Error('Failed to fetch patient history');
       const data = await res.json();
       setUpdates(normalizeResponse(data));
@@ -74,7 +75,7 @@ export default function PatientUpdatesView({ patient, onBack }) {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this update?')) return;
     try {
-      const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.DELETE(id), { method: 'DELETE' });
+      const res = await fetchWithAuth(API_ENDPOINTS.PATIENT_HISTORY.DELETE(id), { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete history item');
       setUpdates(prev => prev.filter(u => u.id !== id));
     } catch (err) {
@@ -97,7 +98,7 @@ export default function PatientUpdatesView({ patient, onBack }) {
 
     try {
       if (modalMode === 'add') {
-        const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.CREATE(patient.id), {
+        const res = await fetchWithAuth(API_ENDPOINTS.PATIENT_HISTORY.CREATE(patient.id), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
@@ -106,7 +107,7 @@ export default function PatientUpdatesView({ patient, onBack }) {
         const saved = await res.json();
         setUpdates(prev => [saved, ...prev]);
       } else if (modalMode === 'edit' && selectedUpdate) {
-        const res = await fetch(API_ENDPOINTS.PATIENT_HISTORY.UPDATE(selectedUpdate.id), {
+        const res = await fetchWithAuth(API_ENDPOINTS.PATIENT_HISTORY.UPDATE(selectedUpdate.id), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)

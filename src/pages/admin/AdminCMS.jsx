@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Edit, Trash2, X, Plus, Upload, ImageIcon, Save, CheckCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 import ImageUploader from '../../components/common/ImageUploader';
 
 export default function AdminCMS() {
@@ -42,7 +43,7 @@ export default function AdminCMS() {
     setCmsError(null);
 
     try {
-      const res = await fetch(API_ENDPOINTS.CMS.ABOUT);
+      const res = await fetchWithAuth(API_ENDPOINTS.CMS.ABOUT);
       if (!res.ok) throw new Error('Unable to fetch about content');
 
       const data = await res.json();
@@ -62,7 +63,7 @@ export default function AdminCMS() {
   const loadStatistics = async () => {
     setLoadingStats(true);
     try {
-      const res = await fetch(API_ENDPOINTS.CMS.STATS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.CMS.STATS.GET_ALL);
       if (!res.ok) throw new Error('Unable to fetch statistics');
       const data = await res.json();
       const stats = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
@@ -77,7 +78,7 @@ export default function AdminCMS() {
   const loadDoctors = async () => {
     setLoadingDoctors(true);
     try {
-      const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.CMS.DOCTORS.GET_ALL);
       if (!res.ok) throw new Error('Unable to fetch doctors');
       const data = await res.json();
       const doctorsData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
@@ -98,7 +99,7 @@ export default function AdminCMS() {
   const loadServices = async () => {
     setLoadingServices(true);
     try {
-      const res = await fetch(API_ENDPOINTS.SERVICES.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.SERVICES.GET_ALL);
       if (!res.ok) throw new Error('Unable to fetch services');
       const data = await res.json();
       const servicesData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
@@ -131,7 +132,7 @@ export default function AdminCMS() {
     };
 
     try {
-      const res = await fetch(API_ENDPOINTS.CMS.ABOUT, {
+      const res = await fetchWithAuth(API_ENDPOINTS.CMS.ABOUT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -163,19 +164,19 @@ export default function AdminCMS() {
 
     try {
       if (type === 'stat') {
-        const res = await fetch(API_ENDPOINTS.CMS.STATS.DELETE(id), { method: 'DELETE' });
+        const res = await fetchWithAuth(API_ENDPOINTS.CMS.STATS.DELETE(id), { method: 'DELETE' });
         if (!res.ok) throw new Error('Unable to delete statistic');
         setStatistics(statistics.filter(s => s.id !== id));
       }
 
       if (type === 'doctor') {
-        const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.DELETE(id), { method: 'DELETE' });
+        const res = await fetchWithAuth(API_ENDPOINTS.CMS.DOCTORS.DELETE(id), { method: 'DELETE' });
         if (!res.ok) throw new Error('Unable to delete doctor');
         setDoctors(doctors.filter(d => d.id !== id));
       }
 
       if (type === 'service') {
-        const res = await fetch(API_ENDPOINTS.SERVICES.DELETE(id), { method: 'DELETE' });
+        const res = await fetchWithAuth(API_ENDPOINTS.SERVICES.DELETE(id), { method: 'DELETE' });
         if (!res.ok) throw new Error('Unable to delete service');
         setServices(services.filter(s => s.id !== id));
       }
@@ -221,7 +222,7 @@ export default function AdminCMS() {
           : API_ENDPOINTS.CMS.STATS.POST;
         const method = isEdit ? 'PUT' : 'POST';
 
-        const res = await fetch(url, {
+        const res = await fetchWithAuth(url, {
           method,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -251,7 +252,7 @@ export default function AdminCMS() {
           shortDescription: formData.description,
           imgUrl: formData.image,
         };
-        const res = await fetch(API_ENDPOINTS.CMS.DOCTORS.POST, {
+        const res = await fetchWithAuth(API_ENDPOINTS.CMS.DOCTORS.POST, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -289,7 +290,7 @@ export default function AdminCMS() {
           : API_ENDPOINTS.SERVICES.CREATE;
         const method = isEdit ? 'PUT' : 'POST';
 
-        const res = await fetch(url, {
+        const res = await fetchWithAuth(url, {
           method,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),

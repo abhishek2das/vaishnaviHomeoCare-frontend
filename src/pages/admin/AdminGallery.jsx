@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Trash2, X, Upload, Image as ImageIcon, Video, Filter } from 'lucide-react';
 import ImageUploader from '../../components/common/ImageUploader';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminGallery() {
   const [mediaItems, setMediaItems] = useState([]);
@@ -36,7 +37,7 @@ export default function AdminGallery() {
     try {
       let url = `${API_ENDPOINTS.GALLERY.GET_ALL}?page=0&limit=200`;
       if (type) url += `&type=${type}`;
-      const res = await fetch(url);
+      const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to load gallery');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
@@ -63,7 +64,7 @@ export default function AdminGallery() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this media file?')) return;
     try {
-      const res = await fetch(API_ENDPOINTS.GALLERY.DELETE(id), { method: 'DELETE' });
+      const res = await fetchWithAuth(API_ENDPOINTS.GALLERY.DELETE(id), { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete media');
       // Refresh gallery after successful delete
       await fetchGallery(mapFilterToApiType(filter));

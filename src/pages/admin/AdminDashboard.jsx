@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Calendar, FileText, Image, Plus, Upload } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
-  const [recentAppointments, setRecentAppointments] = useState([]);
   const [recentPatients, setRecentPatients] = useState([]);
+  const [recentAppointments, setRecentAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,9 +23,9 @@ export default function AdminDashboard() {
       setError(null);
 
       const [statsRes, patientsRes, appointmentsRes] = await Promise.all([
-        fetch(API_ENDPOINTS.DASHBOARD.STATS),
-        fetch(API_ENDPOINTS.DASHBOARD.RECENT_PATIENTS(5)),
-        fetch(API_ENDPOINTS.DASHBOARD.RECENT_APPOINTMENTS(5)),
+        fetchWithAuth(API_ENDPOINTS.DASHBOARD.STATS),
+        fetchWithAuth(API_ENDPOINTS.DASHBOARD.RECENT_PATIENTS(5)),
+        fetchWithAuth(API_ENDPOINTS.DASHBOARD.RECENT_APPOINTMENTS(5)),
       ]);
 
       if (!statsRes.ok) throw new Error('Failed to load dashboard stats');

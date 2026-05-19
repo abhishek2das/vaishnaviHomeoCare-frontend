@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Eye, Edit, Trash2, X, Filter, Plus, History, Loader2 } from 'lucide-react';
 import PatientUpdatesView from '../../components/admin/PatientUpdatesView';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminPatients() {
   const [patients, setPatients] = useState([]);
@@ -45,7 +46,7 @@ export default function AdminPatients() {
   const fetchPatients = async () => {
     try {
       setLoading(true);
-      const res = await fetch(API_ENDPOINTS.PATIENTS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.PATIENTS.GET_ALL);
       if (!res.ok) throw new Error('Failed to fetch patients');
       const data = await res.json();
       const formattedPatients = (data.content || []).map(p => ({
@@ -69,7 +70,7 @@ export default function AdminPatients() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this patient record?')) {
       try {
-        const res = await fetch(API_ENDPOINTS.PATIENTS.DELETE(id), { method: 'DELETE' });
+        const res = await fetchWithAuth(API_ENDPOINTS.PATIENTS.DELETE(id), { method: 'DELETE' });
         if (!res.ok) throw new Error('Failed to delete patient');
         setPatients(patients.filter(p => p.id !== id));
       } catch (err) {
@@ -115,7 +116,7 @@ export default function AdminPatients() {
 
     try {
       if (modalMode === 'add') {
-        const res = await fetch(API_ENDPOINTS.PATIENTS.CREATE, {
+        const res = await fetchWithAuth(API_ENDPOINTS.PATIENTS.CREATE, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -124,7 +125,7 @@ export default function AdminPatients() {
         fetchPatients();
       } else if (modalMode === 'edit') {
         payload.id = formData.id;
-        const res = await fetch(API_ENDPOINTS.PATIENTS.UPDATE(formData.id), {
+        const res = await fetchWithAuth(API_ENDPOINTS.PATIENTS.UPDATE(formData.id), {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Eye, Trash2, X, Filter } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminAppointments() {
   const initialAppointments = [];
@@ -21,7 +22,7 @@ export default function AdminAppointments() {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.APPOINTMENTS.GET_ALL);
       if (!res.ok) throw new Error('Failed to load appointments');
 
       const data = await res.json();
@@ -73,7 +74,7 @@ export default function AdminAppointments() {
     if (!window.confirm('Are you sure you want to delete this appointment?')) return;
 
     try {
-      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.DELETE(id), { method: 'DELETE' });
+      const res = await fetchWithAuth(API_ENDPOINTS.APPOINTMENTS.DELETE(id), { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete appointment');
       setAppointments(prev => prev.filter(app => app.id !== id));
     } catch (err) {
@@ -103,7 +104,7 @@ export default function AdminAppointments() {
     const payload = { ...payloadBase, status: newStatus };
 
     try {
-      const res = await fetch(API_ENDPOINTS.APPOINTMENTS.UPDATE(appointmentId), {
+      const res = await fetchWithAuth(API_ENDPOINTS.APPOINTMENTS.UPDATE(appointmentId), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

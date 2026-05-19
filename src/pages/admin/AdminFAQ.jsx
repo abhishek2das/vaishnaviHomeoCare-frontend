@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, X, Plus, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminFAQ() {
 
@@ -20,7 +21,7 @@ export default function AdminFAQ() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(API_ENDPOINTS.FAQS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.FAQS.GET_ALL);
       if (!res.ok) throw new Error('Failed to load FAQs');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
@@ -45,7 +46,7 @@ export default function AdminFAQ() {
     };
 
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         modalMode === 'add'
           ? API_ENDPOINTS.FAQS.CREATE
           : API_ENDPOINTS.FAQS.UPDATE(formData.id),
@@ -70,7 +71,7 @@ export default function AdminFAQ() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this FAQ?')) return;
     try {
-      const res = await fetch(API_ENDPOINTS.FAQS.DELETE(id), {
+      const res = await fetchWithAuth(API_ENDPOINTS.FAQS.DELETE(id), {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('Failed to delete FAQ');

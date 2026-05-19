@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, X, Plus, Trophy } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminAwards() {
 
@@ -19,7 +20,7 @@ export default function AdminAwards() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(API_ENDPOINTS.AWARDS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.AWARDS.GET_ALL);
       if (!res.ok) throw new Error('Failed to load awards');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
@@ -45,7 +46,7 @@ export default function AdminAwards() {
       };
   
       try {
-        const res = await fetch(
+        const res = await fetchWithAuth(
           modalMode === 'add'
             ? API_ENDPOINTS.AWARDS.CREATE
             : API_ENDPOINTS.AWARDS.UPDATE(formData.id),
@@ -70,7 +71,7 @@ export default function AdminAwards() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this award?')) return;
     try {
-      const res = await fetch(API_ENDPOINTS.AWARDS.DELETE(id), {
+      const res = await fetchWithAuth(API_ENDPOINTS.AWARDS.DELETE(id), {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('Failed to delete award');

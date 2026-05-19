@@ -4,6 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import { Search, Eye, Edit, Trash2, X, Plus, Upload, ImageIcon, Loader2 } from 'lucide-react';
 import ImageUploader from '../../components/common/ImageUploader';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminPressReleases() {
   const [pressReleases, setPressReleases] = useState([]);
@@ -53,7 +54,7 @@ export default function AdminPressReleases() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.PRESS_RELEASES.GET_ALL);
       if (!res.ok) throw new Error('Failed to load press releases');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
@@ -82,7 +83,7 @@ export default function AdminPressReleases() {
     if (!window.confirm('Are you sure you want to delete this press release?')) return;
 
     try {
-      const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.DELETE(id), {
+      const res = await fetchWithAuth(API_ENDPOINTS.PRESS_RELEASES.DELETE(id), {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('Failed to delete press release');
@@ -143,7 +144,7 @@ export default function AdminPressReleases() {
     };
 
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         modalMode === 'add'
           ? API_ENDPOINTS.PRESS_RELEASES.CREATE
           : API_ENDPOINTS.PRESS_RELEASES.UPDATE(formData.id),

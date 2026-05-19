@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, X, Plus, Star, Loader2 } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminTestimonials() {
   const [testimonials, setTestimonials] = useState([]);
@@ -22,7 +23,7 @@ export default function AdminTestimonials() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(API_ENDPOINTS.TESTIMONIALS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.TESTIMONIALS.GET_ALL);
       if (!res.ok) throw new Error('Failed to load testimonials');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
@@ -43,7 +44,7 @@ export default function AdminTestimonials() {
     if (!window.confirm('Are you sure you want to delete this testimonial?')) return;
 
     try {
-      const res = await fetch(API_ENDPOINTS.TESTIMONIALS.DELETE(id), {
+      const res = await fetchWithAuth(API_ENDPOINTS.TESTIMONIALS.DELETE(id), {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('Failed to delete testimonial');
@@ -94,7 +95,7 @@ export default function AdminTestimonials() {
     };
 
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         modalMode === 'add'
           ? API_ENDPOINTS.TESTIMONIALS.CREATE
           : API_ENDPOINTS.TESTIMONIALS.UPDATE(formData.id),

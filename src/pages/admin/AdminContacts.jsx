@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Eye, Trash2, X, Filter, Mail } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminContacts() {
   const [contacts, setContacts] = useState([]);
@@ -19,7 +20,7 @@ export default function AdminContacts() {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(API_ENDPOINTS.CONTACTS.GET_ALL);
+      const res = await fetchWithAuth(API_ENDPOINTS.CONTACTS.GET_ALL);
       if (!res.ok) throw new Error('Failed to load contact inquiries.');
 
       const data = await res.json();
@@ -66,7 +67,7 @@ export default function AdminContacts() {
     }
 
     try {
-      const res = await fetch(API_ENDPOINTS.CONTACTS.DELETE(id), { method: 'DELETE' });
+      const res = await fetchWithAuth(API_ENDPOINTS.CONTACTS.DELETE(id), { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete contact inquiry.');
       setContacts(prevContacts => prevContacts.filter(c => c.id !== id));
     } catch (err) {

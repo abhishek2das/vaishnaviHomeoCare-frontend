@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { X, Upload, ImageIcon } from 'lucide-react';
 import { API_ENDPOINTS, BASE_URL } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 
 export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
   const [activeTab, setActiveTab] = useState('upload');
@@ -23,7 +24,7 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(`${API_ENDPOINTS.GALLERY.GET_ALL}?page=0&limit=50`);
+      const res = await fetchWithAuth(`${API_ENDPOINTS.GALLERY.GET_ALL}?page=0&limit=50`);
       if (!res.ok) throw new Error('Failed to fetch gallery images');
       const data = await res.json();
       setGallery(Array.isArray(data.content) ? data.content : []);
@@ -87,7 +88,7 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
 
     try {
       setUploading(true);
-      const res = await fetch(API_ENDPOINTS.GALLERY.CREATE, {
+      const res = await fetchWithAuth(API_ENDPOINTS.GALLERY.CREATE, {
         method: 'POST',
         body: formData
       });

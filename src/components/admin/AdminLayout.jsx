@@ -35,8 +35,17 @@ export default function AdminLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem('adminAuthenticated');
+    localStorage.removeItem('adminToken');
     navigate('/admin/login');
   };
+
+  // Check authentication on mount
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [navigate]);
 
   // Open CMS dropdown if we are on a CMS route
   useEffect(() => {
