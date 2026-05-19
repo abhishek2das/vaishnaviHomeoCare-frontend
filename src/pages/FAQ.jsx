@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Search, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonText } from '../components/common/LoadingSkeleton'
-import { faqs } from '../data/mockData'
+import { faqs as fallbackFaqs } from '../data/mockData'
+import { API_ENDPOINTS } from '../api/endpoints'
 
 function AccordionItem({ question, answer, isOpen, onToggle }) {
   return (
@@ -29,29 +30,75 @@ function AccordionItem({ question, answer, isOpen, onToggle }) {
   )
 }
 
+const normalizeFaqItem = (item, category = '') => {
+  if (!item) return null
+  if ('question' in item && 'answer' in item) {
+    return {
+      id: item.id ?? `${category}-${item.question}`,
+      question: item.question,
+      answer: item.answer,
+      category: item.category ?? category
+    }
+  }
+  if ('q' in item && 'a' in item) {
+    return {
+      id: item.id ?? `${category}-${item.q}`,
+      question: item.q,
+      answer: item.a,
+      category: item.category ?? category
+    }
+  }
+  return null
+}
+
+const flattenFallbackFaqs = (source) => {
+  if (!Array.isArray(source)) return []
+  return source.flatMap(group => {
+    if (!Array.isArray(group.questions)) return []
+    return group.questions
+      .map(item => normalizeFaqItem(item, group.category))
+      .filter(Boolean)
+  })
+}
+
 export default function FAQ() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [search, setSearch] = useState('')
-  const [activeCategory, setActiveCategory] = useState('All')
   const [openItems, setOpenItems] = useState({})
 
   useEffect(() => {
-    const t = setTimeout(() => { setData(faqs); setLoading(false) }, 800)
-    return () => clearTimeout(t)
+    let mounted = true
+
+    const loadFaqs = async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(API_ENDPOINTS.FAQS.GET_ALL)
+        if (!res.ok) throw new Error('Failed to fetch FAQs')
+        const json = await res.json()
+        const items = Array.isArray(json)
+          ? json.map(item => normalizeFaqItem(item)).filter(Boolean)
+          : Array.isArray(json.content)
+            ? json.content.map(item => normalizeFaqItem(item)).filter(Boolean)
+            : []
+        if (mounted) setData(items)
+      } catch (err) {
+        console.error('FAQ load error:', err)
+        if (mounted) setData(flattenFallbackFaqs(fallbackFaqs))
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    loadFaqs()
+    return () => { mounted = false }
   }, [])
 
-  const categories = ['All', ...data.map(c => c.category)]
-
-  const filtered = data
-    .filter(cat => activeCategory === 'All' || cat.category === activeCategory)
-    .map(cat => ({
-      ...cat,
-      questions: cat.questions.filter(q =>
-        !search || q.q.toLowerCase().includes(search.toLowerCase()) || q.a.toLowerCase().includes(search.toLowerCase())
-      )
-    }))
-    .filter(cat => cat.questions.length > 0)
+  const filteredFaqs = data.filter(faq => {
+    if (!search) return true
+    const query = search.toLowerCase()
+    return faq.question.toLowerCase().includes(query) || faq.answer.toLowerCase().includes(query)
+  })
 
   const toggle = key => setOpenItems(prev => ({ ...prev, [key]: !prev[key] }))
 
@@ -65,7 +112,6 @@ export default function FAQ() {
 
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Search */}
           <div className="relative mb-8">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
             <input
@@ -78,25 +124,6 @@ export default function FAQ() {
             />
           </div>
 
-          {/* Category Filter */}
-          {!loading && (
-            <div className="flex flex-wrap gap-2 mb-10">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                    activeCategory === cat
-                      ? 'bg-primary-600 text-white shadow-soft'
-                      : 'bg-neutral-100 text-neutral-600 hover:bg-primary-50 hover:text-primary-600'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          )}
-
           {loading ? (
             <div className="space-y-4">
               {[...Array(6)].map((_, i) => (
@@ -105,42 +132,26 @@ export default function FAQ() {
                 </div>
               ))}
             </div>
-          ) : filtered.length === 0 ? (
+          ) : filteredFaqs.length === 0 ? (
             <div className="text-center py-16">
               <HelpCircle size={40} className="mx-auto text-neutral-300 mb-4" />
-              <h3 className="font-display font-semibold text-neutral-600 mb-2">No results found</h3>
-              <p className="text-neutral-400 text-sm">Try a different search term or category.</p>
+              <h3 className="font-display font-semibold text-neutral-600 mb-2">No FAQs found</h3>
+              <p className="text-neutral-400 text-sm">Try a different search term or check back later.</p>
             </div>
           ) : (
-            <div className="space-y-10">
-              {filtered.map(cat => (
-                <div key={cat.category}>
-                  <h2 className="text-xl font-display font-bold text-neutral-800 mb-5 flex items-center gap-3">
-                    <span className="w-8 h-8 bg-primary-100 rounded-xl flex items-center justify-center">
-                      <HelpCircle size={16} className="text-primary-600" />
-                    </span>
-                    {cat.category}
-                  </h2>
-                  <div className="space-y-3">
-                    {cat.questions.map((item, i) => {
-                      const key = `${cat.category}-${i}`
-                      return (
-                        <AccordionItem
-                          key={key}
-                          question={item.q}
-                          answer={item.a}
-                          isOpen={!!openItems[key]}
-                          onToggle={() => toggle(key)}
-                        />
-                      )
-                    })}
-                  </div>
-                </div>
+            <div className="space-y-3">
+              {filteredFaqs.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  question={faq.question}
+                  answer={faq.answer}
+                  isOpen={!!openItems[faq.id]}
+                  onToggle={() => toggle(faq.id)}
+                />
               ))}
             </div>
           )}
 
-          {/* Still need help */}
           <div className="mt-14 bg-gradient-to-br from-primary-50 to-teal-50 border border-primary-100 rounded-3xl p-8 text-center">
             <h3 className="font-display font-bold text-neutral-800 text-xl mb-2">Still Have Questions?</h3>
             <p className="text-neutral-500 mb-6 text-sm">Our patient support team is available to assist you Monday–Saturday, 8AM–8PM.</p>

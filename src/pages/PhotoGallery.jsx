@@ -2,19 +2,46 @@ import { useState, useEffect } from 'react'
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { galleryImages } from '../data/mockData'
-
-const categories = ['All', 'Infrastructure', 'Wards', 'Therapy', 'Diagnostics', 'Facilities']
+import { API_ENDPOINTS } from '../api/endpoints'
 
 export default function PhotoGallery() {
-  const [filter, setFilter] = useState('All')
+  const [/*filter*/, /*setFilter*/] = useState('All')
   const [lightbox, setLightbox] = useState(null)
+  const [images, setImages] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(0)
+  const [limit, setLimit] = useState(10)
 
-  const filtered = galleryImages.filter(img => filter === 'All' || img.category === filter)
+  const displayed = images.length > 0 ? images : galleryImages
 
   const openLightbox = (idx) => setLightbox(idx)
   const closeLightbox = () => setLightbox(null)
-  const prevImage = () => setLightbox(i => (i - 1 + filtered.length) % filtered.length)
-  const nextImage = () => setLightbox(i => (i + 1) % filtered.length)
+  const prevImage = () => setLightbox(i => (i - 1 + displayed.length) % displayed.length)
+  const nextImage = () => setLightbox(i => (i + 1) % displayed.length)
+
+  // Load gallery images (only type=IMAGE)
+  useEffect(() => {
+    let mounted = true
+    const load = async () => {
+      setLoading(true)
+      try {
+        const url = `${API_ENDPOINTS.GALLERY.GET_ALL}?type=IMAGE&page=${page}&limit=${limit}`
+        const res = await fetch(url)
+        if (!res.ok) throw new Error('Failed to fetch gallery')
+        const json = await res.json()
+        const parsed = Array.isArray(json) ? json : (Array.isArray(json.content) ? json.content : [])
+        if (mounted) setImages(parsed)
+      } catch (err) {
+        console.error('Gallery load error:', err)
+        if (mounted) setImages(galleryImages)
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    load()
+    return () => { mounted = false }
+  }, [page, limit])
 
   // Keyboard navigation
   useEffect(() => {
@@ -38,24 +65,11 @@ export default function PhotoGallery() {
 
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Filter */}
-          <div className="flex flex-wrap gap-2 mb-10 justify-center">
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  filter === cat ? 'bg-primary-600 text-white shadow-soft' : 'bg-neutral-100 text-neutral-600 hover:bg-primary-50 hover:text-primary-600'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* Filters removed — showing all images from gallery (type=IMAGES) */}
 
           {/* Masonry Grid */}
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
-            {filtered.map((img, i) => (
+            {displayed.map((img, i) => (
               <div
                 key={img.id}
                 className="relative group cursor-pointer overflow-hidden rounded-2xl shadow-soft hover:shadow-medium transition-all duration-300 break-inside-avoid"
@@ -83,7 +97,7 @@ export default function PhotoGallery() {
       </section>
 
       {/* Lightbox */}
-      {lightbox !== null && (
+            {lightbox !== null && (
         <div
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={closeLightbox}
@@ -114,14 +128,14 @@ export default function PhotoGallery() {
           </button>
           <div onClick={e => e.stopPropagation()} className="max-w-4xl w-full">
             <img
-              src={filtered[lightbox].url}
-              alt={filtered[lightbox].title}
+              src={displayed[lightbox].url}
+              alt={displayed[lightbox].title}
               className="w-full rounded-2xl shadow-strong max-h-[75vh] object-contain"
             />
             <div className="text-center mt-4">
-              <p className="text-white font-semibold">{filtered[lightbox].title}</p>
-              <p className="text-white/60 text-sm">{filtered[lightbox].category}</p>
-              <p className="text-white/40 text-xs mt-1">{lightbox + 1} / {filtered.length}</p>
+              <p className="text-white font-semibold">{displayed[lightbox].title}</p>
+              <p className="text-white/60 text-sm">{displayed[lightbox].category}</p>
+              <p className="text-white/40 text-xs mt-1">{lightbox + 1} / {displayed.length}</p>
             </div>
           </div>
         </div>

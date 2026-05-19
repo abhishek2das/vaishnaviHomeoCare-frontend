@@ -13,6 +13,30 @@ export default function Testimonials() {
   const [data, setData] = useState(testimonials)
   const [page, setPage] = useState(1)
 
+  const normalizeTestimonial = (item) => {
+    const name = item.name || item.patientName || item.author || 'Patient'
+    const text = item.text || item.review || item.message || item.comment || ''
+    const initials = name
+      .split(' ')
+      .map((part) => part[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join('')
+      .toUpperCase() || 'PT'
+
+    return {
+      ...item,
+      id: item.id ?? name,
+      name,
+      text,
+      rating: Number(item.rating ?? item.stars ?? 5),
+      location: item.location || item.city || item.state || '',
+      date: item.date || item.createdAt || item.postedAt || '',
+      treatment: item.treatment || item.specialization || item.category || '',
+      avatar: item.avatar || initials,
+    }
+  }
+
   useEffect(() => {
     const loadTestimonials = async () => {
       try {
@@ -27,7 +51,7 @@ export default function Testimonials() {
             : []
 
         if (parsed.length > 0) {
-          setData(parsed)
+          setData(parsed.map(normalizeTestimonial))
         }
       } catch (error) {
         console.error('Failed to load testimonials:', error)
