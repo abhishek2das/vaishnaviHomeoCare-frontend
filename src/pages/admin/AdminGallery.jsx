@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Trash2, X, Upload, Image as ImageIcon, Video, Filter } from 'lucide-react';
 import ImageUploader from '../../components/common/ImageUploader';
-import { API_ENDPOINTS, getMediaUrl } from '../../api/endpoints';
+import { API_ENDPOINTS } from '../../api/endpoints';
 import { fetchWithAuth } from '../../api/apiClient';
 
 export default function AdminGallery() {
@@ -124,13 +124,13 @@ export default function AdminGallery() {
               <div className="relative aspect-video bg-gray-100 overflow-hidden">
                 {item.type === 'IMAGE' ? (
                   <img 
-                    src={getMediaUrl(item.url)} 
+                    src={item.url} 
                     alt={item.title} 
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <video 
-                    src={getMediaUrl(item.url)} 
+                    src={item.url} 
                     className="w-full h-full object-cover"
                     controls={false}
                   />

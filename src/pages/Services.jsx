@@ -2,36 +2,36 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
-import { API_ENDPOINTS, getMediaUrl } from '../api/endpoints';
-import { services as fallbackServices } from '../data/mockData';
+import { API_ENDPOINTS } from '../api/endpoints'
+import { services as fallbackServices } from '../data/mockData'
 
 export default function Services() {
-  const [serviceList, setServiceList] = useState(fallbackServices);
+  const [serviceList, setServiceList] = useState(fallbackServices)
 
   useEffect(() => {
     const loadServices = async () => {
       try {
-        const res = await fetch(API_ENDPOINTS.SERVICES.GET_ALL);
-        if (!res.ok) throw new Error('Unable to fetch services');
+        const res = await fetch(API_ENDPOINTS.SERVICES.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch services')
 
-        const data = await res.json();
-        const servicesData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : [];
+        const data = await res.json()
+        const servicesData = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
 
         if (servicesData.length > 0) {
           setServiceList(servicesData.map((item) => ({
             id: item.id,
             title: item.serviceName ?? item.title,
             description: item.description,
-            image: getMediaUrl(item.imageUrl),
-          })));
+            image: item.imageUrl,
+          })))
         }
       } catch (error) {
-        console.error('Failed to load services:', error);
+        console.error('Failed to load services:', error)
       }
-    };
+    }
 
-    loadServices();
-  }, []);
+    loadServices()
+  }, [])
 
   return (
     <div>

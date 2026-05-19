@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { X, Upload, ImageIcon } from 'lucide-react';
-import { API_ENDPOINTS, IMAGE_BASE_URL } from '../../api/endpoints';
+import { API_ENDPOINTS, BASE_URL } from '../../api/endpoints';
 import { fetchWithAuth } from '../../api/apiClient';
 
 export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
@@ -17,7 +17,7 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
   const buildImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    return `${IMAGE_BASE_URL}/${url.replace(/^\//, '')}`;
+    return `${BASE_URL}/${url.replace(/^\//, '')}`;
   };
 
   const fetchGallery = async () => {

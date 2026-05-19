@@ -1,12 +1,4 @@
-export const SERVER_URL = 'http://192.168.1.33:8091';
-export const BASE_URL = `${SERVER_URL}/api`;
-export const IMAGE_BASE_URL = SERVER_URL;
-
-export const getMediaUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  return `${IMAGE_BASE_URL}/${url.replace(/^\//, '')}`;
-};
+export const BASE_URL = 'http://localhost:8091/api';
 
 export const API_ENDPOINTS = {
   PATIENTS: {
