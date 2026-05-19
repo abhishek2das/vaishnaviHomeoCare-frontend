@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {  LayoutDashboard,  Calendar,  Users,  MessageSquare,  FileText,  Image as ImageIcon,  Trophy,  HelpCircle,  Settings, LogOut, Menu, X, User, Mail, Monitor } from 'lucide-react';
 import image from '../../assets/site_logo_v2.png'
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Handle window resize for mobile check
   useEffect(() => {
@@ -31,6 +32,11 @@ export default function AdminLayout() {
       setIsSidebarOpen(false);
     }
   }, [location.pathname, isMobile]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    navigate('/admin/login');
+  };
 
   // Open CMS dropdown if we are on a CMS route
   useEffect(() => {
@@ -151,7 +157,7 @@ export default function AdminLayout() {
         </nav>
 
         <div className="p-4 border-t border-[#2c543f]">
-          <button className="flex items-center w-full px-4 py-3 text-gray-300 hover:text-white hover:bg-[#204633] rounded-lg transition-colors">
+          <button onClick={handleLogout} className="flex items-center w-full px-4 py-3 text-gray-300 hover:text-white hover:bg-[#204633] rounded-lg transition-colors">
             <LogOut size={20} className="mr-3" />
             <span>Logout</span>
           </button>

@@ -36,6 +36,7 @@ import AdminFAQ from './pages/admin/AdminFAQ';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminCMS from './pages/admin/AdminCMS';
+import AdminLogin from './pages/admin/AdminLogin';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -54,6 +55,17 @@ function UserLayout() {
       <Footer />
     </div>
   );
+}
+
+function AdminGuard({ children }) {
+  const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace state={{ from: location }} />;
+  }
+
+  return children;
 }
 
 const router = createBrowserRouter([
@@ -79,9 +91,14 @@ const router = createBrowserRouter([
       { path: '/contact', element: <Contact /> },
     ],
   },
+  { path: '/admin/login', element: <AdminLogin /> },
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: (
+      <AdminGuard>
+        <AdminLayout />
+      </AdminGuard>
+    ),
     children: [
       { path: '/admin', element: <AdminDashboard /> },
       { path: '/admin/appointments', element: <AdminAppointments /> },

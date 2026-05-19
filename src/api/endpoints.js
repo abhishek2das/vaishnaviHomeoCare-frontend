@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.1.34:8091/api';
+export const BASE_URL = 'http://192.168.1.33:8091/api';
 
 export const API_ENDPOINTS = {
   PATIENTS: {
@@ -58,6 +58,9 @@ export const API_ENDPOINTS = {
     STATS: `${BASE_URL}/dashboard/stats`,
     RECENT_APPOINTMENTS: (limit = 5) => `${BASE_URL}/dashboard/recent-appointments?limit=${limit}`,
     RECENT_PATIENTS: (limit = 5) => `${BASE_URL}/dashboard/recent-patients?limit=${limit}`,
+  },
+  AUTH: {
+    LOGIN: `${BASE_URL}/auth/login`,
   },
   SERVICES: {
     GET_ALL: `${BASE_URL}/cms/services`,
