@@ -46,7 +46,7 @@ export const faqs = [
   {
     category: 'Appointments',
     questions: [
-      { q: 'How do I book an appointment?', a: 'You can book an appointment online through our website, call our helpline at +91-11-4567-8900, or visit the clinic in person. Our online booking system is available 24/7.' },
+      { q: 'How do I book an appointment?', a: 'You can book an appointment online through our website, call our helpline at +91 81038 28005, or visit the clinic in person. Our online booking system is available 24/7.' },
       { q: 'Can I reschedule or cancel my appointment?', a: 'Yes, you can reschedule or cancel up to 24 hours before your appointment through the patient portal, by calling us, or via the confirmation email link.' },
       { q: 'What should I bring to my first appointment?', a: 'Please bring a valid photo ID, your insurance card if applicable, any previous medical records relevant to your condition, and a list of current medications.' },
       { q: 'Are online consultations available?', a: 'Yes, we offer secure online video consultations. You can book an online appointment via our portal and receive prescriptions digitally.' },

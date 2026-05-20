@@ -7,7 +7,7 @@ const contactDetails = [
   {
     icon: Phone, title: 'Phone Numbers',
     items: [
-      { label: 'Main Reception', value: '+91-11-4567-8900' },
+      { label: 'Main Reception', value: '+91 81038 28005' },
       { label: 'Emergency (24/7)', value: '+91-11-4567-0000' },
       { label: 'Billing', value: '+91-11-4567-8905' },
     ]

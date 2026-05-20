@@ -29,7 +29,7 @@ export default function Footer() {
               <div className="w-64 brightness-0 invert flex items-center justify-center">
                 <img src={image} alt="Medicare Clinic Logo" />
               </div>
-             
+
             </Link>
             <p className="text-sm text-neutral-400 leading-relaxed mb-6">
               Providing world-class homeopathic care with compassion and innovation since 1985. Your health is our highest priority.
@@ -70,7 +70,7 @@ export default function Footer() {
               <div className="flex items-center gap-3">
                 <Phone size={16} className="text-teal-400 flex-shrink-0" />
                 <div>
-                  <a href="tel:+911145678900" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors block">+91-11-4567-8900</a>
+                  <a href="tel:+911145678900" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors block">+91 81038 28005</a>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -80,7 +80,7 @@ export default function Footer() {
                 </a>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
