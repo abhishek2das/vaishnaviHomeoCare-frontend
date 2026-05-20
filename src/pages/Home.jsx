@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, CalendarDays, Phone, Shield, Award, Users, Heart, Star, ChevronLeft, ChevronRight, Quote, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { services, doctors, testimonials, awards } from '../data/mockData'
+import { services } from '../data/mockData'
 import StarRating from '../components/common/StarRating'
+import { API_ENDPOINTS } from '../api/endpoints'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },
@@ -35,11 +36,88 @@ function ServiceIcon({ name, colorClass }) {
 
 export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [statsData, setStatsData] = useState([])
+  const [testimonialsData, setTestimonialsData] = useState([])
+  const [awardsData, setAwardsData] = useState([])
 
   useEffect(() => {
-    const timer = setInterval(() => setActiveTestimonial(p => (p + 1) % testimonials.length), 5000)
-    return () => clearInterval(timer)
+    const loadStats = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.CMS.STATS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch statistics')
+
+        const data = await res.json()
+        const statsArray = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
+        const mappedStats = statsArray.map((item, index) => ({
+          id: item.id ?? `${item.label ?? item.key ?? index}`,
+          label: item.label ?? item.key ?? 'Metric',
+          value: item.value ?? '',
+          icon: [Award, Users, Heart, Shield][index % 4],
+        }))
+
+        if (mappedStats.length > 0) setStatsData(mappedStats)
+      } catch (error) {
+        console.error('Failed to load stats:', error)
+      }
+    }
+
+    const loadTestimonials = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.TESTIMONIALS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch testimonials')
+
+        const data = await res.json()
+        const testimonialsArray = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
+        const mappedTestimonials = testimonialsArray.map((item, index) => ({
+          id: item.id ?? `${item.name ?? index}`,
+          name: item.name ?? item.patientName ?? 'Patient',
+          text: item.feedback ?? item.text ?? item.content ?? '',
+          rating: item.rating ?? 5,
+          location: item.location ?? item.city ?? 'Location',
+          treatment: item.treatment ?? item.service ?? 'Service',
+          avatar: (item.name ?? item.patientName ?? 'P')[0].toUpperCase(),
+        }))
+
+        if (mappedTestimonials.length > 0) {
+          setTestimonialsData(mappedTestimonials)
+          setActiveTestimonial(0)
+        }
+      } catch (error) {
+        console.error('Failed to load testimonials:', error)
+      }
+    }
+
+    const loadAwards = async () => {
+      try {
+        const res = await fetch(API_ENDPOINTS.AWARDS.GET_ALL)
+        if (!res.ok) throw new Error('Unable to fetch awards')
+
+        const data = await res.json()
+        const awardsArray = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
+        const mappedAwards = awardsArray.map((item, index) => ({
+          id: item.id ?? `${item.title ?? index}`,
+          title: item.title ?? item.awardName ?? 'Award',
+          organization: item.organization ?? item.awardedBy ?? 'Organization',
+          year: item.year ?? item.awardedYear ?? new Date().getFullYear(),
+        }))
+
+        if (mappedAwards.length > 0) setAwardsData(mappedAwards)
+      } catch (error) {
+        console.error('Failed to load awards:', error)
+      }
+    }
+
+    loadStats()
+    loadTestimonials()
+    loadAwards()
   }, [])
+
+  useEffect(() => {
+    if (testimonialsData.length > 0) {
+      const timer = setInterval(() => setActiveTestimonial(p => (p + 1) % testimonialsData.length), 5000)
+      return () => clearInterval(timer)
+    }
+  }, [testimonialsData])
 
   return (
     <div>
@@ -117,11 +195,12 @@ export default function Home() {
       </section>
 
       {/* STATS */}
+      {statsData.length > 0 && (
       <section className="bg-primary-700 py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map(({ value, label, icon: Icon }) => (
-              <div key={label} className="text-center">
+          <div className={statsData.length <= 2 ? "flex flex-wrap justify-center gap-8" : "grid grid-cols-2 lg:grid-cols-4 gap-8"}>
+            {statsData.map(({ value, label, icon: Icon }) => (
+              <div key={label} className={`text-center ${statsData.length <= 2 ? 'w-full sm:w-56' : ''}`}>
                 <div className="flex justify-center mb-2">
                   <Icon size={28} className="text-teal-300" />
                 </div>
@@ -132,6 +211,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* SERVICES */}
       <section className="py-20 bg-neutral-50">
@@ -245,6 +325,7 @@ export default function Home() {
       )}
 
       {/* TESTIMONIALS */}
+      {testimonialsData.length > 0 && (
       <section className="py-20 bg-gradient-to-br from-primary-700 to-teal-700">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -252,73 +333,83 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">What Our Patients Say</h2>
           </div>
           <div className="max-w-3xl mx-auto">
-            <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
-              <Quote size={48} className="text-white/20 mb-6" />
-              <p className="text-lg text-white/90 leading-relaxed mb-8 italic font-light">
-                "{testimonials[activeTestimonial].text}"
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-teal-400 rounded-full flex items-center justify-center text-white font-bold">
-                  {testimonials[activeTestimonial].avatar}
-                </div>
-                <div className="flex-1">
-                  <div className="text-white font-semibold">{testimonials[activeTestimonial].name}</div>
-                  <div className="text-white/60 text-sm">{testimonials[activeTestimonial].location} · {testimonials[activeTestimonial].treatment}</div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <StarRating rating={testimonials[activeTestimonial].rating} size={16} />
-                </div>
-              </div>
-            </div>
-            {/* Navigation */}
-            <div className="flex items-center justify-center gap-4 mt-8">
-              <button onClick={() => setActiveTestimonial(p => (p - 1 + testimonials.length) % testimonials.length)}
-                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
-                <ChevronLeft size={18} />
-              </button>
-              <div className="flex gap-2">
-                {testimonials.map((_, i) => (
-                  <button key={i} onClick={() => setActiveTestimonial(i)}
-                    className={`transition-all duration-300 rounded-full ${i === activeTestimonial ? 'w-6 h-2.5 bg-white' : 'w-2.5 h-2.5 bg-white/40'}`} />
-                ))}
-              </div>
-              <button onClick={() => setActiveTestimonial(p => (p + 1) % testimonials.length)}
-                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
-                <ChevronRight size={18} />
-              </button>
-            </div>
+            {(() => {
+              const testimonial = testimonialsData[activeTestimonial]
+              return (
+                <>
+                  <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
+                    <Quote size={48} className="text-white/20 mb-6" />
+                    <p className="text-lg text-white/90 leading-relaxed mb-8 italic font-light">
+                      "{testimonial.text}"
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-teal-400 rounded-full flex items-center justify-center text-white font-bold">
+                        {testimonial.avatar}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-white font-semibold">{testimonial.name}</div>
+                        <div className="text-white/60 text-sm">{testimonial.location} · {testimonial.treatment}</div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <StarRating rating={testimonial.rating} size={16} />
+                      </div>
+                    </div>
+                  </div>
+                  {/* Navigation */}
+                  <div className="flex items-center justify-center gap-4 mt-8">
+                    <button onClick={() => setActiveTestimonial(p => (p - 1 + testimonialsData.length) % testimonialsData.length)}
+                      className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
+                      <ChevronLeft size={18} />
+                    </button>
+                    <div className="flex gap-2">
+                      {testimonialsData.map((_, i) => (
+                        <button key={i} onClick={() => setActiveTestimonial(i)}
+                          className={`transition-all duration-300 rounded-full ${i === activeTestimonial ? 'w-6 h-2.5 bg-white' : 'w-2.5 h-2.5 bg-white/40'}`} />
+                      ))}
+                    </div>
+                    <button onClick={() => setActiveTestimonial(p => (p + 1) % testimonialsData.length)}
+                      className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </>
+              )
+            })()}
           </div>
         </div>
       </section>
+      )}
 
       {/* AWARDS PREVIEW */}
+      {awardsData.length > 0 && (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <div className="section-label justify-center">Recognition</div>
             <h2 className="section-title">Awards & Accreditations</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {awards.slice(0, 3).map(award => (
-              <div key={award.id} className="card p-6 border border-amber-100 hover:border-amber-300 transition-all group">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Award size={22} className="text-amber-500" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-amber-600 font-semibold mb-1">{award.year}</div>
-                    <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{award.title}</h3>
-                    <p className="text-xs text-neutral-500">{award.organization}</p>
+          <div className={awardsData.length <= 2 ? 'flex flex-wrap justify-center gap-6' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}>
+            {awardsData.slice(0, 3).map(award => (
+                <div key={award.id} className={`card p-6 border border-amber-100 hover:border-amber-300 transition-all group ${awardsData.length <= 2 ? 'w-full sm:w-[320px]' : ''}`}>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Award size={22} className="text-amber-500" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-amber-600 font-semibold mb-1">{award.year}</div>
+                      <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{award.title}</h3>
+                      <p className="text-xs text-neutral-500">{award.organization}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div className="text-center mt-10">
             <Link to="/awards" className="btn-secondary">View All Awards <ArrowRight size={16} /></Link>
           </div>
         </div>
       </section>
+      )}
 
       {/* CTA */}
       <section className="py-20 bg-neutral-50">

@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.1.33:8091/api';
+export const BASE_URL = 'https://vaishnavihomeocare.incraftiv.com/api';
 
 export const API_ENDPOINTS = {
   PATIENTS: {
@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
   },
   PRESS_RELEASES: {
     GET_ALL: `${BASE_URL}/press-releases`,
+    GET_BY_ID: (id) => `${BASE_URL}/press-releases/${id}`,
     CREATE: `${BASE_URL}/press-releases`,
     UPDATE: (id) => `${BASE_URL}/press-releases/${id}`,
     DELETE: (id) => `${BASE_URL}/press-releases/${id}`,

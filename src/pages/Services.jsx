@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
-import { services as fallbackServices } from '../data/mockData'
 
 export default function Services() {
-  const [serviceList, setServiceList] = useState(fallbackServices)
+  const [serviceList, setServiceList] = useState([])
 
   useEffect(() => {
     const loadServices = async () => {
@@ -50,9 +49,10 @@ export default function Services() {
               Our multidisciplinary teams collaborate to deliver the best possible outcomes for your unique health needs.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-            {serviceList.map((service) => (
-              <div key={service.id} className="card overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+          {serviceList.length > 0 && (
+            <div className={serviceList.length <= 2 ? "flex flex-wrap justify-center gap-7" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"}>
+              {serviceList.map((service) => (
+                <div key={service.id} className={`card overflow-hidden group hover:-translate-y-1 transition-all duration-300 ${serviceList.length <= 2 ? 'w-full sm:w-96' : ''}`}>
                 <div className="h-52 overflow-hidden">
                   <img
                     src={service.image || 'https://images.unsplash.com/photo-1517638851339-4aab2aaaa97b?q=80&w=900&auto=format&fit=crop'}
@@ -72,7 +72,8 @@ export default function Services() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 

@@ -17,6 +17,7 @@ import PhotoGalleryHospital from './pages/hospital/PhotoGalleryHospital';
 import Facilities from './pages/hospital/Facilities';
 import Testimonials from './pages/Testimonials';
 import PressRelease from './pages/PressRelease';
+import PressReleaseDetail from './pages/PressReleaseDetail';
 import PhotoGallery from './pages/PhotoGallery';
 import VideoGallery from './pages/VideoGallery';
 import BookAppointment from './pages/BookAppointment';
@@ -82,7 +83,8 @@ const router = createBrowserRouter([
       { path: '/hospital/gallery', element: <PhotoGalleryHospital /> },
       { path: '/hospital/facilities', element: <Facilities /> },
       { path: '/testimonials', element: <Testimonials /> },
-      { path: '/press', element: <PressRelease /> },
+      { path: '/blog', element: <PressRelease /> },
+      { path: '/blog/:id', element: <PressReleaseDetail /> },
       { path: '/gallery', element: <PhotoGallery /> },
       { path: '/videos', element: <VideoGallery /> },
       { path: '/appointment', element: <BookAppointment /> },

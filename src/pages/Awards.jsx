@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Trophy, Award, Shield, Heart, Star, Leaf } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
-import { awards } from '../data/mockData'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 const iconMap = { Trophy, Award, Shield, Heart, Star, Leaf }
@@ -16,7 +15,7 @@ const accreditations = [
 
 export default function Awards() {
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState(awards)
+  const [data, setData] = useState([])
 
   useEffect(() => {
     const loadAwards = async () => {
@@ -41,7 +40,7 @@ export default function Awards() {
         }
       } catch (error) {
         console.error('Failed to load awards:', error)
-        setData(awards)
+        setData([])
       } finally {
         setLoading(false)
       }
@@ -77,6 +76,7 @@ export default function Awards() {
       </section>
 
       {/* Awards Grid */}
+      {(loading || data.length > 0) && (
       <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -89,13 +89,13 @@ export default function Awards() {
               {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={data.length <= 2 ? 'flex flex-wrap justify-center gap-6' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}>
               {data.map((award, i) => {
                 const Icon = iconMap[award.icon] || Trophy
                 return (
                   <div
                     key={award.id}
-                    className="card p-7 group hover:-translate-y-1 transition-all duration-300"
+                    className={`card p-7 group hover:-translate-y-1 transition-all duration-300 ${data.length <= 2 ? 'w-full sm:w-[360px]' : ''}`}
                     style={{ animationDelay: `${i * 80}ms` }}
                   >
                     <div className="flex items-start gap-5">
@@ -119,6 +119,7 @@ export default function Awards() {
           )}
         </div>
       </section>
+      )}
 
       {/* Timeline Banner */}
       <section className="py-16 bg-primary-700">

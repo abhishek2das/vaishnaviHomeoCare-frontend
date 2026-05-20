@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Calendar, ArrowRight, Search } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
@@ -6,6 +7,7 @@ import { pressReleases } from '../data/mockData'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 export default function PressRelease() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [search, setSearch] = useState('')
@@ -42,9 +44,9 @@ export default function PressRelease() {
   return (
     <div>
       <PageHero
-        title="Press Releases"
-        subtitle="Latest news, announcements, and updates from Medicare Clinic."
-        breadcrumbs={[{ label: 'Press Release' }]}
+        title="Blogs"
+        subtitle="Latest news, announcements, and updates from Vaishnavi Homeo Care Clinic."
+        breadcrumbs={[{ label: 'Blogs' }]}
       />
 
       <section className="py-16 bg-white">
@@ -61,7 +63,7 @@ export default function PressRelease() {
               <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="text"
-                placeholder="Search press releases..."
+                placeholder="Search blogs..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="input-field pl-11"
@@ -107,10 +109,10 @@ export default function PressRelease() {
                           {pr.title}
                         </h3>
                         <p className="text-sm text-neutral-500 leading-relaxed mb-5 line-clamp-3">
-                          {pr.content ? pr.content.slice(0, 140) : 'No content available.'}
+                          {pr.content ? (pr.content.includes('<') ? pr.content.replace(/<[^>]*>/g, '').slice(0, 140) : pr.content.slice(0, 140)) : 'No content available.'}
                           {pr.content && pr.content.length > 140 ? '...' : ''}
                         </p>
-                        <button className="text-sm font-semibold text-primary-600 flex items-center gap-1.5 hover:gap-2.5 transition-all">
+                        <button onClick={() => navigate(`/blog/${pr.id}`)} className="text-sm font-semibold text-primary-600 flex items-center gap-1.5 hover:gap-2.5 transition-all">
                           Read More <ArrowRight size={13} />
                         </button>
                       </div>

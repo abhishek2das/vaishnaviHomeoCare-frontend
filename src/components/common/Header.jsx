@@ -12,7 +12,7 @@ const navItems = [
     children: [
       { label: 'Awards', path: '/awards' },
       { label: 'Testimonials', path: '/testimonials' },
-      { label: 'Press Release', path: '/press' },
+      { label: 'Blog', path: '/blog' },
       { label: 'Photo Gallery', path: '/gallery' },
       { label: 'Video Gallery', path: '/videos' },
     ]
@@ -46,7 +46,7 @@ export default function Header() {
           </div>
           <div className="flex items-center gap-4">
             <a href="tel:+911145678900" className="flex items-center gap-1.5 hover:text-teal-200 transition-colors">
-              <Phone size={12} /> Emergency: +91-11-4567-8900
+              <Phone size={12} /> Dr. Prachi Jha: +91 81038 28005
             </a>
           </div>
         </div>

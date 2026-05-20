@@ -3,14 +3,13 @@ import { Quote, ChevronLeft, ChevronRight } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import StarRating from '../components/common/StarRating'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
-import { testimonials } from '../data/mockData'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 const PER_PAGE = 6
 
 export default function Testimonials() {
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState(testimonials)
+  const [data, setData] = useState([])
   const [page, setPage] = useState(1)
 
   const normalizeTestimonial = (item) => {
@@ -97,30 +96,45 @@ export default function Testimonials() {
               {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : paginated.length === 0 ? (
-            <div className="text-center py-16 text-neutral-400">No testimonials found.</div>
+            <div className="text-center py-16 text-neutral-500">
+              <p className="text-xl font-semibold text-neutral-800 mb-3">Testimonials data not present.</p>
+              <p className="text-sm text-neutral-500">No testimonial records were returned by the API.</p>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginated.map(t => (
-                <div key={t.id} className="card p-7 flex flex-col hover:-translate-y-1 transition-all duration-300">
-                  <div className="flex items-center justify-between mb-5">
-                    <Quote size={28} className="text-primary-200" />
-                    <StarRating rating={t.rating} size={15} />
+            <div>
+              <div className="text-center mb-10">
+                <h2 className="text-3xl font-semibold text-neutral-900">What Our Patients Are Saying</h2>
+                <p className="text-sm text-neutral-500 mt-2">Real feedback from people who have experienced our care.</p>
+              </div>
+              <div className={`grid gap-6 ${
+                paginated.length === 1
+                  ? 'grid-cols-1 max-w-md mx-auto'
+                  : paginated.length === 2
+                    ? 'grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto'
+                    : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+              }`}>
+                {paginated.map(t => (
+                  <div key={t.id} className="card p-7 flex flex-col hover:-translate-y-1 transition-all duration-300">
+                    <div className="flex items-center justify-between mb-5">
+                      <Quote size={28} className="text-primary-200" />
+                      <StarRating rating={t.rating} size={15} />
+                    </div>
+                    <p className="text-neutral-600 leading-relaxed text-sm flex-1 mb-6 italic">"{t.text}"</p>
+                    <div className="flex items-center gap-3 pt-5 border-t border-neutral-100">
+                      <div className="w-11 h-11 bg-gradient-to-br from-primary-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                        {t.avatar}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-neutral-800 text-sm">{t.name}</div>
+                        <div className="text-xs text-neutral-500">{t.location} · {t.date}</div>
+                      </div>
+                      <div className="ml-auto">
+                        <span className="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-semibold rounded-full">{t.treatment}</span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-neutral-600 leading-relaxed text-sm flex-1 mb-6 italic">"{t.text}"</p>
-                  <div className="flex items-center gap-3 pt-5 border-t border-neutral-100">
-                    <div className="w-11 h-11 bg-gradient-to-br from-primary-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                      {t.avatar}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-neutral-800 text-sm">{t.name}</div>
-                      <div className="text-xs text-neutral-500">{t.location} · {t.date}</div>
-                    </div>
-                    <div className="ml-auto">
-                      <span className="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-semibold rounded-full">{t.treatment}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 

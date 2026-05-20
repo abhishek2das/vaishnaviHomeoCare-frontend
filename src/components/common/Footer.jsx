@@ -22,7 +22,7 @@ export default function Footer() {
     <footer className="bg-neutral-900 text-neutral-300">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-5 group">
@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="ml-0 md:ml-12 lg:ml-24">
             <h4 className="font-display font-semibold text-white mb-5 text-base">Quick Links</h4>
             <ul className="space-y-2.5">
               {quickLinks.map(({ label, path }) => (
@@ -71,7 +71,6 @@ export default function Footer() {
                 <Phone size={16} className="text-teal-400 flex-shrink-0" />
                 <div>
                   <a href="tel:+911145678900" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors block">+91-11-4567-8900</a>
-                  <a href="tel:+911145678901" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors block">+91-11-4567-8901</a>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -81,11 +80,7 @@ export default function Footer() {
                 </a>
               </div>
             </div>
-            <div className="mt-6 p-4 bg-primary-600/20 border border-primary-500/30 rounded-xl">
-              <p className="text-xs text-primary-300 font-semibold mb-1">Emergency Helpline</p>
-              <a href="tel:+911145670000" className="text-white font-bold text-lg">+91-11-4567-0000</a>
-              <p className="text-xs text-neutral-400 mt-0.5">Available 24/7</p>
-            </div>
+            
           </div>
         </div>
       </div>

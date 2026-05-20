@@ -1,14 +1,15 @@
 
 import { useState, useEffect } from 'react'
-import { Play, X } from 'lucide-react'
+import { Play, X, VideoOff } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
-import { videos } from '../data/mockData'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 export default function VideoGallery() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
+  const [error, setError] = useState(false)
+  const [retryTrigger, setRetryTrigger] = useState(0)
   const [playing, setPlaying] = useState(null)
   const [page, setPage] = useState(0)
   const [limit, setLimit] = useState(9)
@@ -24,10 +25,16 @@ export default function VideoGallery() {
         if (!res.ok) throw new Error('Failed to fetch videos')
         const json = await res.json()
         const parsed = Array.isArray(json) ? json : (Array.isArray(json.content) ? json.content : [])
-        if (mounted) setData(parsed)
+        if (mounted) {
+          setData(parsed)
+          setError(false)
+        }
       } catch (err) {
         console.error('Video gallery load error:', err)
-        if (mounted) setData(videos)
+        if (mounted) {
+          setData([])
+          setError(true)
+        }
       } finally {
         if (mounted) setLoading(false)
       }
@@ -35,9 +42,9 @@ export default function VideoGallery() {
 
     load()
     return () => { mounted = false }
-  }, [page, limit])
+  }, [page, limit, retryTrigger])
 
-  const displayed = data.length > 0 ? data : videos
+  const displayed = data
 
   const getVideoSource = (item) => {
     if (!item) return null
@@ -78,6 +85,26 @@ export default function VideoGallery() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
+            </div>
+          ) : displayed.length === 0 ? (
+            <div className="max-w-md mx-auto text-center py-16 px-4 bg-gray-50 rounded-2xl border border-gray-100 shadow-soft">
+              <div className="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-primary-600">
+                <VideoOff size={32} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {error ? 'Gallery Temporarily Unavailable' : 'No Videos Found'}
+              </h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                {error 
+                  ? 'We are currently unable to establish a connection to our media server. Please verify your connection or try again shortly.' 
+                  : 'There are currently no video presentations in our collection. Please check back soon as we continuously update our media resources.'}
+              </p>
+              <button 
+                onClick={() => setRetryTrigger(prev => prev + 1)}
+                className="inline-flex items-center justify-center px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium text-sm rounded-xl transition-all shadow-soft"
+              >
+                Refresh Gallery
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

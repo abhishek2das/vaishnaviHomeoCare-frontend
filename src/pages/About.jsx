@@ -3,14 +3,6 @@ import { Link } from 'react-router-dom'
 import { Target, Eye, ArrowRight, MapPin, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
-import { teamMembers } from '../data/mockData'
-
-const networkStats = [
-  { value: '3', label: 'Clinic Branches',  },
-  { value: '500+', label: 'Holistic Treatments',  },
-  { value: '120+', label: 'Homeopathic Practitioners',  },
-  { value: '1,200+', label: 'Support Staff', },
-]
 
 const locations = [
   { name: 'Medicare Main Clinic', address: '42, Healthcare Avenue, Connaught Place, New Delhi', beds: 300, type: 'Main Branch' },
@@ -28,7 +20,7 @@ export default function About() {
   const [mission, setMission] = useState(
     'To deliver compassionate, accessible, and evidence-based healthcare that improves lives. We commit to continuous innovation, dignifying every patient interaction, and developing future medical leaders.'
   )
-  const [stats, setStats] = useState(networkStats)
+  const [stats, setStats] = useState([])
   const [doctors, setDoctors] = useState([])
 
   useEffect(() => {
@@ -91,15 +83,7 @@ export default function About() {
     loadDoctors()
   }, [])
 
-  const displayDoctors = doctors.length > 0
-    ? doctors
-    : teamMembers.map((member) => ({
-        id: member.id,
-        name: member.name,
-        specialist: member.role,
-        description: member.bio,
-        image: member.image,
-      }))
+  const displayDoctors = doctors
 
   return (
     <div>
@@ -118,12 +102,6 @@ export default function About() {
               <h2 className="section-title mb-5">A Legacy Built on Compassion & Excellence</h2>
               {/* Dynamic content */}
               <p className="text-neutral-500 leading-relaxed mb-5">{description}</p>
-              <p className="text-neutral-500 leading-relaxed mb-5">
-                Over 38 years, we have grown into one of India's most respected homeopathic clinic networks, with three branches across Delhi NCR, serving over 50,000 patients annually with the same commitment that drove our founding.
-              </p>
-              <p className="text-neutral-500 leading-relaxed mb-8">
-                Today, Medicare Clinic is recognized globally — a testament to our relentless pursuit of quality, natural healing, and patient satisfaction.
-              </p>
               <Link to="/appointment" className="btn-primary">Book a Consultation <ArrowRight size={16} /></Link>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -180,14 +158,15 @@ export default function About() {
       </section>
 
       {/* Network Stats */}
+      {stats.length > 0 && (
       <section className="py-20 bg-primary-700">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">Our Network at a Glance</h2>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className={stats.length <= 2 ? "flex flex-wrap justify-center gap-8 mb-16" : "grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16"}>
             {stats.map((stat) => (
-              <div key={stat.id} className="text-center">
+              <div key={stat.id} className={`text-center ${stats.length <= 2 ? 'w-full sm:w-56' : ''}`}>
                 <div className="text-4xl font-display font-bold text-white mb-1">{stat.value}</div>
                 <div className="text-primary-100 font-semibold mb-1">{stat.label}</div>
               </div>
@@ -210,8 +189,10 @@ export default function About() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Team */}
+      {displayDoctors.length > 0 && (
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -236,6 +217,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      )}
     </div>
   )
 }
