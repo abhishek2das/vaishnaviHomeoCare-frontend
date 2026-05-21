@@ -198,7 +198,7 @@ export default function AdminGallery() {
                 {/* Overlay Delete Button */}
                 <button 
                   onClick={() => handleDelete(item.id)}
-                  className="absolute top-2 right-2 bg-red-500/90 hover:bg-red-600 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 z-20 bg-red-500/90 hover:bg-red-600 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                   title="Delete Media"
                 >
                   <Trash2 size={16} />
@@ -209,7 +209,7 @@ export default function AdminGallery() {
                   <button
                     type="button"
                     onClick={() => handlePreviewMedia(item)}
-                    className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity hover:bg-black/30"
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 transition-opacity hover:bg-black/30"
                     title="Play Video"
                   >
                     <div className="w-14 h-14 bg-black/70 rounded-full flex items-center justify-center text-white shadow-lg">

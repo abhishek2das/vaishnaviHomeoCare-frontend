@@ -20,7 +20,7 @@ export default function VideoGallery() {
     const load = async () => {
       setLoading(true)
       try {
-        const url = `${API_ENDPOINTS.GALLERY.GET_ALL}?type=VIDEO&page=${page}&limit=${limit}`
+        const url = `${API_ENDPOINTS.PHOTO_GALLERY.GET_ALL}?type=VIDEO&page=${page}&limit=${limit}`
         const res = await fetch(url)
         if (!res.ok) throw new Error('Failed to fetch videos')
         const json = await res.json()

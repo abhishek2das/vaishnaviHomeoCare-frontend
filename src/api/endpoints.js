@@ -32,6 +32,11 @@ export const API_ENDPOINTS = {
     CREATE: `${BASE_URL}/gallery`,
     DELETE: (id) => `${BASE_URL}/gallery/${id}`
   },
+  PHOTO_GALLERY : {
+    GET_ALL: `${BASE_URL}/photo-gallery`,
+    CREATE: `${BASE_URL}/photo-gallery`,
+    DELETE: (id) => `${BASE_URL}/photo-gallery/${id}`
+  },
   AWARDS: {
     GET_ALL: `${BASE_URL}/awards`,
     CREATE: `${BASE_URL}/awards`,
