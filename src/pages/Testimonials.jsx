@@ -12,30 +12,6 @@ export default function Testimonials() {
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
 
-  const normalizeTestimonial = (item) => {
-    const name = item.name || item.patientName || item.author || 'Patient'
-    const text = item.text || item.review || item.message || item.comment || ''
-    const initials = name
-      .split(' ')
-      .map((part) => part[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join('')
-      .toUpperCase() || 'PT'
-
-    return {
-      ...item,
-      id: item.id ?? name,
-      name,
-      text,
-      rating: Number(item.rating ?? item.stars ?? 5),
-      location: item.location || item.city || item.state || '',
-      date: item.date || item.createdAt || item.postedAt || '',
-      treatment: item.treatment || item.specialization || item.category || '',
-      avatar: item.avatar || initials,
-    }
-  }
-
   useEffect(() => {
     const loadTestimonials = async () => {
       try {
@@ -50,7 +26,7 @@ export default function Testimonials() {
             : []
 
         if (parsed.length > 0) {
-          setData(parsed.map(normalizeTestimonial))
+          setData(parsed)
         }
       } catch (error) {
         console.error('Failed to load testimonials:', error)
@@ -113,27 +89,27 @@ export default function Testimonials() {
                     ? 'grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto'
                     : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
               }`}>
-                {paginated.map(t => (
-                  <div key={t.id} className="card p-7 flex flex-col hover:-translate-y-1 transition-all duration-300">
-                    <div className="flex items-center justify-between mb-5">
-                      <Quote size={28} className="text-primary-200" />
-                      <StarRating rating={t.rating} size={15} />
+                {paginated.map(t => {
+                  const avatarInitial = t.patientName?.split(' ')?.map(word => word[0])?.filter(Boolean)?.slice(0, 2)?.join('')?.toUpperCase() || 'P'
+                  return (
+                    <div key={t.id} className="card p-7 flex flex-col hover:-translate-y-1 transition-all duration-300">
+                      <div className="flex items-center justify-between mb-5">
+                        <Quote size={28} className="text-primary-200" />
+                        <StarRating rating={t.rating} size={15} />
+                      </div>
+                      <p className="text-neutral-600 leading-relaxed text-sm flex-1 mb-6 italic">"{t.review}"</p>
+                      <div className="flex items-center gap-3 pt-5 border-t border-neutral-100">
+                        <div className="w-11 h-11 bg-gradient-to-br from-primary-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                          {avatarInitial}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-neutral-800 text-sm">{t.patientName}</div>
+                          {t.date && <div className="text-xs text-neutral-500">{t.date}</div>}
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-neutral-600 leading-relaxed text-sm flex-1 mb-6 italic">"{t.text}"</p>
-                    <div className="flex items-center gap-3 pt-5 border-t border-neutral-100">
-                      <div className="w-11 h-11 bg-gradient-to-br from-primary-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                        {t.avatar}
-                      </div>
-                      <div>
-                        <div className="font-semibold text-neutral-800 text-sm">{t.name}</div>
-                        <div className="text-xs text-neutral-500">{t.location} · {t.date}</div>
-                      </div>
-                      <div className="ml-auto">
-                        <span className="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-semibold rounded-full">{t.treatment}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}

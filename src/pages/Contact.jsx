@@ -7,17 +7,14 @@ const contactDetails = [
   {
     icon: Phone, title: 'Phone Numbers',
     items: [
-      { label: 'Main Reception', value: '+91 81038 28005' },
-      { label: 'Emergency (24/7)', value: '+91-11-4567-0000' },
-      { label: 'Billing', value: '+91-11-4567-8905' },
+      { label: 'Dr. Prachi Jha', value: '+91 81038 28005' },
+   
     ]
   },
   {
     icon: Mail, title: 'Email Addresses',
     items: [
-      { label: 'General', value: 'info@medicare-clinic.com' },
-      { label: 'Appointments', value: 'appointments@medicare-clinic.com' },
-      { label: 'Billing', value: 'billing@medicare-clinic.com' },
+      { label: 'General', value: 'dr.prachijha15@gmail.com' },
     ]
   },
   {
@@ -139,7 +136,7 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {contactDetails.map(({ icon: Icon, title, items }) => (
-              <div key={title} className="card p-6 hover:-translate-y-1 transition-all">
+              <div key={title} className="card p-6 hover:-translate-y-1 transition-all border">
                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4">
                   <Icon size={22} className="text-primary-600" />
                 </div>
@@ -184,7 +181,7 @@ export default function Contact() {
             </div>
 
             {/* Contact Form */}
-            <div>
+            <div >
               <h2 className="section-title mb-6">Send a Message</h2>
               {sent ? (
                 <div className="card p-10 text-center h-fit">
@@ -197,7 +194,7 @@ export default function Contact() {
                     className="btn-secondary text-sm">Send Another</button>
                 </div>
               ) : (
-                <div className="card p-7">
+                <div className="card p-7 border">
                   <form onSubmit={handleSubmit} noValidate className="space-y-4">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>

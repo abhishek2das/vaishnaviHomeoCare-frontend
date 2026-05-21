@@ -17,7 +17,7 @@ export default function PressRelease() {
     try {
       const queryString = query ? `?search=${encodeURIComponent(query)}` : ''
       const res = await fetch(`${API_ENDPOINTS.PRESS_RELEASES.GET_ALL}${queryString}`)
-      if (!res.ok) throw new Error('Unable to fetch press releases')
+      if (!res.ok) throw new Error('Unable to fetch blog')
 
       const responseData = await res.json()
       const parsed = Array.isArray(responseData)
@@ -28,7 +28,7 @@ export default function PressRelease() {
 
       setData(parsed)
     } catch (error) {
-      console.error('Failed to load press releases:', error)
+      console.error('Failed to load Blog:', error)
       setData(pressReleases)
     } finally {
       setLoading(false)
@@ -82,10 +82,10 @@ export default function PressRelease() {
               {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : data.length === 0 ? (
-            <div className="text-center py-16 text-neutral-400">No press releases found.</div>
+            <div className="text-center py-16 text-neutral-400">No Blogs found.</div>
           ) : (
             <>
-              {/* Press releases list (no featured item) */}
+              {/* Blogs list (no featured item) */}
 
               {/* Rest */}
               {rest.length > 0 && (

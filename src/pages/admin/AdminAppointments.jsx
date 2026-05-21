@@ -32,6 +32,7 @@ export default function AdminAppointments() {
         patientName: app.patientName || app.name || app.patient?.name || 'Unknown Patient',
         phone: app.phone || app.mobile || app.patient?.phone || 'N/A',
         appointmentDate: app.appointmentDate || app.date || app.datetime || null,
+        createdAt: app.createdAt || app.created_at || app.created || null,
         status: app.status || app.state || 'Pending',
         notes: app.message || app.notes || app.description || '',
       }));
@@ -191,6 +192,7 @@ export default function AdminAppointments() {
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Patient Name</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Phone</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Appointment Date</th>
+                <th className="py-3 px-6 font-semibold text-sm text-gray-600">Appointment Raised</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600">Status</th>
                 <th className="py-3 px-6 font-semibold text-sm text-gray-600 text-center">Actions</th>
               </tr>
@@ -211,6 +213,7 @@ export default function AdminAppointments() {
                     <td className="py-3 px-6 text-sm text-gray-800 font-medium">{app.patientName}</td>
                     <td className="py-3 px-6 text-sm text-gray-600">{app.phone}</td>
                     <td className="py-3 px-6 text-sm text-gray-600">{formatAppointmentDate(getAppointmentDateValue(app))}</td>
+                    <td className="py-3 px-6 text-sm text-gray-600">{formatAppointmentDate(app.createdAt)}</td>
                     <td className="py-3 px-6 text-sm">
                       {getStatusBadge(app.status)}
                     </td>
@@ -270,6 +273,10 @@ export default function AdminAppointments() {
                 <div className="col-span-2">
                   <p className="text-sm font-medium text-gray-500 mb-1">Appointment Date</p>
                   <p className="text-gray-800">{formatAppointmentDate(getAppointmentDateValue(selectedAppointment))}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm font-medium text-gray-500 mb-1">Raised</p>
+                  <p className="text-gray-800">{formatAppointmentDate(selectedAppointment.createdAt)}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-sm font-medium text-gray-500 mb-1">Status</p>

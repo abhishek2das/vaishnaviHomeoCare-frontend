@@ -7,12 +7,12 @@ const navItems = [
   { label: 'Home', path: '/' },
   { label: 'About Us', path: '/about' },
   { label: 'Services', path: '/services' },
+  { label: 'Blog', path: '/blog' },
   {
     label: 'Media',
     children: [
       { label: 'Awards', path: '/awards' },
       { label: 'Testimonials', path: '/testimonials' },
-      { label: 'Blog', path: '/blog' },
       { label: 'Photo Gallery', path: '/gallery' },
       { label: 'Video Gallery', path: '/videos' },
     ]

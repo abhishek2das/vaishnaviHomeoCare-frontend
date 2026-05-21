@@ -27,7 +27,7 @@ export default function PhotoGallery() {
     const load = async () => {
       setLoading(true)
       try {
-        const url = `${API_ENDPOINTS.GALLERY.GET_ALL}?type=IMAGE&page=${page}&limit=${limit}`
+        const url = `${API_ENDPOINTS.PHOTO_GALLERY.GET_ALL}?type=IMAGE&page=${page}&limit=${limit}`
         const res = await fetch(url)
         if (!res.ok) throw new Error('Failed to fetch gallery')
         const json = await res.json()
@@ -105,23 +105,23 @@ export default function PhotoGallery() {
               {displayed.map((img, i) => (
                 <div
                   key={img.id}
-                  className="relative group cursor-pointer overflow-hidden rounded-2xl shadow-soft hover:shadow-medium transition-all duration-300 break-inside-avoid"
-                  onClick={() => openLightbox(i)}
+                  className="break-inside-avoid"
                 >
-                  <img
-                    src={img.url}
-                    alt={img.title}
-                    className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    style={{ height: i % 3 === 1 ? '280px' : '220px' }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-5">
-                    <div>
-                      <p className="text-white font-semibold text-sm">{img.title}</p>
-                      <p className="text-white/70 text-xs">{img.category}</p>
-                    </div>
-                    <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <ZoomIn size={16} className="text-white" />
-                    </div>
+                  <div
+                    className="relative group cursor-pointer overflow-hidden rounded-2xl shadow-soft hover:shadow-medium transition-all duration-300"
+                    onClick={() => openLightbox(i)}
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.title}
+                      className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      style={{ height: i % 3 === 1 ? '280px' : '220px' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  <div className="mt-4 px-1">
+                    <p className="text-gray-800 font-semibold text-sm line-clamp-1">{img.title || 'Untitled'}</p>
+                    {img.description && <p className="text-gray-600 text-xs line-clamp-2 mt-1">{img.description}</p>}
                   </div>
                 </div>
               ))}
@@ -167,9 +167,11 @@ export default function PhotoGallery() {
               className="w-full rounded-2xl shadow-strong max-h-[75vh] object-contain"
             />
             <div className="text-center mt-4">
-              <p className="text-white font-semibold">{displayed[lightbox].title}</p>
-              <p className="text-white/60 text-sm">{displayed[lightbox].category}</p>
-              <p className="text-white/40 text-xs mt-1">{lightbox + 1} / {displayed.length}</p>
+              <p className="text-white font-semibold">{displayed[lightbox].title || 'Untitled'}</p>
+              {displayed[lightbox].description && (
+                <p className="text-white/60 text-sm mt-1">{displayed[lightbox].description}</p>
+              )}
+              <p className="text-white/40 text-xs mt-2">{lightbox + 1} / {displayed.length}</p>
             </div>
           </div>
         </div>

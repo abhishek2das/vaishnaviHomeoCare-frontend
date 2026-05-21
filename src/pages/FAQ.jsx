@@ -112,7 +112,7 @@ export default function FAQ() {
 
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="relative mb-8">
+          {/* <div className="relative mb-8">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
             <input
               type="text"
@@ -122,7 +122,7 @@ export default function FAQ() {
               className="input-field pl-12 text-base py-4"
               aria-label="Search FAQs"
             />
-          </div>
+          </div> */}
 
           {loading ? (
             <div className="space-y-4">

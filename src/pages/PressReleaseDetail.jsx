@@ -17,18 +17,18 @@ export default function PressReleaseDetail() {
       setLoading(true)
       try {
         const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_BY_ID(id))
-        if (!res.ok) throw new Error('Unable to fetch press release')
+        if (!res.ok) throw new Error('Unable to fetch blog')
 
         const data = await res.json()
         setPressRelease(data)
       } catch (err) {
-        console.error('Failed to load press release:', err)
+        console.error('Failed to load Blog:', err)
         // Fallback to mock data
         const mockData = pressReleases.find(pr => pr.id === parseInt(id))
         if (mockData) {
           setPressRelease(mockData)
         } else {
-          setError('Press release not found')
+          setError('Blog not found')
         }
       } finally {
         setLoading(false)
@@ -44,9 +44,9 @@ export default function PressReleaseDetail() {
     return (
       <div>
         <PageHero
-          title="Press Release"
+          title="Blog"
           subtitle="Loading..."
-          breadcrumbs={[{ label: 'Press Release' }]}
+          breadcrumbs={[{ label: 'Blog' }]}
         />
         <section className="py-16 bg-white">
           <div className="max-w-4xl mx-auto px-4">
@@ -70,19 +70,19 @@ export default function PressReleaseDetail() {
     return (
       <div>
         <PageHero
-          title="Press Release"
+          title="Blog"
           subtitle={error || 'Not found'}
-          breadcrumbs={[{ label: 'Press Release' }]}
+          breadcrumbs={[{ label: 'Blog' }]}
         />
         <section className="py-16 bg-white">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <p className="text-neutral-400 text-lg mb-6">{error || 'The press release you are looking for does not exist.'}</p>
+            <p className="text-neutral-400 text-lg mb-6">{error || 'The blog you are looking for does not exist.'}</p>
             <button
               onClick={() => navigate('/blog')}
               className="inline-flex items-center justify-center rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-all"
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Press Releases
+              Back to Blog
             </button>
           </div>
         </section>
@@ -95,7 +95,7 @@ export default function PressReleaseDetail() {
       <PageHero
         title={pressRelease.title}
         subtitle="Latest news and announcements"
-        breadcrumbs={[{ label: 'Press Release' }]}
+        breadcrumbs={[{ label: 'Blog' }]}
       />
 
       <section className="py-16 bg-white">
@@ -106,7 +106,7 @@ export default function PressReleaseDetail() {
             className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold mb-8 transition-colors"
           >
             <ArrowLeft size={18} />
-            Back to Press Releases
+            Back to Blog
           </button>
 
           {/* Featured Image */}
@@ -178,7 +178,7 @@ export default function PressReleaseDetail() {
               className="inline-flex items-center justify-center rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-all"
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Press Releases
+              Back to Blogs
             </button>
           </div>
         </div>

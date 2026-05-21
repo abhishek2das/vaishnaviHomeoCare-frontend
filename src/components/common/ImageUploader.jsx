@@ -3,7 +3,11 @@ import { X, Upload, ImageIcon } from 'lucide-react';
 import { API_ENDPOINTS, BASE_URL } from '../../api/endpoints';
 import { fetchWithAuth } from '../../api/apiClient';
 
-export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
+export default function ImageUploader({
+  isOpen,
+  onClose,
+  onImageSelected,
+}) {
   const [activeTab, setActiveTab] = useState('upload');
   const [gallery, setGallery] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -57,6 +61,15 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
     return () => URL.revokeObjectURL(url);
   }, [selectedFile]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      setDragActive(false);
+      setError(null);
+    }
+  }, [isOpen]);
+
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -90,7 +103,7 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
       setUploading(true);
       const res = await fetchWithAuth(API_ENDPOINTS.GALLERY.CREATE, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       if (!res.ok) throw new Error('Failed to upload image');
       const data = await res.json();
@@ -106,6 +119,20 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
   const handleUseImage = (item) => {
     onImageSelected(item.url || buildImageUrl(item.url));
     onClose();
+  };
+
+  const handleDeleteImage = async (item) => {
+    if (!window.confirm('Delete this image from gallery?')) return;
+
+    try {
+      const res = await fetchWithAuth(API_ENDPOINTS.GALLERY.DELETE(item.id), {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to delete image');
+      setGallery((prev) => prev.filter((galleryItem) => galleryItem.id !== item.id));
+    } catch (err) {
+      alert(err.message || 'Unable to delete image');
+    }
   };
 
   const isGalleryVideo = (item) => {
@@ -201,7 +228,7 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
               </div>
             </div>
           ) : (
-            <div>
+            <div className="max-h-[60vh] overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
               {loading ? (
                 <div className="p-8 text-center text-gray-500">Loading gallery...</div>
               ) : error ? (
@@ -209,10 +236,11 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
               ) : gallery.length === 0 ? (
                 <div className="p-8 text-center text-gray-500">No images found in gallery.</div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {gallery.map((item) => (
-                    <div key={item.id} className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-                      <div className="h-40 bg-gray-100 overflow-hidden">
+                <div className="h-[60vh] overflow-y-auto p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {gallery.map((item) => (
+                      <div key={item.id} className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm bg-white">
+                        <div className="h-40 bg-gray-100 overflow-hidden">
                           {isGalleryVideo(item) ? (
                             <video src={buildImageUrl(item.url)} className="h-full w-full object-cover" controls />
                           ) : (
@@ -223,19 +251,29 @@ export default function ImageUploader({ isOpen, onClose, onImageSelected }) {
                             />
                           )}
                         </div>
-                      <div className="p-4">
-                        <p className="text-sm font-medium text-gray-800 truncate">{item.type}</p>
-                        <p className="text-xs text-gray-500 mt-1 truncate">{item.url}</p>
-                              <button
-                                type="button"
-                                onClick={() => handleUseImage(item)}
-                                className="mt-4 w-full inline-flex items-center justify-center rounded-lg bg-green-600 text-white px-3 py-2 text-sm hover:bg-green-700"
-                              >
-                                Use this
-                              </button>
+                        <div className="p-4">
+                          <p className="text-sm font-medium text-gray-800 truncate">{item.type}</p>
+                          <p className="text-xs text-gray-500 mt-1 truncate">{item.url}</p>
+                          <div className="mt-4 space-y-2">
+                            <button
+                              type="button"
+                              onClick={() => handleUseImage(item)}
+                              className="w-full inline-flex items-center justify-center rounded-lg bg-green-600 text-white px-3 py-2 text-sm hover:bg-green-700"
+                            >
+                              Use this
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteImage(item)}
+                              className="w-full inline-flex items-center justify-center rounded-lg bg-red-600 text-white px-3 py-2 text-sm hover:bg-red-700"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

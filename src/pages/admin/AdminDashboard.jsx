@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Calendar, FileText, Image, Plus, Upload } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
-import { fetchWithAuth } from '../../api/apiClient';
+import { fetchWithAuth, logoutAdmin } from '../../api/apiClient';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   const statConfig = [
     { key: 'todayAppointments', label: "Today's Appointments", icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-100' },
     { key: 'totalPatients', label: 'Total Patients', icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
-    { key: 'totalPressReleases', label: 'Total Press Releases', icon: FileText, color: 'text-purple-600', bg: 'bg-purple-100' },
+    { key: 'totalPressReleases', label: 'Total Blog', icon: FileText, color: 'text-purple-600', bg: 'bg-purple-100' },
     { key: 'totalGalleryItems', label: 'Total Gallery Items', icon: Image, color: 'text-orange-600', bg: 'bg-orange-100' },
   ];
 
@@ -28,6 +28,10 @@ export default function AdminDashboard() {
         fetchWithAuth(API_ENDPOINTS.DASHBOARD.RECENT_APPOINTMENTS(5)),
       ]);
 
+      if (statsRes.status === 401 || statsRes.status === 403) {
+        logoutAdmin();
+        return;
+      }
       if (!statsRes.ok) throw new Error('Failed to load dashboard stats');
       if (!patientsRes.ok) throw new Error('Failed to load recent patients');
       if (!appointmentsRes.ok) throw new Error('Failed to load recent appointments');
@@ -168,7 +172,7 @@ export default function AdminDashboard() {
         <h2 className="text-lg font-bold text-gray-800 mr-4">Quick Actions</h2>
         <button className="flex items-center bg-[#1a3a2a] hover:bg-[#2c543f] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           <Plus size={16} className="mr-2" />
-          Add Press Release
+          Add Blog
         </button>
         <button className="flex items-center bg-white border border-[#1a3a2a] text-[#1a3a2a] hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           <Plus size={16} className="mr-2" />

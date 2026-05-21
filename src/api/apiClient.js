@@ -1,3 +1,9 @@
+export const logoutAdmin = () => {
+  localStorage.removeItem('adminAuthenticated');
+  localStorage.removeItem('adminToken');
+  window.location.href = '/admin/login';
+};
+
 export const fetchWithAuth = async (url, options = {}) => {
   const token = localStorage.getItem('adminToken');
   
@@ -12,8 +18,7 @@ export const fetchWithAuth = async (url, options = {}) => {
   });
 
   if (response.status === 401 || response.status === 403) {
-    // Optionally handle unauthorized/forbidden errors (e.g., redirect to login)
-    console.error('Unauthorized or Forbidden access');
+    logoutAdmin();
   }
 
   return response;

@@ -68,18 +68,9 @@ export default function Home() {
 
         const data = await res.json()
         const testimonialsArray = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
-        const mappedTestimonials = testimonialsArray.map((item, index) => ({
-          id: item.id ?? `${item.name ?? index}`,
-          name: item.name ?? item.patientName ?? 'Patient',
-          text: item.feedback ?? item.text ?? item.content ?? '',
-          rating: item.rating ?? 5,
-          location: item.location ?? item.city ?? 'Location',
-          treatment: item.treatment ?? item.service ?? 'Service',
-          avatar: (item.name ?? item.patientName ?? 'P')[0].toUpperCase(),
-        }))
 
-        if (mappedTestimonials.length > 0) {
-          setTestimonialsData(mappedTestimonials)
+        if (testimonialsArray.length > 0) {
+          setTestimonialsData(testimonialsArray)
           setActiveTestimonial(0)
         }
       } catch (error) {
@@ -335,23 +326,30 @@ export default function Home() {
           <div className="max-w-3xl mx-auto">
             {(() => {
               const testimonial = testimonialsData[activeTestimonial]
+              const reviewerName = testimonial.patientName ?? testimonial.patientName ?? 'Patient'
+              const reviewText = testimonial.review ?? testimonial.text ?? ''
+              const reviewDate = testimonial.date ? new Date(testimonial.date).toLocaleDateString('en-IN', {
+                year: 'numeric', month: 'short', day: 'numeric'
+              }) : ''
+              const avatarInitial = (testimonial.patientName ?? reviewText ?? 'P')[0]?.toUpperCase() || 'P'
+
               return (
                 <>
                   <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
                     <Quote size={48} className="text-white/20 mb-6" />
                     <p className="text-lg text-white/90 leading-relaxed mb-8 italic font-light">
-                      "{testimonial.text}"
+                      "{reviewText}"
                     </p>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col md:flex-row md:items-center gap-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-teal-400 rounded-full flex items-center justify-center text-white font-bold">
-                        {testimonial.avatar}
+                        {avatarInitial}
                       </div>
                       <div className="flex-1">
-                        <div className="text-white font-semibold">{testimonial.name}</div>
-                        <div className="text-white/60 text-sm">{testimonial.location} · {testimonial.treatment}</div>
+                        <div className="text-white font-semibold">{reviewerName}</div>
+                        {reviewDate && <div className="text-sm text-white/70">{reviewDate}</div>}
                       </div>
                       <div className="flex items-center gap-1">
-                        <StarRating rating={testimonial.rating} size={16} />
+                        <StarRating rating={testimonial.rating ?? 0} size={16} />
                       </div>
                     </div>
                   </div>

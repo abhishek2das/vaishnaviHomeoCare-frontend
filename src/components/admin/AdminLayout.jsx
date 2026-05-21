@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {  LayoutDashboard,  Calendar,  Users,  MessageSquare,  FileText,  Image as ImageIcon,  Trophy,  HelpCircle,  Settings, LogOut, Menu, X, User, Mail, Monitor } from 'lucide-react';
+import { API_ENDPOINTS } from '../../api/endpoints';
+import { fetchWithAuth } from '../../api/apiClient';
 import image from '../../assets/site_logo_v2.png'
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,6 +27,32 @@ export default function AdminLayout() {
   }, []);
 
   const [isCmsOpen, setIsCmsOpen] = useState(false);
+
+  // Verify authentication token on mount
+  useEffect(() => {
+    const verifyAuthentication = async () => {
+      const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+      if (!isAuthenticated) {
+        navigate('/admin/login', { replace: true });
+        return;
+      }
+
+      try {
+        const res = await fetchWithAuth(API_ENDPOINTS.AUTH.VERIFY);
+        if (!res.ok) {
+          localStorage.removeItem('adminAuthenticated');
+          localStorage.removeItem('adminToken');
+          navigate('/admin/login', { replace: true });
+        }
+      } catch (err) {
+        localStorage.removeItem('adminAuthenticated');
+        localStorage.removeItem('adminToken');
+        navigate('/admin/login', { replace: true });
+      }
+    };
+
+    verifyAuthentication();
+  }, [navigate]);
 
   // Close sidebar on mobile after route change
   useEffect(() => {
@@ -68,7 +96,7 @@ export default function AdminLayout() {
       ]
     },
     { name: 'Testimonials', path: '/admin/testimonials', icon: MessageSquare },
-    { name: 'Press Releases', path: '/admin/press', icon: FileText },
+    { name: 'Blog', path: '/admin/press', icon: FileText },
     { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
     { name: 'Awards', path: '/admin/awards', icon: Trophy },
     { name: 'FAQ', path: '/admin/faq', icon: HelpCircle }, 

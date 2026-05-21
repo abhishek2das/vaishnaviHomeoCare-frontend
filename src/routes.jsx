@@ -22,6 +22,8 @@ import PhotoGallery from './pages/PhotoGallery';
 import VideoGallery from './pages/VideoGallery';
 import BookAppointment from './pages/BookAppointment';
 import Contact from './pages/Contact';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 // Admin Layout & Pages
 import AdminLayout from './components/admin/AdminLayout';
@@ -89,6 +91,8 @@ const router = createBrowserRouter([
       { path: '/videos', element: <VideoGallery /> },
       { path: '/appointment', element: <BookAppointment /> },
       { path: '/contact', element: <Contact /> },
+      { path: '/privacy-policy', element: <PrivacyPolicy /> },
+      { path: '/terms-of-service', element: <TermsOfService /> },
     ],
   },
   { path: '/admin/login', element: <AdminLogin /> },

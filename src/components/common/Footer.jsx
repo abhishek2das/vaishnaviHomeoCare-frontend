@@ -6,7 +6,7 @@ const quickLinks = [
   { label: 'Our Services', path: '/services' },
   { label: 'Awards', path: '/awards' },
   { label: 'Patient FAQ', path: '/faq' },
-  { label: 'Press Release', path: '/press' },
+  { label: 'Blog', path: '/press' },
 ]
 
 const socials = [
@@ -75,8 +75,8 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3">
                 <Mail size={16} className="text-teal-400 flex-shrink-0" />
-                <a href="mailto:info@medicare-clinic.com" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors">
-                  info@medicare-clinic.com
+                <a href="mailto:dr.prachijha15@gmail.com" className="text-sm text-neutral-400 hover:text-teal-400 transition-colors">
+                  dr.prachijha15@gmail.com
                 </a>
               </div>
             </div>
@@ -88,10 +88,10 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-neutral-500">© 2025 Medicare Clinic. All rights reserved.</p>
+          <p className="text-xs text-neutral-500">© 2026 Vaishnavi Homeo Care. All rights reserved.</p>
           <div className="flex items-center gap-5">
-            <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Privacy Policy</a>
-            <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Terms of Service</a>
+            <Link to="/privacy-policy" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Terms of Service</Link>
             <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Disclaimer</a>
           </div>
         </div>

@@ -38,7 +38,7 @@ A complete, modern, responsive multi-page hospital website built with **React + 
 | Hospital Gallery | `/hospital/gallery` |
 | Facilities | `/hospital/facilities` |
 | Testimonials | `/testimonials` |
-| Press Release | `/press` |
+| Blog | `/press` |
 | Photo Gallery | `/gallery` |
 | Video Gallery | `/videos` |
 | Book Appointment | `/appointment` |

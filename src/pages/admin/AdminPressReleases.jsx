@@ -55,12 +55,12 @@ export default function AdminPressReleases() {
       setLoading(true);
       setError(null);
       const res = await fetchWithAuth(API_ENDPOINTS.PRESS_RELEASES.GET_ALL);
-      if (!res.ok) throw new Error('Failed to load press releases');
+      if (!res.ok) throw new Error('Failed to load Blogs');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
       setPressReleases(items);
     } catch (err) {
-      setError(err.message || 'Unable to fetch press releases');
+      setError(err.message || 'Unable to fetch Blog');
       setPressReleases([]);
     } finally {
       setLoading(false);
@@ -80,16 +80,16 @@ export default function AdminPressReleases() {
 
   // Handlers
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this press release?')) return;
+    if (!window.confirm('Are you sure you want to delete this blog?')) return;
 
     try {
       const res = await fetchWithAuth(API_ENDPOINTS.PRESS_RELEASES.DELETE(id), {
         method: 'DELETE'
       });
-      if (!res.ok) throw new Error('Failed to delete press release');
+      if (!res.ok) throw new Error('Failed to delete blog');
       setPressReleases((current) => current.filter((pr) => pr.id !== id));
     } catch (err) {
-      alert(err.message || 'Unable to delete press release');
+      alert(err.message || 'Unable to delete blog');
     }
   };
 
@@ -156,13 +156,13 @@ export default function AdminPressReleases() {
       );
 
       if (!res.ok) {
-        throw new Error(`Failed to ${modalMode === 'add' ? 'create' : 'update'} press release`);
+        throw new Error(`Failed to ${modalMode === 'add' ? 'create' : 'update'} blog`);
       }
 
       await fetchPressReleases();
       setIsModalOpen(false);
     } catch (err) {
-      alert(err.message || 'Unable to save press release');
+      alert(err.message || 'Unable to save blog');
     }
   };
 
@@ -175,8 +175,8 @@ export default function AdminPressReleases() {
     <div className="p-6">
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Press Releases</h1>
-          <p className="text-sm text-gray-500">Manage news articles and announcements.</p>
+          <h1 className="text-2xl font-bold text-gray-800">Blogs</h1>
+          <p className="text-sm text-gray-500">Manage latest news and updates.</p>
         </div>
         <button 
           onClick={() => openModal('add')}
@@ -207,11 +207,11 @@ export default function AdminPressReleases() {
       {loading ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
           <Loader2 className="mx-auto mb-4 animate-spin text-gray-500" size={32} />
-          <p className="text-sm text-gray-600">Loading press releases...</p>
+          <p className="text-sm text-gray-600">Loading blogs...</p>
         </div>
       ) : error ? (
         <div className="bg-red-50 rounded-xl shadow-sm border border-red-100 p-8 text-center">
-          <p className="text-red-700 font-semibold mb-2">Unable to load press releases</p>
+          <p className="text-red-700 font-semibold mb-2">Unable to load blogs</p>
           <p className="text-sm text-red-600 mb-4">{error}</p>
           <button
             onClick={fetchPressReleases}
@@ -286,7 +286,7 @@ export default function AdminPressReleases() {
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                       <ImageIcon size={32} />
                     </div>
-                    <p className="text-gray-500 text-sm font-medium">No press releases found.</p>
+                    <p className="text-gray-500 text-sm font-medium">No blogs found.</p>
                   </td>
                 </tr>
               )}
@@ -303,8 +303,8 @@ export default function AdminPressReleases() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 bg-slate-100 border-b border-slate-300 rounded-t-xl z-10 sticky top-0">
               <h2 className="text-xl font-bold text-gray-800">
-                {modalMode === 'add' && 'Add Press Release'}
-                {modalMode === 'edit' && 'Edit Press Release'}
+                {modalMode === 'add' && 'Add Blog'}
+                {modalMode === 'edit' && 'Edit Blog'}
                 {modalMode === 'view' && 'View Article'}
               </h2>
               <button 

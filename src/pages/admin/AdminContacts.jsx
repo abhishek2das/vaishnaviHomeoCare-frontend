@@ -174,22 +174,13 @@ export default function AdminContacts() {
                     </td>
                     <td className="py-3 px-6 text-sm text-gray-600 whitespace-nowrap">{contact.date}</td>
                     <td className="py-3 px-6 text-sm text-center">
-                      <div className="flex justify-center items-center space-x-2">
-                        <button 
-                          onClick={() => openViewModal(contact)}
-                          className="text-blue-500 hover:text-blue-700 transition-colors p-1.5 bg-blue-50 hover:bg-blue-100 rounded-md"
-                          title="View Details"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(contact.id)}
-                          className="text-red-500 hover:text-red-700 transition-colors p-1.5 bg-red-50 hover:bg-red-100 rounded-md"
-                          title="Delete Message"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                      <button 
+                        onClick={() => openViewModal(contact)}
+                        className="text-blue-500 hover:text-blue-700 transition-colors p-1.5 bg-blue-50 hover:bg-blue-100 rounded-md"
+                        title="View Details"
+                      >
+                        <Eye size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))

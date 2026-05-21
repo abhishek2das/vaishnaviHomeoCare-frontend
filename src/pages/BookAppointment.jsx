@@ -251,16 +251,10 @@ export default function BookAppointment() {
                 </div>
               </div>
 
-              <div className="card p-6 bg-primary-600 border-0">
-                <h4 className="font-display font-bold text-white mb-2">Emergency?</h4>
-                <p className="text-primary-100 text-sm mb-4">For medical emergencies, please call our 24/7 helpline immediately.</p>
-                <a href="tel:+911145670000" className="flex items-center gap-2 text-white font-bold text-lg hover:text-primary-100 transition-colors">
-                  <Phone size={20} /> +91-11-4567-0000
-                </a>
-              </div>
+             
 
               <div className="card p-6">
-                <h3 className="font-display font-bold text-neutral-800 mb-4">OPD Timings</h3>
+                <h3 className="font-display font-bold text-neutral-800 mb-4">Timings</h3>
                 <div className="space-y-2.5">
                   {[
                     { day: 'Monday – Friday', time: '8:00 AM – 8:00 PM' },
