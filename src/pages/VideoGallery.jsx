@@ -28,7 +28,7 @@ export default function VideoGallery() {
         if (mounted) {
           setData(parsed)
           setError(false)
-        }
+        } 
       } catch (err) {
         console.error('Video gallery load error:', err)
         if (mounted) {

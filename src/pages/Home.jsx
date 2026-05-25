@@ -85,14 +85,8 @@ export default function Home() {
 
         const data = await res.json()
         const awardsArray = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
-        const mappedAwards = awardsArray.map((item, index) => ({
-          id: item.id ?? `${item.title ?? index}`,
-          title: item.title ?? item.awardName ?? 'Award',
-          organization: item.organization ?? item.awardedBy ?? 'Organization',
-          year: item.year ?? item.awardedYear ?? new Date().getFullYear(),
-        }))
-
-        if (mappedAwards.length > 0) setAwardsData(mappedAwards)
+        setAwardsData(awardsArray);
+        
       } catch (error) {
         console.error('Failed to load awards:', error)
       }
@@ -395,8 +389,8 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="text-xs text-amber-600 font-semibold mb-1">{award.year}</div>
-                      <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{award.title}</h3>
-                      <p className="text-xs text-neutral-500">{award.organization}</p>
+                      <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{award.name}</h3>
+                      <p className="text-xs text-neutral-500">{award.description}</p>
                     </div>
                   </div>
                 </div>
