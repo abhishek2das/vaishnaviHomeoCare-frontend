@@ -17,9 +17,30 @@ export default function AdminPressReleases() {
   const [modalMode, setModalMode] = useState('add'); // 'add', 'edit', 'view'
   
   const [formData, setFormData] = useState({
-    id: null, title: '', coverImage: '', date: new Date().toISOString().split('T')[0], content: ''
+    id: null,
+    title: '',
+    coverImage: '',
+    date: new Date().toISOString().split('T')[0],
+    content: '',
+    metaTitle: '',
+    metaDescription: '',
+    slug: '',
+    keywords: '',
+    imageAltText: ''
   });
+  const [slugTouched, setSlugTouched] = useState(false);
   const [isImageUploaderOpen, setIsImageUploaderOpen] = useState(false);
+
+  const generateSlug = (text) => {
+    return text
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
 
   const handleContentChange = (value) => {
     setFormData(prev => ({ ...prev, content: value }));
@@ -101,17 +122,28 @@ export default function AdminPressReleases() {
         title: pr.title || '',
         coverImage: pr.coverImage || '',
         date: pr.publishedDate || pr.date || new Date().toISOString().split('T')[0],
-        content: pr.content || ''
+        content: pr.content || '',
+        metaTitle: pr.metaTitle || '',
+        metaDescription: pr.metaDescription || '',
+        slug: pr.slug || generateSlug(pr.title || ''),
+        keywords: pr.keywords || '',
+        imageAltText: pr.imageAltText || ''
       });
     } else {
       setFormData({
-        id: null, 
-        title: '', 
-        coverImage: '', 
+        id: null,
+        title: '',
+        coverImage: '',
         date: new Date().toISOString().split('T')[0],
-        content: ''
+        content: '',
+        metaTitle: '',
+        metaDescription: '',
+        slug: '',
+        keywords: '',
+        imageAltText: ''
       });
     }
+    setSlugTouched(false);
     setIsModalOpen(true);
   };
 
@@ -136,11 +168,43 @@ export default function AdminPressReleases() {
       return;
     }
 
+    const normalizedSlug = generateSlug(formData.slug || formData.title);
+    if (!formData.metaTitle.trim()) {
+      alert('Meta title is required.');
+      return;
+    }
+    if (!formData.metaDescription.trim()) {
+      alert('Meta description is required.');
+      return;
+    }
+    if (!normalizedSlug) {
+      alert('Slug is required.');
+      return;
+    }
+
+    const slugAlreadyExists = pressReleases.some((pr) => {
+      const existingSlug = pr.slug || generateSlug(pr.title || '');
+      return existingSlug === normalizedSlug && pr.id !== formData.id;
+    });
+    if (slugAlreadyExists) {
+      alert('Slug must be unique. Please choose a different slug.');
+      return;
+    }
+    if (!/(<h1\b|<h2\b)/i.test(finalContent)) {
+      alert('Content must include at least one <h1> or <h2> heading.');
+      return;
+    }
+
     const payload = {
       title: formData.title,
       coverImage: formData.coverImage || '',
       content: finalContent,
-      publishedDate: formData.date
+      publishedDate: formData.date,
+      metaTitle: formData.metaTitle,
+      metaDescription: formData.metaDescription,
+      slug: normalizedSlug,
+      keywords: formData.keywords,
+      imageAltText: formData.imageAltText
     };
 
     try {
@@ -287,7 +351,7 @@ export default function AdminPressReleases() {
                       <ImageIcon size={32} />
                     </div>
                     <p className="text-gray-500 text-sm font-medium">No blogs found.</p>
-                  </td>
+                  </td> 
                 </tr>
               )}
             </tbody>
@@ -373,6 +437,16 @@ export default function AdminPressReleases() {
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image Alt Text</label>
+                      <input
+                        type="text"
+                        value={formData.imageAltText}
+                        onChange={(e) => setFormData({...formData, imageAltText: e.target.value})}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Describe the cover image for accessibility"
+                      />
+                    </div>
                   </div>
 
                   {/* Right Column: Text Content */}
@@ -381,13 +455,71 @@ export default function AdminPressReleases() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">Article Title <span className="text-red-500">*</span></label>
                       <input 
                         type="text" required
-                        value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})}
+                        value={formData.title}
+                        onChange={(e) => {
+                          const titleValue = e.target.value;
+                          setFormData((prev) => ({
+                            ...prev,
+                            title: titleValue,
+                            slug: !slugTouched ? generateSlug(titleValue) : prev.slug
+                          }));
+                        }}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 font-medium"
                         placeholder="Enter an engaging title"
                       />
                     </div>
-                    
-                      <div className="flex-1 flex flex-col">
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title <span className="text-red-500">*</span></label>
+                      <input
+                        type="text" required
+                        value={formData.metaTitle}
+                        onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter meta title for SEO"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Slug <span className="text-red-500">*</span></label>
+                      <input
+                        type="text" required
+                        value={formData.slug}
+                        onChange={(e) => {
+                          setSlugTouched(true);
+                          setFormData({...formData, slug: generateSlug(e.target.value)});
+                        }}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="react-seo-guide"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Auto-generated from title, but editable.</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description <span className="text-red-500">*</span></label>
+                      <textarea
+                        value={formData.metaDescription}
+                        onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
+                        maxLength={160}
+                        rows={3}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter a short description (max 160 characters)"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">{formData.metaDescription.length}/160 characters</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
+                      <input
+                        type="text"
+                        value={formData.keywords}
+                        onChange={(e) => setFormData({...formData, keywords: e.target.value})}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="comma-separated keywords"
+                      />
+                    </div>
+
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Content <span className="text-red-500">*</span></label>
                       {/* Limit the editor content area to a fixed height and make it scrollable */}
                       <style>{`.quill-scrollable .ql-editor { max-height: 200px; overflow: auto; }`}</style>

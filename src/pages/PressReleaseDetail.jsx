@@ -3,42 +3,50 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar, ArrowLeft, Share2 } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
-import { pressReleases } from '../data/mockData'
 
 export default function PressReleaseDetail() {
-  const { id } = useParams()
+  const { slug } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [pressRelease, setPressRelease] = useState(null)
   const [error, setError] = useState(null)
 
+  const structuredData = pressRelease
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: pressRelease.metaTitle || pressRelease.title,
+        description: pressRelease.metaDescription || pressRelease.content?.replace(/<[^>]*>/g, '').slice(0, 160),
+        image: pressRelease.coverImage,
+        author: {
+          '@type': 'Person',
+          name: pressRelease.author || 'Vaishnavi Homeo Care Clinic'
+        },
+        datePublished: pressRelease.publishedDate || pressRelease.date
+      }
+    : null
+
   useEffect(() => {
     const loadPressRelease = async () => {
       setLoading(true)
       try {
-        const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_BY_ID(id))
+        const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_BY_SLUG(slug))
         if (!res.ok) throw new Error('Unable to fetch blog')
 
         const data = await res.json()
         setPressRelease(data)
       } catch (err) {
         console.error('Failed to load Blog:', err)
-        // Fallback to mock data
-        const mockData = pressReleases.find(pr => pr.id === parseInt(id))
-        if (mockData) {
-          setPressRelease(mockData)
-        } else {
-          setError('Blog not found')
-        }
+        setError('Blog not found')
       } finally {
         setLoading(false)
       }
     }
 
-    if (id) {
+    if (slug) {
       loadPressRelease()
     }
-  }, [id])
+  }, [slug])
 
   if (loading) {
     return (
@@ -110,11 +118,18 @@ export default function PressReleaseDetail() {
           </button>
 
           {/* Featured Image */}
+          {structuredData && (
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+            />
+          )}
           {pressRelease.coverImage && (
             <div className="mb-8 rounded-lg overflow-hidden">
               <img
                 src={pressRelease.coverImage}
-                alt={pressRelease.title}
+                alt={pressRelease.imageAltText || pressRelease.title}
+                loading="lazy"
                 className="w-full h-96 object-cover"
               />
             </div>

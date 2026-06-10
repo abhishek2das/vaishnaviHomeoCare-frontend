@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, Calendar, FileText, Image, Plus, Upload } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
 import { fetchWithAuth, logoutAdmin } from '../../api/apiClient';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [recentPatients, setRecentPatients] = useState([]);
   const [recentAppointments, setRecentAppointments] = useState([]);
@@ -170,15 +172,15 @@ export default function AdminDashboard() {
       {/* Quick Actions (at the bottom) */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-wrap gap-4 items-center">
         <h2 className="text-lg font-bold text-gray-800 mr-4">Quick Actions</h2>
-        <button className="flex items-center bg-[#1a3a2a] hover:bg-[#2c543f] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button onClick={() => navigate('/admin/press')} className="flex items-center bg-[#1a3a2a] hover:bg-[#2c543f] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           <Plus size={16} className="mr-2" />
           Add Blog
         </button>
-        <button className="flex items-center bg-white border border-[#1a3a2a] text-[#1a3a2a] hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button onClick={() => navigate('/admin/patients')} className="flex items-center bg-white border border-[#1a3a2a] text-[#1a3a2a] hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           <Plus size={16} className="mr-2" />
           Add Patient
         </button>
-        <button className="flex items-center bg-white border border-[#1a3a2a] text-[#1a3a2a] hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button onClick={() => navigate('/admin/gallery')} className="flex items-center bg-white border border-[#1a3a2a] text-[#1a3a2a] hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           <Upload size={16} className="mr-2" />
           Upload Media
         </button>

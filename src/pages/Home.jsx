@@ -84,8 +84,7 @@ export default function Home() {
         if (!res.ok) throw new Error('Unable to fetch awards')
 
         const data = await res.json()
-        const awardsArray = Array.isArray(data) ? data : Array.isArray(data.content) ? data.content : []
-        setAwardsData(awardsArray);
+        setAwardsData(data.content);
         
       } catch (error) {
         console.error('Failed to load awards:', error)
@@ -211,7 +210,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {services.slice(0, 8).map((service, i) => (
               <div key={service.id}
-                className="card p-6 group cursor-pointer hover:-translate-y-1 transition-all duration-300"
+                className="card p-6 group cursor-pointer hover:-translate-y-1 transition-all duration-300 border"
                 style={{ animationDelay: `${i * 50}ms` }}>
                 <ServiceIcon name={service.icon}
                   colorClass={service.color === 'blue' ? 'bg-primary-100 text-primary-600' : 'bg-teal-100 text-teal-600'} />

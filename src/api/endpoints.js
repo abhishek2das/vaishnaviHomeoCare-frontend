@@ -23,6 +23,7 @@ export const API_ENDPOINTS = {
   PRESS_RELEASES: {
     GET_ALL: `${BASE_URL}/press-releases`,
     GET_BY_ID: (id) => `${BASE_URL}/press-releases/${id}`,
+    GET_BY_SLUG: (slug) => `${BASE_URL}/press-releases/slug/${slug}`,
     CREATE: `${BASE_URL}/press-releases`,
     UPDATE: (id) => `${BASE_URL}/press-releases/${id}`,
     DELETE: (id) => `${BASE_URL}/press-releases/${id}`,

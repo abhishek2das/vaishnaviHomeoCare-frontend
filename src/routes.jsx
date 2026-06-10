@@ -86,7 +86,7 @@ const router = createBrowserRouter([
       { path: '/hospital/facilities', element: <Facilities /> },
       { path: '/testimonials', element: <Testimonials /> },
       { path: '/blog', element: <PressRelease /> },
-      { path: '/blog/:id', element: <PressReleaseDetail /> },
+      { path: '/blog/:slug', element: <PressReleaseDetail /> },
       { path: '/gallery', element: <PhotoGallery /> },
       { path: '/videos', element: <VideoGallery /> },
       { path: '/appointment', element: <BookAppointment /> },
