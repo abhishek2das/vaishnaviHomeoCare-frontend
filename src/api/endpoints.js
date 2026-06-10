@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://vaishnavihomeocare.incraftiv.com/api';
+export const BASE_URL = 'https://vaishnavihomeocare.com/api';
 
 export const API_ENDPOINTS = {
   PATIENTS: {

@@ -169,14 +169,6 @@ export default function AdminPressReleases() {
     }
 
     const normalizedSlug = generateSlug(formData.slug || formData.title);
-    if (!formData.metaTitle.trim()) {
-      alert('Meta title is required.');
-      return;
-    }
-    if (!formData.metaDescription.trim()) {
-      alert('Meta description is required.');
-      return;
-    }
     if (!normalizedSlug) {
       alert('Slug is required.');
       return;
@@ -200,12 +192,14 @@ export default function AdminPressReleases() {
       coverImage: formData.coverImage || '',
       content: finalContent,
       publishedDate: formData.date,
-      metaTitle: formData.metaTitle,
-      metaDescription: formData.metaDescription,
       slug: normalizedSlug,
       keywords: formData.keywords,
       imageAltText: formData.imageAltText
     };
+
+    // Only include SEO fields when non-empty so server-side accepts optional SEO
+    if (formData.metaTitle && formData.metaTitle.trim()) payload.metaTitle = formData.metaTitle.trim();
+    if (formData.metaDescription && formData.metaDescription.trim()) payload.metaDescription = formData.metaDescription.trim();
 
     try {
       const res = await fetchWithAuth(
@@ -470,13 +464,13 @@ export default function AdminPressReleases() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title <span className="text-red-500">*</span></label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
                       <input
-                        type="text" required
+                        type="text"
                         value={formData.metaTitle}
                         onChange={(e) => setFormData({...formData, metaTitle: e.target.value})}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter meta title for SEO"
+                        placeholder="Enter meta title for SEO (optional)"
                       />
                     </div>
 
@@ -496,14 +490,14 @@ export default function AdminPressReleases() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description <span className="text-red-500">*</span></label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
                       <textarea
                         value={formData.metaDescription}
                         onChange={(e) => setFormData({...formData, metaDescription: e.target.value})}
                         maxLength={160}
                         rows={3}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter a short description (max 160 characters)"
+                        placeholder="Enter a short description (max 160 characters) — optional"
                       />
                       <p className="text-xs text-gray-500 mt-1">{formData.metaDescription.length}/160 characters</p>
                     </div>

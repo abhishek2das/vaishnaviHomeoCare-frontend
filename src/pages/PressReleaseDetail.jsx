@@ -5,7 +5,8 @@ import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 export default function PressReleaseDetail() {
-  const { slug } = useParams()
+  const params = useParams()
+  const slug = params.slug || params.id || null
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [pressRelease, setPressRelease] = useState(null)
@@ -30,7 +31,13 @@ export default function PressReleaseDetail() {
     const loadPressRelease = async () => {
       setLoading(true)
       try {
-        const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_BY_SLUG(slug))
+        // Use GET_BY_ID when route param is an id (param name 'id' or numeric),
+        // otherwise fall back to GET_BY_SLUG.
+        const isIdParam = Boolean(params.id) || (/^\d+$/.test(slug || ''))
+        const url = isIdParam
+          ? API_ENDPOINTS.PRESS_RELEASES.GET_BY_ID(slug)
+          : API_ENDPOINTS.PRESS_RELEASES.GET_BY_SLUG(slug)
+        const res = await fetch(url)
         if (!res.ok) throw new Error('Unable to fetch blog')
 
         const data = await res.json()
