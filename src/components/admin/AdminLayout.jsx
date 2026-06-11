@@ -98,6 +98,7 @@ export default function AdminLayout() {
     { name: 'Testimonials', path: '/admin/testimonials', icon: MessageSquare },
     { name: 'Blog', path: '/admin/press', icon: FileText },
     { name: 'Gallery', path: '/admin/gallery', icon: ImageIcon },
+    { name: 'Patient Feedback', path: '/admin/patient-feedback', icon: ImageIcon },
     { name: 'Awards', path: '/admin/awards', icon: Trophy },
     { name: 'FAQ', path: '/admin/faq', icon: HelpCircle }, 
     { name: 'Settings', path: '/admin/settings', icon: Settings },

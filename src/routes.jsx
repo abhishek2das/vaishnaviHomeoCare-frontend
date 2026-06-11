@@ -33,12 +33,14 @@ import AdminPatients from './pages/admin/AdminPatients';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
 import AdminPressReleases from './pages/admin/AdminPressReleases';
 import AdminGallery from './pages/admin/AdminGallery';
+import AdminPatientFeedback from './pages/admin/AdminPatientFeedback';
 import AdminAwards from './pages/admin/AdminAwards';
 import AdminFAQ from './pages/admin/AdminFAQ';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminContacts from './pages/admin/AdminContacts';
 import AdminCMS from './pages/admin/AdminCMS';
 import AdminLogin from './pages/admin/AdminLogin';
+import PatientFeedback from './pages/PatientFeedback';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -89,6 +91,7 @@ const router = createBrowserRouter([
       { path: '/blog/:id', element: <PressReleaseDetail /> },
       { path: '/gallery', element: <PhotoGallery /> },
       { path: '/videos', element: <VideoGallery /> },
+      { path: '/patient-feedback', element: <PatientFeedback /> },
       { path: '/appointment', element: <BookAppointment /> },
       { path: '/contact', element: <Contact /> },
       { path: '/privacy-policy', element: <PrivacyPolicy /> },
@@ -110,6 +113,7 @@ const router = createBrowserRouter([
       { path: '/admin/testimonials', element: <AdminTestimonials /> },
       { path: '/admin/press', element: <AdminPressReleases /> },
       { path: '/admin/gallery', element: <AdminGallery /> },
+      { path: '/admin/patient-feedback', element: <AdminPatientFeedback /> },
       { path: '/admin/awards', element: <AdminAwards /> },
       { path: '/admin/faq', element: <AdminFAQ /> },
       { path: '/admin/contacts', element: <AdminContacts /> },

@@ -197,19 +197,19 @@ export default function About() {
             <div className="section-label justify-center">Doctors</div>
             <h2 className="section-title">Our Medical Team</h2>
           </div>
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="flex flex-wrap justify-center gap-10">
             {displayDoctors.map((doctor) => (
-              <div key={doctor.id} className="w-full max-w-[320px] sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)] text-center group">
-                <div className="relative inline-block mb-4">
+              <div key={doctor.id} className="bg-gray-100 py-7 rounded-2xl w-full max-w-[380px] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] text-center group">
+                <div className="relative inline-block mb-5">
                   <img
                     src={doctor.image || 'https://images.unsplash.com/photo-1580281657521-8b7aa7c5d4f9?q=80&w=400&auto=format&fit=crop'}
                     alt={doctor.name}
-                    className="w-32 h-32 rounded-2xl object-cover mx-auto shadow-soft group-hover:shadow-medium transition-all"
+                    className="w-60 h-60 rounded-[28px] object-cover mx-auto shadow-soft group-hover:shadow-medium transition-all"
                   />
                 </div>
-                <h3 className="font-display font-semibold text-neutral-800 mb-1 group-hover:text-primary-600 transition-colors">{doctor.name}</h3>
-                <p className="text-sm text-teal-600 font-medium mb-1">{doctor.specialist}</p>
-                <p className="text-xs text-neutral-400">{doctor.description}</p>
+                <h3 className="font-display font-semibold text-neutral-800 text-xl mb-2 group-hover:text-primary-600 transition-colors">{doctor.name}</h3>
+                <p className="text-lg text-teal-600 font-medium mb-2">{doctor.specialist}</p>
+                <p className="text-base text-neutral-800 leading-relaxed">{doctor.description}</p>
               </div>
             ))}
           </div>

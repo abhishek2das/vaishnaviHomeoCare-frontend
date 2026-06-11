@@ -15,6 +15,7 @@ const navItems = [
       { label: 'Testimonials', path: '/testimonials' },
       { label: 'Photo Gallery', path: '/gallery' },
       { label: 'Video Gallery', path: '/videos' },
+      { label: 'Patient Feedback', path: '/patient-feedback' },
     ]
   },
   { label: 'Patient FAQ', path: '/faq' },
