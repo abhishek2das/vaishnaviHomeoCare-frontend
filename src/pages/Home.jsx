@@ -120,9 +120,9 @@ export default function Home() {
                 Trusted Homeopathic Care Since 2008
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-neutral-900 leading-tight mb-6">
-                Gentle & Effective,{' '}
-                <span className="text-gradient-blue">Homeopathic</span>{' '}
-                Care for You.
+                Homeopathy treatment is based on the {' '}
+                <span className="text-gradient-blue">Holistic</span>{' '}
+                approach.
               </h1>
               <p className="text-lg text-neutral-500 leading-relaxed mb-8 max-w-lg">
                 Specialized homeopathic care for migraines, gynecological concerns, and piles. Our individualized treatment approach focuses on long-term relief, restoring balance, and enhancing overall health through safe and holistic remedies.
