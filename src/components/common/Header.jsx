@@ -11,11 +11,11 @@ const navItems = [
   {
     label: 'Media',
     children: [
-      { label: 'Awards', path: '/awards' },
+      { label: 'Awards', path: '/awards', hidden: true },
       { label: 'Testimonials', path: '/testimonials' },
       { label: 'Photo Gallery', path: '/gallery' },
       { label: 'Video Gallery', path: '/videos' },
-      { label: 'Patient Feedback', path: '/patient-feedback' },
+      { label: 'Patient Progress', path: '/patient-feedback' },
     ]
   },
   { label: 'Patient FAQ', path: '/faq' },
@@ -42,8 +42,8 @@ export default function Header() {
       <div className="bg-primary-700 text-white text-xs py-2 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5"><Clock size={12} /> Mon–Sat: 8AM–8PM | Sun: 9AM–5PM</span>
-            <span className="flex items-center gap-1.5"><MapPin size={12} /> 42, Healthcare Avenue, New Delhi – 110001</span>
+            <span className="flex items-center gap-1.5"><Clock size={12} /> Mon-Thu: 11:00 AM – 1:30PM (Wallfort Woods) | Fri: 11:00 AM – 1:30PM (Kripa Day Care)</span>
+            <span className="flex items-center gap-1.5"><MapPin size={12} /> C-302, Wallfort Woods, Vidhan sabha road, Raipur</span>
           </div>
           <div className="flex items-center gap-4">
             <a href="tel:+911145678900" className="flex items-center gap-1.5 hover:text-teal-200 transition-colors">
@@ -67,7 +67,7 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-1" role="navigation" aria-label="Main navigation">
-            {navItems.map((item) => (
+            {navItems.filter(item => !item.hidden).map((item) => (
               <div key={item.label} className="relative"
                 onMouseEnter={() => item.children && setActiveDropdown(item.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
@@ -86,7 +86,7 @@ export default function Header() {
                 )}
                 {item.children && activeDropdown === item.label && (
                   <div className="absolute top-full left-0 mt-0 w-52 bg-white rounded-xl shadow-strong border-2 border-neutral-100 py-2 animate-fade-in z-50">
-                    {item.children.map(child => (
+                    {item.children.filter(child => !child.hidden).map(child => (
                       <Link key={child.path} to={child.path}
                         className="block px-4 py-2.5 text-sm text-neutral-600 hover:text-primary-600 hover:bg-primary-50 transition-colors">
                         {child.label}
@@ -114,7 +114,7 @@ export default function Header() {
         {isOpen && (
           <div className="lg:hidden bg-white border-t border-neutral-100 shadow-medium animate-slide-up">
             <nav className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-              {navItems.map(item => (
+              {navItems.filter(item => !item.hidden).map(item => (
                 <div key={item.label}>
                   {item.children ? (
                     <div>
@@ -124,7 +124,7 @@ export default function Header() {
                       </button>
                       {activeDropdown === item.label && (
                         <div className="ml-4 border-l-2 border-primary-100 pl-3 mt-1 space-y-1">
-                          {item.children.map(child => (
+                          {item.children.filter(child => !child.hidden).map(child => (
                             <Link key={child.path} to={child.path}
                               className="block px-3 py-2 text-sm text-neutral-500 hover:text-primary-600 transition-colors rounded-lg hover:bg-primary-50">
                               {child.label}

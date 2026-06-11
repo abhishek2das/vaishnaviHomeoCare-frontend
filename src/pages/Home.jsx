@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from '../api/endpoints'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },
-  { value: '2,000+', label: 'Patients Treated', icon: Users },
+  { value: '500+', label: 'Patients Treated', icon: Users },
   { value: '15+', label: 'Expert Doctors', icon: Heart },
   { value: '25+', label: 'Specializations', icon: Shield },
 ]
@@ -135,13 +135,13 @@ export default function Home() {
                   <Phone size={18} /> Emergency: 24/7
                 </a> */}
               </div>
-              <div className="flex flex-wrap gap-5">
+              {/* <div className="flex flex-wrap gap-5">
                 {['NABH Accredited', 'ISO 9001:2015', 'JCI Certified'].map(badge => (
                   <div key={badge} className="flex items-center gap-2 text-sm text-neutral-600">
                     <CheckCircle size={16} className="text-teal-500" /> {badge}
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
             {/* Hero Visual */}
             <div className="relative lg:flex justify-end hidden">
@@ -156,7 +156,7 @@ export default function Home() {
                       <Users size={18} className="text-teal-600" />
                     </div>
                     <div>
-                      <div className="font-bold text-neutral-800">2,000+</div>
+                      <div className="font-bold text-neutral-800">500+</div>
                       <div className="text-xs text-neutral-500">Happy Patients</div>
                     </div>
                   </div>
@@ -232,20 +232,20 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <img src="https://images.unsplash.com/photo-1660212588628-9e81267100e2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              <img src="https://images.unsplash.com/photo-1550159793-ecaa76eaffde?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Clinic exterior" className="rounded-3xl shadow-strong w-full object-cover" style={{ height: '440px' }} />
               <div className="absolute -bottom-6 -right-6 bg-primary-600 rounded-2xl p-6 shadow-strong hidden md:block">
                 <div className="text-center text-white">
-                  <div className="text-4xl font-display font-bold mb-1">10+</div>
+                  <div className="text-4xl font-display font-bold mb-1">16+</div>
                   <div className="text-sm text-primary-200 font-medium">Years of Excellence</div>
                 </div>
               </div>
             </div>
             <div>
-              <div className="section-label">About Medicare Clinic</div>
+              <div className="section-label">About Vaishnavi Homeo Care Clinic</div>
               <h2 className="section-title mb-5">Your Trusted Healthcare Partner Since 2008</h2>
               <p className="text-neutral-500 leading-relaxed mb-5">
-                Medicare Clinic is one of India's premier homeopathic clinics, committed to delivering exceptional holistic care with compassion, innovation, and integrity.
+                Vaishnavi Homeo Care Clinic is one of India's premier homeopathic clinics, committed to delivering exceptional holistic care with compassion, innovation, and integrity.
               </p>
               <p className="text-neutral-500 leading-relaxed mb-8">
                 With decades of experience, expert homeopathic practitioners, and dedicated wellness centers across our three campuses, we are equipped to handle the most complex conditions with confidence.
@@ -254,7 +254,7 @@ export default function Home() {
                 {[
                   { label: 'Natural Healing', sub: 'Constitutional remedies' },
                   { label: 'Expert Practitioners', sub: 'Homeopathic consultants' },
-                  { label: '3 Clinics', sub: 'Across Delhi NCR' },
+                  { label: '2 Clinics', sub: 'Across Raipur' },
                   { label: 'Online Consults', sub: 'Always available' },
                 ].map(item => (
                   <div key={item.label} className="flex items-start gap-3 p-4 bg-neutral-50 rounded-xl">

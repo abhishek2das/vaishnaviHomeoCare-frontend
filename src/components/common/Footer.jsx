@@ -10,11 +10,11 @@ const quickLinks = [
 ]
 
 const socials = [
-  { icon: Facebook, label: 'Facebook', href: '#' },
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Instagram, label: 'Instagram', href: '#' },
-  { icon: Youtube, label: 'YouTube', href: '#' },
-  { icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61589584573491' },
+
+  { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/vaishnavihomeocarer/' },
+  { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/channel/UCBjZIsKVo17OktrbJwzj_xA' },
+
 ]
 
 export default function Footer() {
@@ -32,13 +32,13 @@ export default function Footer() {
 
             </Link>
             <p className="text-sm text-neutral-400 leading-relaxed mb-6">
-              Providing world-class homeopathic care with compassion and innovation since 1985. Your health is our highest priority.
+              Providing world-class homeopathic care with compassion and innovation since 2008. Your health is our highest priority.
             </p>
             <div className="flex items-center gap-3">
               {socials.map(({ icon: Icon, label, href }) => (
-                <a key={label} href={href} aria-label={label}
+                <a key={label} href={href} aria-label={label} target='_blank'
                   className="w-9 h-9 bg-neutral-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110">
-                  <Icon size={15} />
+                  <Icon size={22} />
                 </a>
               ))}
             </div>
@@ -65,7 +65,7 @@ export default function Footer() {
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <MapPin size={16} className="text-teal-400 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-neutral-400">42, Healthcare Avenue,<br />Connaught Place,<br />New Delhi – 110001</p>
+                <p className="text-sm text-neutral-400">C-302, Wallfort Woods,<br />Vidhan sabha road,<br />Raipur – 492001</p>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={16} className="text-teal-400 flex-shrink-0" />
@@ -92,7 +92,6 @@ export default function Footer() {
           <div className="flex items-center gap-5">
             <Link to="/privacy-policy" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Privacy Policy</Link>
             <Link to="/terms-of-service" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Terms of Service</Link>
-            <a href="#" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Disclaimer</a>
           </div>
         </div>
       </div>

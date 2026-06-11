@@ -259,11 +259,13 @@ export default function BookAppointment() {
                     { day: 'Friday', time: '11:00 AM – 1:30 PM', location: 'Kripa Day Care' },
                    
                   ].map(s => (
-                    <div key={s.day} className="flex justify-between items-center text-sm">
-                      <span className="text-neutral-600">{s.day}</span>
-                      <span className="font-semibold text-neutral-800">{s.time}</span>
+                    <>
+                      <div key={s.day} className="flex justify-between items-center text-sm">
+                        <span className="text-neutral-600">{s.day}</span>
+                        <span className="font-semibold text-neutral-800">{s.time}</span>
+                      </div>
                       <span className="text-sm text-teal-600">{s.location}</span>
-                    </div>
+                    </>
                   ))}
                 </div>
               </div>

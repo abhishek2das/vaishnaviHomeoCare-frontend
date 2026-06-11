@@ -63,9 +63,9 @@ export default function PatientFeedback() {
   return (
     <div>
       <PageHero
-        title="Patient Feedback"
-        subtitle="Browse real patient feedback images and stories from our care journey."
-        breadcrumbs={[{ label: 'Patient Feedback' }]}
+        title="Patient Progress"
+        subtitle="Browse real patient progress images and stories from our care journey."
+        breadcrumbs={[{ label: 'Patient Progress' }]}
       />
 
       <section className="py-16 bg-white">
