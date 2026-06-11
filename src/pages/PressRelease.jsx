@@ -20,7 +20,7 @@ export default function PressRelease() {
       const responseData = await res.json()
       const parsed = Array.isArray(responseData)
         ? responseData
-        : Array.isArray(responseData.content)
+        : Array.isArray(responseData.content.sort((a,b)=> b.id-a.id))
           ? responseData.content
           : []
 
