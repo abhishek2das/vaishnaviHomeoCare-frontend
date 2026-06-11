@@ -6,12 +6,6 @@ import { API_ENDPOINTS } from '../api/endpoints'
 
 const iconMap = { Trophy, Award, Shield, Heart, Star, Leaf }
 
-const accreditations = [
-  { name: 'NABH', full: 'National Accreditation Board for Clinics', color: 'bg-blue-50 border-blue-200 text-blue-700' },
-  { name: 'JCI', full: 'Joint Commission International', color: 'bg-teal-50 border-teal-200 text-teal-700' },
-  { name: 'ISO 9001', full: 'Quality Management System', color: 'bg-amber-50 border-amber-200 text-amber-700' },
-  { name: 'NABL', full: 'National Accreditation Board for Labs', color: 'bg-purple-50 border-purple-200 text-purple-700' },
-]
 
 export default function Awards() {
   const [loading, setLoading] = useState(true)
@@ -56,24 +50,6 @@ export default function Awards() {
         subtitle="Celebrating excellence in healthcare — our awards reflect our commitment to quality, safety, and innovation."
         breadcrumbs={[{ label: 'Awards' }]}
       />
-
-      {/* Accreditations */}
-      <section className="py-16 bg-white border-b border-neutral-100">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <div className="section-label justify-center">Trust & Quality</div>
-            <h2 className="section-title">Accreditations & Certifications</h2>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {accreditations.map(acc => (
-              <div key={acc.name} className={`rounded-2xl border-2 p-6 text-center transition-all hover:-translate-y-1 hover:shadow-soft ${acc.color}`}>
-                <div className="text-3xl font-display font-bold mb-2">{acc.name}</div>
-                <p className="text-sm font-medium opacity-80">{acc.full}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Awards Grid */}
       {(loading || data.length > 0) && (

@@ -117,7 +117,7 @@ export default function Home() {
             <div className="animate-slide-up">
               <div className="section-label">
                 <span className="w-2 h-2 bg-teal-500 rounded-full" />
-                Trusted Homeopathic Care Since 1985
+                Trusted Homeopathic Care Since 2008
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-neutral-900 leading-tight mb-6">
                 Gentle & Effective,{' '}
@@ -125,7 +125,7 @@ export default function Home() {
                 Care for You.
               </h1>
               <p className="text-lg text-neutral-500 leading-relaxed mb-8 max-w-lg">
-                Experience gentle and holistic healing through classical homeopathy. Personalized remedies for chronic illnesses, allergies, skin problems, and overall wellness with zero side effects.
+                Specialized homeopathic care for migraines, gynecological concerns, and piles. Our individualized treatment approach focuses on long-term relief, restoring balance, and enhancing overall health through safe and holistic remedies.
               </p>
               <div className="flex flex-wrap gap-4 mb-10">
                 <Link to="/appointment" className="btn-primary text-base py-3.5 px-7">
@@ -243,7 +243,7 @@ export default function Home() {
             </div>
             <div>
               <div className="section-label">About Medicare Clinic</div>
-              <h2 className="section-title mb-5">Your Trusted Healthcare Partner Since 1985</h2>
+              <h2 className="section-title mb-5">Your Trusted Healthcare Partner Since 2008</h2>
               <p className="text-neutral-500 leading-relaxed mb-5">
                 Medicare Clinic is one of India's premier homeopathic clinics, committed to delivering exceptional holistic care with compassion, innovation, and integrity.
               </p>

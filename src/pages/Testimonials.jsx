@@ -54,7 +54,7 @@ export default function Testimonials() {
         <div className="max-w-4xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
           {[
             { value: '4.9/5', label: 'Average Rating' },
-            { value: '50,000+', label: 'Happy Patients' },
+            { value: '500+', label: 'Happy Patients' },
             { value: '98%', label: 'Recommend Us' },
           ].map(s => (
             <div key={s.label}>

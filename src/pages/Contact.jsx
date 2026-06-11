@@ -20,16 +20,15 @@ const contactDetails = [
   {
     icon: MapPin, title: 'Main Clinic',
     items: [
-      { label: 'Address', value: '42, Healthcare Avenue, Connaught Place, New Delhi – 110001' },
-      { label: 'Near', value: 'Rajiv Chowk Metro Station, Gate 5' },
+      { label: 'Address', value: 'C-302, Wallfort Woods, Vidhan sabha road, Raipur' },
     ]
   },
   {
     icon: Clock, title: 'Working Hours',
     items: [
-      { label: 'Mon – Fri', value: '8:00 AM – 8:00 PM' },
-      { label: 'Saturday', value: '8:00 AM – 6:00 PM' },
-      { label: 'Sunday', value: '9:00 AM – 5:00 PM' },
+      { label: 'Monday – Thursday', value: '11:00 AM – 1:30 PM', location: 'Wallfort Woods' },
+      { label: 'Friday', value:  '11:00 AM – 1:30 PM', location: 'Kripa Day Care' },
+      
     ]
   },
 ]
@@ -146,6 +145,7 @@ export default function Contact() {
                     <div key={item.label}>
                       <div className="text-xs text-neutral-400 mb-0.5">{item.label}</div>
                       <div className="text-sm text-neutral-700 font-medium leading-snug">{item.value}</div>
+                      {item.location && <div className="text-xs text-primary-600 font-semibold">{item.location}</div>}
                     </div>
                   ))}
                 </div>
@@ -159,25 +159,16 @@ export default function Contact() {
               <h2 className="section-title mb-6">Find Us</h2>
               <div className="rounded-3xl overflow-hidden shadow-medium" style={{ height: '420px' }}>
                 <iframe
-                  title="Medicare Clinic Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.9268782890857!2d77.20655231508516!3d28.63263598241947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1617952341234!5m2!1sen!2sin"
-                  width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy"
-                  aria-label="Google Maps location of Medicare Clinic"
-                />
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2346.8110906506718!2d81.71982356729511!3d21.292918468904922!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a28e86e93c2a6f7%3A0x2ee493fc63f08d54!2sWallfort%20Woods!5e1!3m2!1sen!2sin!4v1781172372583!5m2!1sen!2sin"
+    width="100%"
+    height="450"
+    style={{ border: 0 }}
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+/>
               </div>
-              {/* Branches */}
-              <div className="mt-6 grid sm:grid-cols-2 gap-4">
-                {[
-                  { name: 'North Campus', addr: '15, Rohini Sector 9, New Delhi', phone: '+91-11-4567-8910' },
-                  { name: 'Noida Center', addr: 'Plot 7, Sector 62, Noida, UP', phone: '+91-120-456-7890' },
-                ].map(branch => (
-                  <div key={branch.name} className="bg-neutral-50 rounded-2xl p-4 border border-neutral-100">
-                    <div className="font-semibold text-neutral-800 text-sm mb-1">{branch.name}</div>
-                    <p className="text-xs text-neutral-500 mb-1.5">{branch.addr}</p>
-                    <a href={`tel:${branch.phone}`} className="text-xs text-primary-600 font-semibold hover:underline">{branch.phone}</a>
-                  </div>
-                ))}
-              </div>
+              
             </div>
 
             {/* Contact Form */}

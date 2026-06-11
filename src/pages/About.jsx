@@ -5,14 +5,12 @@ import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 const locations = [
-  { name: 'Medicare Main Clinic', address: '42, Healthcare Avenue, Connaught Place, New Delhi', beds: 300, type: 'Main Branch' },
-  { name: 'Medicare North Clinic', address: '15, Rohini Sector 9, New Delhi', beds: 150, type: 'Secondary Branch' },
-  { name: 'Medicare Noida Center', address: 'Plot 7, Sector 62, Noida, UP', beds: 100, type: 'Specialty Center' },
+  { name: 'Medicare Main Clinic', address: 'C-302, Wallfort Woods, Vidhan sabha road, Raipur', beds: 300, type: 'Main Branch' },
 ]
 
 export default function About() {
   const [description, setDescription] = useState(
-    'Founded in 1985 by Dr. Ramesh Agarwal, Medicare Clinic began as a small wellness center with a singular mission: to provide affordable, world-class holistic healthcare to every individual, regardless of their background.'
+    'Founded in 2008 by Dr. Prachi Jha, Medicare Clinic began as a small wellness center with a singular mission: to provide affordable, world-class holistic healthcare to every individual, regardless of their background.'
   )
   const [vision, setVision] = useState(
     'To be the most trusted and innovative healthcare institution in India, setting benchmarks in clinical outcomes, patient experience, and medical education that inspire healthcare systems worldwide.'
@@ -105,9 +103,9 @@ export default function About() {
               <Link to="/appointment" className="btn-primary">Book a Consultation <ArrowRight size={16} /></Link>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <img src="https://images.unsplash.com/photo-1725267882596-2d08e560b250?q=80&w=1353&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Clinic lobby" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
-              <img src="https://images.unsplash.com/photo-1638988562241-0e40dffe16ee?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Doctors" className="rounded-2xl object-cover w-full h-48 shadow-soft mt-6" />
-              <img src="https://media.istockphoto.com/id/2206195187/photo/close-up-of-a-female-chemist-making-a-medicine-in-a-laboratory.webp?a=1&b=1&s=612x612&w=0&k=20&c=QFkbyxDARGtOzEczSzsg8QTfUiDyXZNcXCUyMDGoZcQ=" alt="Equipment" className="rounded-2xl object-cover w-full h-48 shadow-soft -mt-6" />
+              <img src="https://etimg.etb2bimg.com/photo/101841354.cms" alt="Clinic lobby" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
+              <img src="https://shmch-chapra.org/wp-content/uploads/2025/09/homeo.jpg" alt="Doctors" className="rounded-2xl object-cover w-full h-48 shadow-soft mt-6" />
+              <img src="https://cns-payload-prod-01-content.global.ssl.fastly.net/payload-media/Naturopathy.webp" alt="Equipment" className="rounded-2xl object-cover w-full h-48 shadow-soft -mt-6" />
               <img src="https://images.unsplash.com/photo-1758691462430-81160850496c?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Patient care" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
             </div>
           </div>

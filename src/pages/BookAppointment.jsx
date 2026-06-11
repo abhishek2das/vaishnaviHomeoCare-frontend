@@ -240,8 +240,6 @@ export default function BookAppointment() {
                     'Confirmation call within 2 hours',
                     'No advance payment required',
                     'Easy rescheduling up to 24 hrs prior',
-                    '120+ specialist doctors available',
-                    'Zero waiting time with pre-booked slots',
                   ].map(item => (
                     <div key={item} className="flex items-start gap-2.5">
                       <CheckCircle size={16} className="text-teal-500 mt-0.5 flex-shrink-0" />
@@ -257,14 +255,14 @@ export default function BookAppointment() {
                 <h3 className="font-display font-bold text-neutral-800 mb-4">Timings</h3>
                 <div className="space-y-2.5">
                   {[
-                    { day: 'Monday – Friday', time: '8:00 AM – 8:00 PM' },
-                    { day: 'Saturday', time: '8:00 AM – 6:00 PM' },
-                    { day: 'Sunday', time: '9:00 AM – 5:00 PM' },
-                    { day: 'Emergency', time: '24 Hours / 7 Days' },
+                    { day: 'Monday – Thursday', time: '11:00 AM – 1:30 PM', location: 'Wallfort Woods' },
+                    { day: 'Friday', time: '11:00 AM – 1:30 PM', location: 'Kripa Day Care' },
+                   
                   ].map(s => (
                     <div key={s.day} className="flex justify-between items-center text-sm">
                       <span className="text-neutral-600">{s.day}</span>
                       <span className="font-semibold text-neutral-800">{s.time}</span>
+                      <span className="text-sm text-teal-600">{s.location}</span>
                     </div>
                   ))}
                 </div>

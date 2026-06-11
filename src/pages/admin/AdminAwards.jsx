@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Trash2, X, Plus, Trophy } from 'lucide-react';
+import ImageUploader from '../../components/common/ImageUploader';
 import { API_ENDPOINTS } from '../../api/endpoints';
 import { fetchWithAuth } from '../../api/apiClient';
 
@@ -13,8 +14,9 @@ export default function AdminAwards() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add', 'edit'
   const [formData, setFormData] = useState({
-    id: null, name: '', year: new Date().getFullYear(), description: ''
+    id: null, name: '', year: new Date().getFullYear(), description: '', image: ''
   });
+  const [showImageUploader, setShowImageUploader] = useState(false);
   
   const fetchAwards = async () => {
     try {
@@ -42,8 +44,12 @@ export default function AdminAwards() {
       const payload = {
         name: formData.name,
         year: formData.year,
-        description: formData.description
+        description: formData.description,
       };
+
+      if (formData.image) {
+        payload.imageUrl = formData.image;
+      }
   
       try {
         const res = await fetchWithAuth(
@@ -90,7 +96,8 @@ export default function AdminAwards() {
         id: null, 
         name: '', 
         year: new Date().getFullYear(), 
-        description: ''
+        description: '',
+        image: ''
       });
     }
     setIsModalOpen(true);
@@ -228,6 +235,43 @@ export default function AdminAwards() {
                     placeholder="Brief details about the award..."
                   ></textarea>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                  <div className="flex items-center gap-4">
+                    {formData.image ? (
+                      <div className="flex items-center gap-4">
+                        <img src={formData.image} alt="award" className="w-28 h-20 object-cover rounded-md border" />
+                        <div className="flex flex-col">
+                          <button
+                            type="button"
+                            onClick={() => setShowImageUploader(true)}
+                            className="px-3 py-2 bg-gray-100 rounded-md text-sm text-gray-700 hover:bg-gray-200"
+                          >
+                            Change Image
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
+                            className="mt-2 px-3 py-2 bg-red-50 text-red-600 rounded-md text-sm hover:bg-red-100"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowImageUploader(true)}
+                          className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                        >
+                          Upload Image
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-gray-100">
@@ -247,6 +291,16 @@ export default function AdminAwards() {
             </form>
           </div>
         </div>
+      )}
+      {showImageUploader && (
+        <ImageUploader
+          isOpen={showImageUploader}
+          onClose={() => setShowImageUploader(false)}
+          onImageSelected={(url) => {
+            setFormData(prev => ({ ...prev, image: url }));
+            setShowImageUploader(false);
+          }}
+        />
       )}
     </div>
   );

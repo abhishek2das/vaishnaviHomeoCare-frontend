@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
-
+import image from  '../assets/about_image.png'
 export default function Services() {
   const [serviceList, setServiceList] = useState([])
 
@@ -82,16 +82,35 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="section-label">Why Medicare Clinic</div>
+              <div className="section-label">Why Vaishnavi Homeo Care Clinic</div>
               <h2 className="section-title mb-6">Excellence Across Every Specialization</h2>
               <div className="space-y-5">
                 {[
-                  { title: 'Advanced Diagnostics', desc: 'Latest imaging and pathology labs for accurate, fast diagnosis.' },
-                  { title: 'Multidisciplinary Approach', desc: 'Teams of specialists collaborate on complex cases for holistic care.' },
-                  { title: 'Evidence-Based Protocols', desc: 'Treatment protocols aligned with the latest international guidelines.' },
-                  { title: 'Minimal Wait Times', desc: 'Streamlined appointment system to reduce patient waiting.' },
-                  { title: 'Transparent Billing', desc: 'Clear, itemized billing with no hidden charges and insurance support.' },
-                ].map(item => (
+  {
+    title: "Women's Health Care",
+    desc: "Comprehensive homeopathic treatment for PCOD, menstrual disorders, fibroids, leucorrhoea, and infertility with a personalized approach."
+  },
+  {
+    title: "Migraine Treatment",
+    desc: "Safe and effective homeopathic solutions to help manage chronic migraines and recurring headaches naturally."
+  },
+  {
+    title: "Digestive & Anorectal Care",
+    desc: "Specialized treatment for piles, fistula, constipation, gas, and other digestive concerns without invasive procedures."
+  },
+  {
+    title: "Joint & Spine Care",
+    desc: "Holistic management of joint pain, arthritis-related discomfort, and disc prolapse to improve mobility and quality of life."
+  },
+  {
+    title: "Skin & Hair Care",
+    desc: "Personalized remedies for psoriasis, allergies, hair fall, and leucoderma to promote healthier skin and hair."
+  },
+  {
+    title: "Respiratory Care",
+    desc: "Natural treatment options for asthma, sinusitis, chronic cough, recurrent colds, and other respiratory conditions."
+  }
+].map(item => (
                   <div key={item.title} className="flex items-start gap-4">
                     <div className="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <div className="w-2.5 h-2.5 bg-teal-500 rounded-full" />
@@ -105,7 +124,7 @@ export default function Services() {
               </div>
             </div>
             <div>
-              <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=600&h=500&fit=crop"
+              <img src={image}
                 alt="Clinic environment" className="rounded-3xl shadow-strong w-full object-cover" style={{ height: '440px' }} />
             </div>
           </div>
