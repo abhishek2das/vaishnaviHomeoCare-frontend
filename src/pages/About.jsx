@@ -87,7 +87,7 @@ export default function About() {
     <div>
       <PageHero
         title="About Vaishnavi Homeo Care"
-        subtitle="Three decades of holistic healing, natural innovation, and compassionate care — built on a foundation of trust and clinical excellence."
+        subtitle="Where advanced homeopathy meets mental clarity. We treat the whole person, not just the physical symptoms, for a deeper kind of healing."
         breadcrumbs={[{ label: 'About Us' }]}
       />
 

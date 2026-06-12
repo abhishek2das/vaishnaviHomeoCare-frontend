@@ -3,6 +3,7 @@ import { ArrowRight, CalendarDays, Phone, Shield, Award, Users, Heart, Star, Che
 import { useState, useEffect } from 'react'
 import { services } from '../data/mockData'
 import StarRating from '../components/common/StarRating'
+import OnlineChip from '../components/common/OnlineChip'
 import { API_ENDPOINTS } from '../api/endpoints'
 
 const stats = [
@@ -115,8 +116,8 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24 lg:py-28">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-up">
-              <div className="section-label">
-                <span className="w-2 h-2 bg-teal-500 rounded-full" />
+              <OnlineChip to="/appointment" text="Online & In-Clinic Treatment Available" /> <br />
+              <div className="section-label mt-6">
                 Trusted Homeopathic Care Since 2008
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-neutral-900 leading-tight mb-6">
@@ -125,12 +126,13 @@ export default function Home() {
                 approach.
               </h1>
               <p className="text-lg text-neutral-500 leading-relaxed mb-8 max-w-lg">
-                Specialized homeopathic care for migraines, gynecological concerns, and piles. Our individualized treatment approach focuses on long-term relief, restoring balance, and enhancing overall health through safe and holistic remedies.
+                Specialized homeopathic care for migraines, gynecological concerns, and piles. Our individualized treatment approach focuses on permanent cure, restoring balance, and enhancing overall health through safe and holistic remedies.
               </p>
-              <div className="flex flex-wrap gap-4 mb-10">
+              <div className="flex flex-wrap gap-4 mb-10 items-center">
                 <Link to="/appointment" className="btn-primary text-base py-3.5 px-7">
                   <CalendarDays size={18} /> Book Appointment
                 </Link>
+                
                 {/* <a href="tel:+911145670000" className="btn-secondary text-base py-3.5 px-7">
                   <Phone size={18} /> Emergency: 24/7
                 </a> */}
@@ -236,7 +238,7 @@ export default function Home() {
                 alt="Clinic exterior" className="rounded-3xl shadow-strong w-full object-cover" style={{ height: '440px' }} />
               <div className="absolute -bottom-6 -right-6 bg-primary-600 rounded-2xl p-6 shadow-strong hidden md:block">
                 <div className="text-center text-white">
-                  <div className="text-4xl font-display font-bold mb-1">16+</div>
+                  <div className="text-4xl font-display font-bold mb-1">14+</div>
                   <div className="text-sm text-primary-200 font-medium">Years of Excellence</div>
                 </div>
               </div>

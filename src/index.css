@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+.animated_chip{
+   background: linear-gradient(
+    135deg,
+    #ecf3fd,
+    #74d6f7,
+    #72ffd0,
+    #ebe1fe
+  );
+  background-size: 300% 300%;
+  animation: gradientMove 4s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .logo_font{
   font-family: 'Sansita', sans-serif;
 }

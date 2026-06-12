@@ -256,7 +256,7 @@ export default function BookAppointment() {
                 <div className="space-y-2.5">
                   {[
                     { day: 'Monday – Thursday', time: '11:00 AM – 1:30 PM', location: 'Wallfort Woods' },
-                    { day: 'Friday', time: '11:00 AM – 1:30 PM', location: 'Kripa Day Care' },
+                    { day: 'Friday', time: '5:30 PM – 7:30 PM', location: 'Kripa Day Care' },
                    
                   ].map(s => (
                     <>
