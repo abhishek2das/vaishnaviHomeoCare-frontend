@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://vaishnavihomeocare.com/api';
+export const BASE_URL = 'http://localhost:8091/api';
 
 export const API_ENDPOINTS = {
   PATIENTS: {
@@ -37,6 +37,11 @@ export const API_ENDPOINTS = {
     GET_ALL: `${BASE_URL}/photo-gallery`,
     CREATE: `${BASE_URL}/photo-gallery`,
     DELETE: (id) => `${BASE_URL}/photo-gallery/${id}`
+  },
+  PATIENT_FEEDBACK : {
+    GET_ALL: `${BASE_URL}/patient-feedback`,
+    CREATE: `${BASE_URL}/patient-feedback`,
+    DELETE: (id) => `${BASE_URL}/patient-feedback/${id}`
   },
   AWARDS: {
     GET_ALL: `${BASE_URL}/awards`,
