@@ -7,12 +7,31 @@ import { API_ENDPOINTS } from '../api/endpoints'
 // Custom Slider Component for individual cards
 const MediaSlider = ({ media, onMediaClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef(null);
 
   if (!media || media.length === 0) return (
     <div className="w-full h-full flex items-center justify-center bg-gray-100">
       <ImageOff size={40} className="text-gray-300" />
     </div>
   );
+
+  // reset index when media changes
+  useEffect(() => {
+    setCurrentIndex(0)
+  }, [media])
+
+  // auto-slide logic
+  useEffect(() => {
+    if (!media || media.length <= 1) return;
+    if (isPaused) return;
+
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % media.length);
+    }, 1500);
+
+    return () => clearInterval(intervalRef.current);
+  }, [media, isPaused]);
 
   const handlePrev = (e) => {
     e.stopPropagation();
@@ -25,7 +44,11 @@ const MediaSlider = ({ media, onMediaClick }) => {
   };
 
   return (
-    <div className="relative w-full h-full group/slider overflow-hidden rounded-2xl">
+    <div
+      className="relative w-full h-full group/slider overflow-hidden rounded-2xl border border-gray-200"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div 
         className="w-full h-full flex transition-transform duration-500 ease-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -163,7 +186,7 @@ export default function PatientFeedback() {
         breadcrumbs={[{ label: 'Patient Progress' }]}
       />
 
-      <section className="max-w-7xl mx-auto px-4 -mt-8 relative z-10">
+      <section className="max-w-7xl mx-auto px-4 mt-8 relative z-10">
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
@@ -177,8 +200,7 @@ export default function PatientFeedback() {
             <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-md mx-auto">
               Check back soon for more patient transformations.
             </p>
-            <button
-              onClick={() => setRetryTrigger(prev => prev + 1)}
+            <button onClick={() => setRetryTrigger(prev => prev + 1)}
               className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-2xl transition-all"
             >
               Refresh Gallery
@@ -189,26 +211,28 @@ export default function PatientFeedback() {
             {feedbackList.map((item, fIdx) => (
               <div 
                 key={item.id} 
-                className="bg-white rounded-[2.5rem] shadow-soft-xl border border-gray-100 overflow-hidden flex flex-col group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl"
+                className=" rounded-3xl shadow-soft-xl border border-gray-200 overflow-hidden flex flex-col group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl"
               >
-                <div className="relative aspect-[4/3] bg-gray-50 p-3">
+                <div className="relative aspect-[3/2] p-3">
                   <MediaSlider 
                     media={item.media} 
                     onMediaClick={(mIdx) => openLightbox(fIdx, mIdx)} 
                   />
                 </div>
-                <div className="p-8 flex-1 flex flex-col">
+                <div className="p-6 pt-2 flex-1 flex flex-col">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors leading-tight">
                     {item.title}
                   </h3>
                   <div className="w-12 h-1.5 bg-primary-100 rounded-full mb-4 group-hover:w-20 transition-all duration-500"></div>
-                  <p className="text-gray-500 text-sm leading-relaxed line-clamp-3 flex-1 mb-6">
-                    {item.description || 'Success story of a patient treated at Vaishnavi Homeo Care.'}
-                  </p>
-                  <div className="pt-6 border-t border-gray-50 flex items-center justify-between mt-auto">
+                  <div
+                    className="text-gray-500 text-sm leading-relaxed flex-1 mb-6"
+                    style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    dangerouslySetInnerHTML={{ __html: item.description || 'Success story of a patient treated at Vaishnavi Homeo Care.' }}
+                  />
+                  <div className="pt-3 border-t border-gray-50 flex items-center justify-between mt-auto">
                     <button 
                       onClick={() => openLightbox(fIdx, 0)}
-                      className="text-primary-700 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all px-4 py-2 bg-primary-50 rounded-xl hover:bg-primary-100"
+                      className="text-primary-700 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all px-4 py-2 bg-primary-100 rounded-xl hover:bg-primary-100"
                     >
                       Case Details <ChevronRight size={16} />
                     </button>
@@ -311,7 +335,7 @@ export default function PatientFeedback() {
 
             {/* Sidebar Details */}
             <div className="hidden lg:flex flex-col w-[400px] self-stretch">
-              <div className="bg-[#161920] rounded-[2rem] p-10 border border-white/5 h-full flex flex-col overflow-y-auto shadow-2xl">
+              <div className="bg-[#161920] rounded-2xl p-6 border border-white/5 h-full flex flex-col min-h-0 shadow-2xl">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="h-[2px] w-8 bg-primary-500"></div>
                   <span className="text-primary-400 text-[10px] font-black uppercase tracking-[0.3em]">Patient Journey</span>
@@ -322,19 +346,19 @@ export default function PatientFeedback() {
                 </h4>
 
                 <div className="space-y-8 flex-1">
-                  <div className="bg-[#1c212b] rounded-2xl p-7 border border-white/5">
+                  <div className="bg-[#1c212b] rounded-2xl p-7 border border-white/5 max-h-44 overflow-auto">
                     <div className="flex items-center gap-3 text-white/50 mb-4 text-xs font-bold uppercase tracking-[0.1em]">
                       <FileText size={16} className="text-primary-500" /> Case Summary
                     </div>
-                    <p className="text-gray-300 text-[15px] leading-relaxed font-medium">
-                      {feedbackList[lightbox.feedbackIdx].description || 'Detailed success story of the patient treatment process.'}
-                    </p>
+                    <div className="text-gray-300 text-[15px] leading-relaxed font-medium"
+                      dangerouslySetInnerHTML={{ __html: feedbackList[lightbox.feedbackIdx].description || 'Detailed success story of the patient treatment process.' }}
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-[#1c212b] rounded-2xl p-6 border border-white/5">
                       <div className="flex items-center gap-3 text-white/50 mb-2.5 text-[10px] font-bold uppercase tracking-widest">
-                        <Calendar size={14} className="text-primary-400" /> Created
+                        <Calendar size={14} className="text-primary-400" /> Updated
                       </div>
                       <p className="text-white text-sm font-bold">{formatDate(feedbackList[lightbox.feedbackIdx].createdAt)}</p>
                     </div>

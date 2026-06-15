@@ -1,8 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { Trash2, X, Plus, ImageIcon, Film, LayoutGrid } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { Trash2, X, Plus, ImageIcon, Film, LayoutGrid, Edit, Play } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
 import { fetchWithAuth } from '../../api/apiClient';
 import ImageUploader from '../../components/common/ImageUploader';
+
+// Inline Card media slider for admin cards (auto-slide, pause on hover)
+const CardMediaSlider = ({ media }) => {
+  const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => setIdx(0), [media]);
+
+  useEffect(() => {
+    if (!media || media.length <= 1) return;
+    if (paused) return;
+    ref.current = setInterval(() => setIdx(i => (i + 1) % media.length), 1500);
+    return () => clearInterval(ref.current);
+  }, [media, paused]);
+
+  if (!media || media.length === 0) return (
+    <div className="w-full h-full flex items-center justify-center bg-gray-100">
+      <Film size={24} className="text-gray-300" />
+    </div>
+  );
+
+  const m = media[idx];
+  return (
+    <div
+      className="w-full h-full relative group overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {m.type === 'VIDEO' ? (
+        <div className="w-full h-full bg-black flex items-center justify-center">
+          <video src={m.url} className="w-full h-full object-cover" />
+        </div>
+      ) : (
+        <img src={m.url} alt="" className="w-full h-full object-cover" />
+      )}
+      {media.length > 1 && (
+        <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md">
+          {idx + 1} / {media.length}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function AdminPatientFeedback() {
   const [feedbackList, setFeedbackList] = useState([]);
@@ -19,6 +65,7 @@ export default function AdminPatientFeedback() {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [videoOverlayUrl, setVideoOverlayUrl] = useState(null);
 
   const fetchFeedback = async () => {
     try {
@@ -42,6 +89,25 @@ export default function AdminPatientFeedback() {
     setFormData({ id: null, title: '', description: '', media: [] });
     setIsModalOpen(false);
   };
+
+  const handleDescriptionChange = (value) => {
+    setFormData(prev => ({ ...prev, description: value }));
+  };
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['blockquote', 'code-block'],
+      ['link', 'image'],
+      ['clean']
+    ]
+  };
+
+  const quillFormats = [
+    'header', 'bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'blockquote', 'code-block', 'link', 'image'
+  ];
 
   const handleMediaSelected = (url) => {
     const type = url.match(/\.(mp4|webm|ogg|mov)$|video/i) ? 'VIDEO' : 'IMAGE';
@@ -129,27 +195,14 @@ export default function AdminPatientFeedback() {
           {feedbackList.map((item) => (
             <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group flex flex-col">
               <div className="relative aspect-video bg-gray-100 overflow-hidden">
-                {item.media && item.media.length > 0 && (
-                  <>
-                    {item.media[0].type === 'VIDEO' ? (
-                      <video src={item.media[0].url} className="w-full h-full object-cover" />
-                    ) : (
-                      <img src={item.media[0].url} alt={item.title} className="w-full h-full object-cover" />
-                    )}
-                    {item.media.length > 1 && (
-                      <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md flex items-center gap-1">
-                        <LayoutGrid size={12} /> +{item.media.length - 1} more
-                      </div>
-                    )}
-                  </>
-                )}
+                <CardMediaSlider media={item.media} />
                 <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => { setFormData(item); setIsModalOpen(true); }}
-                    className="bg-white/90 hover:bg-white text-gray-700 p-1.5 rounded-lg shadow-sm"
+                    className="bg-white/90 hover:bg-white text-gray-700 p-1.5 flex items-center gap-1 rounded-lg shadow-sm"
                     title="Edit"
                   >
-                    <Plus size={16} />
+                    <Edit size={16} /> <span className="text-xs">Edit</span>
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
@@ -162,7 +215,11 @@ export default function AdminPatientFeedback() {
               </div>
               <div className="p-4 flex-1 flex flex-col">
                 <h3 className="font-semibold text-gray-800 text-base mb-1 truncate">{item.title}</h3>
-                <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">{item.description}</p>
+                <div
+                  className="text-sm text-gray-500 mb-4 flex-1"
+                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  dangerouslySetInnerHTML={{ __html: item.description || '' }}
+                />
                 <p className="text-xs text-gray-400 mt-auto">Created on {formatDate(item.createdAt)}</p>
               </div>
             </div>
@@ -209,13 +266,17 @@ export default function AdminPatientFeedback() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={4}
-                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none"
-                  placeholder="Describe the patient's journey and results..."
-                />
+                <style>{`.quill-scrollable .ql-editor { max-height: 180px; overflow: auto; }`}</style>
+                <div className="quill-scrollable">
+                  <ReactQuill
+                    theme="snow"
+                    value={formData.description}
+                    onChange={handleDescriptionChange}
+                    modules={quillModules}
+                    formats={quillFormats}
+                    placeholder="Describe the patient's journey and results..."
+                  />
+                </div>
               </div>
 
               <div>
@@ -234,19 +295,26 @@ export default function AdminPatientFeedback() {
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
                     {formData.media.map((m, index) => (
                       <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
-                        {m.type === 'VIDEO' ? (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Film size={24} className="text-gray-400" />
-                          </div>
-                        ) : (
-                          <img src={m.url} alt="" className="w-full h-full object-cover" />
-                        )}
-                        <button
-                          onClick={() => removeMedia(index)}
-                          className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X size={12} />
-                        </button>
+                                    {m.type === 'VIDEO' ? (
+                                      <div className="w-full h-full flex items-center justify-center bg-black/5 relative">
+                                        <img src={m.thumbnail || ''} alt="video" className="w-full h-full object-cover" />
+                                        <button
+                                          onClick={() => setVideoOverlayUrl(m.url)}
+                                          className="absolute inset-0 m-auto w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-md"
+                                          title="Play video"
+                                        >
+                                          <Play size={18} />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <img src={m.url} alt="" className="w-full h-full object-cover" />
+                                    )}
+                                    <button
+                                      onClick={() => removeMedia(index)}
+                                      className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                      <X size={12} />
+                                    </button>
                       </div>
                     ))}
                     <button
@@ -296,6 +364,23 @@ export default function AdminPatientFeedback() {
         onClose={() => setIsUploaderOpen(false)}
         onImageSelected={handleMediaSelected}
       />
+
+      {videoOverlayUrl && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setVideoOverlayUrl(null)}
+        >
+          <div className="relative w-full max-w-3xl">
+            <button
+              onClick={() => setVideoOverlayUrl(null)}
+              className="absolute -top-6 -right-6 bg-white/10 hover:bg-white/20 text-white rounded-full p-2"
+            >
+              <X size={20} />
+            </button>
+            <video src={videoOverlayUrl} controls autoPlay className="w-full h-auto rounded-lg bg-black" />
+          </div>
+        </div>
+      )}
 
       {showSuccess && (
         <div className="fixed bottom-6 right-6 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">

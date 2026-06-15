@@ -106,7 +106,7 @@ export default function About() {
               <img src="https://etimg.etb2bimg.com/photo/101841354.cms" alt="Clinic lobby" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
               <img src="https://shmch-chapra.org/wp-content/uploads/2025/09/homeo.jpg" alt="Doctors" className="rounded-2xl object-cover w-full h-48 shadow-soft mt-6" />
               <img src="https://cns-payload-prod-01-content.global.ssl.fastly.net/payload-media/Naturopathy.webp" alt="Equipment" className="rounded-2xl object-cover w-full h-48 shadow-soft -mt-6" />
-              <img src="https://images.unsplash.com/photo-1758691462430-81160850496c?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Patient care" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
+              <img src="https://images.unsplash.com/photo-1638988562241-0e40dffe16ee?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Patient care" className="rounded-2xl object-cover w-full h-48 shadow-soft" />
             </div>
           </div>
         </div>
@@ -195,19 +195,19 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <div className="section-label justify-center">Doctors</div>
-            <h2 className="section-title">Our Medical Team</h2>
+            <h2 className="section-title">Our Homeopathic Experts</h2>
           </div>
           <div className="flex flex-wrap justify-center gap-10">
             {displayDoctors.map((doctor) => (
-              <div key={doctor.id} className="bg-gray-100 py-7 rounded-2xl w-full max-w-[380px] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] text-center group">
-                <div className="relative inline-block mb-5">
+              <div key={doctor.id} className="border border-gray-300 p-4 rounded-3xl w-full max-w-[380px] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] text-center group">
+                <div className="relative inline-block w-full mb-3">
                   <img
                     src={doctor.image || 'https://images.unsplash.com/photo-1580281657521-8b7aa7c5d4f9?q=80&w=400&auto=format&fit=crop'}
                     alt={doctor.name}
-                    className="w-60 h-60 rounded-[28px] object-cover mx-auto shadow-soft group-hover:shadow-medium transition-all"
+                    className="w-full h-64 rounded-2xl object-cover mx-auto shadow-soft group-hover:shadow-medium transition-all"
                   />
                 </div>
-                <h3 className="font-display font-semibold text-neutral-800 text-xl mb-2 group-hover:text-primary-600 transition-colors">{doctor.name}</h3>
+                <h3 className="font-display bg-blue-100 py-2 rounded-xl font-semibold text-neutral-800 text-xl mb-2 group-hover:text-primary-600 transition-colors">{doctor.name}</h3>
                 <p className="text-lg text-teal-600 font-medium mb-2">{doctor.specialist}</p>
                 <p className="text-base text-neutral-800 leading-relaxed">{doctor.description}</p>
               </div>
