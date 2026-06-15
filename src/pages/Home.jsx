@@ -5,6 +5,7 @@ import { services } from '../data/mockData'
 import StarRating from '../components/common/StarRating'
 import OnlineChip from '../components/common/OnlineChip'
 import { API_ENDPOINTS } from '../api/endpoints'
+import hero_image from '../assets/homepage_img.png'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },
@@ -110,7 +111,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-hero">
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-teal-50/60 to-transparent" />
-          <div className="absolute -top-32 -left-32 w-96 h-96 bg-primary-100/40 rounded-full blur-3xl" />
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-primary-200/40 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-0 w-80 h-80 bg-teal-100/50 rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 py-16 md:py-24 lg:py-28">
@@ -146,11 +147,11 @@ export default function Home() {
               </div> */}
             </div>
             {/* Hero Visual */}
-            <div className="relative lg:flex justify-end hidden">
+            <div className="relative lg:flex justify-center hidden">
               <div className="relative w-full max-w-md">
-                <img src="https://images.unsplash.com/photo-1676803704427-496b1de33baa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Doctor consultation" className="rounded-3xl shadow-strong w-full object-cover"
-                  style={{ height: '480px' }} />
+                <div className="wavy-circle mx-auto" style={{ '--s': '580px' }}>
+                  <img src={hero_image} alt="Doctor consultation" className="shadow-strong" />
+                </div>
                 {/* Floating cards */}
                 <div className="absolute -left-12 top-1/4 bg-white rounded-2xl shadow-strong p-4 animate-float">
                   <div className="flex items-center gap-3">
@@ -163,7 +164,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="absolute -right-8 bottom-1/4 bg-white rounded-2xl shadow-strong p-4 animate-float animate-delay-300">
+                <div className="absolute -right-40 bottom-1/4 bg-white rounded-2xl shadow-strong p-4 animate-float animate-delay-300">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
                       <Star size={18} className="text-primary-600 fill-primary-600" />

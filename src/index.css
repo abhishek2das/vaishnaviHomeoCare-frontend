@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+.wavy-circle {
+  --s: 300px; /* adjust to control the size */
+
+  width: var(--s); 
+  aspect-ratio: 1;
+  --g:/calc(var(--s)*0.195) calc(var(--s)*0.195) radial-gradient(50% 50%,#000 99%,#0000 101%) no-repeat;
+  mask: calc(50% + var(--s)*0.378) calc(50% + var(--s)*0) var(--g),calc(50% + var(--s)*0.327) calc(50% + var(--s)*0.189) var(--g),calc(50% + var(--s)*0.189) calc(50% + var(--s)*0.327) var(--g),calc(50% + var(--s)*0) calc(50% + var(--s)*0.378) var(--g),calc(50% + var(--s)*-0.189) calc(50% + var(--s)*0.327) var(--g),calc(50% + var(--s)*-0.327) calc(50% + var(--s)*0.189) var(--g),calc(50% + var(--s)*-0.378) calc(50% + var(--s)*0) var(--g),calc(50% + var(--s)*-0.327) calc(50% + var(--s)*-0.189) var(--g),calc(50% + var(--s)*-0.189) calc(50% + var(--s)*-0.327) var(--g),calc(50% + var(--s)*0) calc(50% + var(--s)*-0.378) var(--g),calc(50% + var(--s)*0.189) calc(50% + var(--s)*-0.327) var(--g),calc(50% + var(--s)*0.327) calc(50% + var(--s)*-0.189) var(--g),radial-gradient(calc(var(--s)*0.452),#000 99%,#0000 101%) subtract,calc(50% + var(--s)*0.516) calc(50% + var(--s)*0.138) var(--g),calc(50% + var(--s)*0.378) calc(50% + var(--s)*0.378) var(--g),calc(50% + var(--s)*0.138) calc(50% + var(--s)*0.516) var(--g),calc(50% + var(--s)*-0.138) calc(50% + var(--s)*0.516) var(--g),calc(50% + var(--s)*-0.378) calc(50% + var(--s)*0.378) var(--g),calc(50% + var(--s)*-0.516) calc(50% + var(--s)*0.138) var(--g),calc(50% + var(--s)*-0.516) calc(50% + var(--s)*-0.138) var(--g),calc(50% + var(--s)*-0.378) calc(50% + var(--s)*-0.378) var(--g),calc(50% + var(--s)*-0.138) calc(50% + var(--s)*-0.516) var(--g),calc(50% + var(--s)*0.138) calc(50% + var(--s)*-0.516) var(--g),calc(50% + var(--s)*0.378) calc(50% + var(--s)*-0.378) var(--g),calc(50% + var(--s)*0.516) calc(50% + var(--s)*-0.138) var(--g);
+  position: relative;
+  z-index: 0;
+  transform-origin: center center;
+  /* rotate the mask while the img counter-rotates to keep image visually static */
+  animation: rotateMask var(--rotate-duration, 28s) linear infinite;
+}
+
+.bg-hero{
+ 
+  --s: 25px; /* control the size*/
+  --c1: #f6faf5;
+  --c2: #ffffff;
+  
+  --c:#0000 79%,var(--c1) 81% 99%,var(--c2) 101% 150%,#0000 0;
+  background:
+    radial-gradient(var(--s) at 100% 100%,var(--c)),
+    radial-gradient(var(--s) at 100% 0   ,var(--c)) calc(3*var(--s)/2) 0,
+    radial-gradient(var(--s) at 0    100%,var(--c)) calc(  var(--s)/2) 0,
+    radial-gradient(var(--s) at 0    0   ,var(--c)) calc(2*var(--s)) 0,
+    repeating-linear-gradient(90deg,
+      var(--c1) 0 calc(20%/3),#0000 0 calc(70%/3),
+      var(--c1) 0 30%,#0000 0 50%) calc(var(--s)/-5) 0 var(--c2);
+  background-size: calc(3*var(--s)) calc(5*var(--s)/2);
+
+}
+
+.wavy-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: center center;
+  /* counter-rotate the image so it appears static while the parent mask rotates */
+  animation: rotateMask var(--rotate-duration, 28s) linear infinite reverse;
+}
+
+@keyframes rotateMask {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .animated_chip{
    background: linear-gradient(
     135deg,
