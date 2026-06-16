@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar, ArrowLeft, Share2 } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
 
@@ -99,8 +100,28 @@ export default function PressReleaseDetail() {
     )
   }
 
+  const metaTitle = pressRelease.metaTitle || pressRelease.title || 'Blog | Vaishnavi Homeo Care Clinic';
+  const metaDescription = pressRelease.metaDescription || pressRelease.content?.replace(/<[^>]*>/g, '').slice(0, 160) || '';
+
   return (
     <div>
+      <Helmet>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        {pressRelease.keywords && <meta name="keywords" content={pressRelease.keywords} />}
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        {pressRelease.coverImage && <meta property="og:image" content={pressRelease.coverImage} />}
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        {pressRelease.coverImage && <meta name="twitter:image" content={pressRelease.coverImage} />}
+      </Helmet>
       <PageHero
         title={pressRelease.title}
         subtitle="Latest news and announcements"
