@@ -321,7 +321,7 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-5 mb-8">
                 {[
                   { label: 'Natural Healing', sub: 'Constitutional remedies' },
-                  { label: 'Expert Practitioners', sub: 'Homeopathic consultants' },
+                  { label: 'Holistic Care Specialists', sub: 'Homeopathic consultants' },
                   { label: '2 Clinics', sub: 'Across Raipur' },
                   { label: 'Online Consults', sub: 'Always available' },
                 ].map(item => (

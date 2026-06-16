@@ -289,11 +289,11 @@ export default function PatientFeedback() {
 
       {lightbox && (
         <div
-          className="fixed inset-0 z-[100] bg-[#0a0c10] flex items-center justify-center p-4 md:p-8 overflow-hidden"
+          className="fixed inset-0 z-[100] bg-[#0a0c10] flex items-start lg:items-center justify-center p-4 md:p-8 overflow-y-auto lg:overflow-hidden"
           onClick={closeLightbox}
         >
           {/* Header Controls */}
-          <div className="absolute top-0 left-0 right-0 h-20 flex items-center justify-between px-6 z-20 bg-[#161920] border-b border-white/5">
+          <div className="fixed top-0 left-0 right-0 h-20 flex items-center justify-between px-6 z-20 bg-[#161920] border-b border-white/5">
              <div className="flex items-center gap-4">
                 <div className="bg-primary-600 p-2 rounded-xl shadow-lg">
                   <FileText className="text-white" size={20} />
@@ -312,10 +312,10 @@ export default function PatientFeedback() {
           </div>
           
           {/* Main Content Area */}
-          <div onClick={e => e.stopPropagation()} className="w-full h-full max-w-[1440px] flex flex-col lg:flex-row items-center justify-center gap-8 pt-24 pb-12">
+          <div onClick={e => e.stopPropagation()} className="w-full max-w-[1440px] flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-8 mt-24 lg:mt-0 lg:pt-24 pb-12 lg:h-full">
             
             {/* Media Section */}
-            <div className="flex-1 w-full h-full flex flex-col gap-6 items-center min-w-0">
+            <div className="flex-1 w-full h-[50vh] lg:h-full flex flex-col gap-6 items-center min-w-0 shrink-0 lg:shrink">
               <div className="relative flex-1 w-full bg-[#11141a] rounded-[2rem] overflow-hidden shadow-2xl border border-white/5 group/main">
                 {feedbackList[lightbox.feedbackIdx].media[lightbox.mediaIdx].type === 'VIDEO' ? (
                   <video 
@@ -374,7 +374,7 @@ export default function PatientFeedback() {
             </div>
 
             {/* Sidebar Details */}
-            <div className="hidden lg:flex flex-col w-[400px] self-stretch">
+            <div className="flex flex-col w-full lg:w-[400px] self-stretch shrink-0">
               <div className="bg-[#161920] rounded-2xl p-6 border border-white/5 h-full flex flex-col min-h-0 shadow-2xl">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="h-[2px] w-8 bg-primary-500"></div>
@@ -420,7 +420,7 @@ export default function PatientFeedback() {
             </div>
 
             {/* Mobile Metadata */}
-            <div className="lg:hidden text-center pb-6 px-4">
+            <div className="hidden text-center pb-6 px-4">
               <h4 className="text-white text-xl font-bold">{feedbackList[lightbox.feedbackIdx].title}</h4>
               <p className="text-white/50 text-xs mt-3 font-semibold uppercase tracking-widest">
                 File {lightbox.mediaIdx + 1} of {feedbackList[lightbox.feedbackIdx].media.length}
