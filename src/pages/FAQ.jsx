@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
-import hero_image from '../assets/hero_image.png'
+import hero_image from '../assets/hero_image.webp'
 import { Search, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonText } from '../components/common/LoadingSkeleton'

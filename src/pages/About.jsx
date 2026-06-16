@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import hero_image from '../assets/hero_image.png'
+import hero_image from '../assets/hero_image.webp'
 import { Link } from 'react-router-dom'
 import { Target, Eye, ArrowRight, MapPin, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'

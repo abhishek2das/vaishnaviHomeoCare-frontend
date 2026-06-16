@@ -6,7 +6,7 @@ import { services } from '../data/mockData'
 import StarRating from '../components/common/StarRating'
 import OnlineChip from '../components/common/OnlineChip'
 import { API_ENDPOINTS } from '../api/endpoints'
-import hero_image from '../assets/hero_image.png'
+import hero_image from '../assets/hero_image.webp'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },

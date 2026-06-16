@@ -3,7 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {  LayoutDashboard,  Calendar,  Users,  MessageSquare,  FileText,  Image as ImageIcon,  Trophy,  HelpCircle,  Settings, LogOut, Menu, X, User, Mail, Monitor } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
 import { fetchWithAuth } from '../../api/apiClient';
-import image from '../../assets/site_logo_v2.png'
+import image from '../../assets/site_logo_v2.webp'
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);

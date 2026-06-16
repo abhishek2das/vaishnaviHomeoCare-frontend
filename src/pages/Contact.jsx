@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import hero_image from '../assets/hero_image.png'
+import hero_image from '../assets/hero_image.webp'
 import { Phone, Mail, MapPin, Clock, Send, User, MessageSquare, Loader, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'

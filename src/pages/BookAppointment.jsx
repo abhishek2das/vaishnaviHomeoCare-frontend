@@ -3,7 +3,7 @@ import { CalendarDays, CheckCircle, User, Phone, MessageSquare, Loader } from 'l
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
 import { Helmet } from 'react-helmet-async'
-import hero_image from '../assets/hero_image.png'
+import hero_image from '../assets/hero_image.webp'
 
 const initialForm = {
   name: '', mobile: '', date: '', message: '',

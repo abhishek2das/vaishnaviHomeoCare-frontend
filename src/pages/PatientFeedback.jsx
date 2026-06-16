@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, ImageOff, ChevronLeft, ChevronRight, Play, Maximize2, Calendar, FileText } from 'lucide-react'
 import { Helmet } from 'react-helmet-async'
-import hero_image from '../assets/hero_image.png'
+import hero_image from '../assets/hero_image.webp'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
 import { API_ENDPOINTS } from '../api/endpoints'

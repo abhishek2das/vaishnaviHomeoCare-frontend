@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import { API_ENDPOINTS } from '../../api/endpoints';
-import logo from '../../assets/site_logo_v2.png';
+import logo from '../../assets/site_logo_v2.webp';
 
 const ADMIN_AUTH_KEY = 'adminAuthenticated';
 

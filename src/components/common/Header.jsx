@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown, Phone, Clock, MapPin, Heart } from 'lucide-react'
-import image from '../../assets/site_logo_v2.png'
+import image from '../../assets/site_logo_v2.webp'
 
 const navItems = [
   { label: 'Home', path: '/' },
