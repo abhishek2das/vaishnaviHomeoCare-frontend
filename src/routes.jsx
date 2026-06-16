@@ -9,12 +9,9 @@ import Footer from './components/common/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
-import Doctors from './pages/Doctors';
 import Awards from './pages/Awards';
 import FAQ from './pages/FAQ';
 import Infrastructure from './pages/hospital/Infrastructure';
-import PhotoGalleryHospital from './pages/hospital/PhotoGalleryHospital';
-import Facilities from './pages/hospital/Facilities';
 import Testimonials from './pages/Testimonials';
 import PressRelease from './pages/PressRelease';
 import PressReleaseDetail from './pages/PressReleaseDetail';
@@ -80,12 +77,11 @@ const router = createBrowserRouter([
       { path: '/', element: <Home /> },
       { path: '/about', element: <About /> },
       { path: '/services', element: <Services /> },
-      { path: '/doctors', element: <Doctors /> },
+      
       { path: '/awards', element: <Navigate to="/" replace /> },
       { path: '/faq', element: <FAQ /> },
       { path: '/hospital/infrastructure', element: <Infrastructure /> },
-      { path: '/hospital/gallery', element: <PhotoGalleryHospital /> },
-      { path: '/hospital/facilities', element: <Facilities /> },
+      
       { path: '/testimonials', element: <Testimonials /> },
       { path: '/blog', element: <PressRelease /> },
       { path: '/blog/:id', element: <PressReleaseDetail /> },

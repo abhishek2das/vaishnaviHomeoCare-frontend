@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import { Search, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { SkeletonText } from '../components/common/LoadingSkeleton'
@@ -67,6 +69,12 @@ export default function FAQ() {
   const [search, setSearch] = useState('')
   const [openItems, setOpenItems] = useState({})
 
+  const seoTitle = 'Patient FAQ — Vaishnavi Homeo Care'
+  const seoDescription = 'Answers to frequently asked questions about appointments, treatments, billing, and services at Vaishnavi Homeo Care Clinic.'
+  const seoKeywords = 'homeopathy faq, patient faq, appointment questions, homeopathy clinic FAQ, Vaishnavi Homeo Care'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
+
   useEffect(() => {
     let mounted = true
 
@@ -104,6 +112,35 @@ export default function FAQ() {
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": filteredFaqs.slice(0,50).map(f => ({
+            "@type": "Question",
+            "name": f.question,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": f.answer
+            }
+          }))
+        })}</script>
+      </Helmet>
       <PageHero
         title="Patient FAQ"
         subtitle="Find quick answers to your questions about appointments, services, billing, and more."

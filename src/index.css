@@ -4,7 +4,6 @@
 
 .wavy-circle {
   --s: 300px; /* adjust to control the size */
-
   width: var(--s); 
   aspect-ratio: 1;
   --g:/calc(var(--s)*0.195) calc(var(--s)*0.195) radial-gradient(50% 50%,#000 99%,#0000 101%) no-repeat;

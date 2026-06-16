@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react'
 import { Play, X, VideoOff } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
 import { API_ENDPOINTS } from '../api/endpoints'
@@ -46,6 +48,12 @@ export default function VideoGallery() {
 
   const displayed = data
 
+  const seoTitle = 'Video Gallery — Vaishnavi Homeo Care'
+  const seoDescription = 'Watch educational content, patient stories, and facility tours from Vaishnavi Homeo Care Clinic.'
+  const seoKeywords = 'video gallery, patient stories, educational videos, homeopathy videos'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
+
   const getVideoSource = (item) => {
     if (!item) return null
     return item.videoUrl || item.url || item.source || item.embedUrl || null
@@ -72,6 +80,37 @@ export default function VideoGallery() {
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": seoTitle,
+          "description": seoDescription,
+          "url": seoUrl,
+          "hasPart": data.slice(0,100).map(v => ({
+            "@type": "VideoObject",
+            "name": v.title || v.name || '',
+            "description": v.description || v.caption || '',
+            "thumbnailUrl": v.thumbnail || v.poster || null,
+            "contentUrl": v.videoUrl || v.url || v.source || null
+          }))
+        })}</script>
+      </Helmet>
       <PageHero
         title="Video Gallery"
         subtitle="Watch educational content, patient stories, and facility tours from Medicare Clinic."

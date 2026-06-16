@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, ImageOff, ChevronLeft, ChevronRight, Play, Maximize2, Calendar, FileText } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
 import { API_ENDPOINTS } from '../api/endpoints'
@@ -178,8 +180,46 @@ export default function PatientFeedback() {
     return new Date(val).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
+  const seoTitle = 'Patient Success Stories — Vaishnavi Homeo Care'
+  const seoDescription = 'Witness real transformations and clinical results from our homeopathy care at Vaishnavi Homeo Care. Read patient success stories and treatment outcomes.'
+  const seoKeywords = 'patient success stories, treatment outcomes, homeopathy case studies, Vaishnavi Homeo Care'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
+
   return (
     <div className="bg-[#fcfcfd] min-h-screen pb-20">
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": seoTitle,
+          "description": seoDescription,
+          "url": seoUrl,
+          "hasPart": feedbackList.slice(0,100).map(item => ({
+            "@type": "Article",
+            "headline": item.title || item.headline || '',
+            "author": item.author || item.createdBy || '',
+            "datePublished": item.createdAt || item.date || '',
+            "image": (item.media || []).map(m => m.url).filter(Boolean),
+            "description": item.description || ''
+          }))
+        })}</script>
+      </Helmet>
       <PageHero
         title="Patient Success Stories"
         subtitle="Witness real transformations and clinical results from our homeopathy care."

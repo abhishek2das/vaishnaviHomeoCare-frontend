@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import { Link } from 'react-router-dom'
 import { Target, Eye, ArrowRight, MapPin, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
@@ -82,9 +84,57 @@ export default function About() {
   }, [])
 
   const displayDoctors = doctors
+  const seoTitle = 'About Vaishnavi Homeo Care — Trusted Homeopathy Clinic in Raipur'
+  const seoDescription = description
+  const seoKeywords = 'about vaishnavi homeo care, homeopathy clinic, homeopathic clinic raipur, holistic care, Dr. Prachi Jha'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        {/* JSON-LD structured data */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "MedicalClinic",
+            "name": "Vaishnavi Homeo Care",
+            "description": "${seoDescription}",
+            "url": "${seoUrl}",
+            "logo": "${seoImage}",
+            "telephone": "+918103828005",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "C-302, Wallfort Woods, Vidhan sabha road",
+              "addressLocality": "Raipur",
+              "addressRegion": "Chhattisgarh",
+              "postalCode": "492001",
+              "addressCountry": "IN"
+            },
+            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 21.292918468904922,
+              "longitude": 81.71982356729511
+            }
+          }`}
+        </script>
+      </Helmet>
       <PageHero
         title="About Vaishnavi Homeo Care"
         subtitle="Where advanced homeopathy meets mental clarity. We treat the whole person, not just the physical symptoms, for a deeper kind of healing."

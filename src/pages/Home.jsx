@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, CalendarDays, Phone, Shield, Award, Users, Heart, Star, ChevronLeft, ChevronRight, Quote, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { services } from '../data/mockData'
 import StarRating from '../components/common/StarRating'
 import OnlineChip from '../components/common/OnlineChip'
 import { API_ENDPOINTS } from '../api/endpoints'
-import hero_image from '../assets/homepage_img.png'
+import hero_image from '../assets/hero_image.png'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },
@@ -105,8 +106,71 @@ export default function Home() {
     }
   }, [testimonialsData])
 
+  // SEO CONFIGURATIONS AND METADATA  
+  const seoTitle = 'Vaishnavi Homeo Care Clinic — Trusted Homeopathic Care in Raipur'
+  const seoDescription = 'Vaishnavi Homeo Care Clinic offers personalized homeopathic treatment for migraines, gynecological concerns, piles and more. Book online or in-clinic consultations with experienced practitioners.'
+  const seoKeywords = 'homeopathy clinic, homeopathic treatment, homeopathic doctor, migraines treatment, gynecological homeopathy, piles treatment, Vaishnavi Homeo Care, Raipur homeopathy, online consultation, natural remedies'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
+
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        {/* JSON-LD structured data */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "MedicalClinic",
+                "name": "Vaishnavi Homeo Care",
+                "description": "${seoDescription}",
+                "url": "${seoUrl}",
+                "logo": "${seoImage}",
+                "telephone": "+918103828005",
+                "address": {
+                  "@type": "PostalAddress",
+                  "streetAddress": "C-302, Wallfort Woods, Vidhan sabha road",
+                  "addressLocality": "Raipur",
+                  "addressRegion": "Chhattisgarh",
+                  "postalCode": "492001",
+                  "addressCountry": "IN"
+                  },
+                  "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+                  "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": 21.292918468904922,
+                    "longitude": 81.71982356729511
+                  }
+                  }
+              },
+              {
+                "@type": "WebSite",
+                "url": "${seoUrl}",
+                "name": "Vaishnavi Homeo Care",
+                "description": "${seoDescription}"
+              }
+            ]
+          }`}
+        </script>
+      </Helmet>
       {/* HERO */}
       <section className="relative overflow-hidden bg-hero">
         <div className="absolute inset-0">
@@ -119,7 +183,7 @@ export default function Home() {
             <div className="animate-slide-up">
               <OnlineChip to="/appointment" text="Online & In-Clinic Treatment Available" /> <br />
               <div className="section-label mt-6">
-                Trusted Homeopathic Care Since 2008
+                Trusted Homeopathic Care
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-neutral-900 leading-tight mb-6">
                 Homeopathy treatment is based on the {' '}
@@ -284,8 +348,8 @@ export default function Home() {
               <div className="section-label">Meet Our Experts</div>
               <h2 className="section-title">World-Class Medical Team</h2>
             </div>
-            <Link to="/doctors" className="text-primary-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all text-sm">
-              View All Doctors <ArrowRight size={16} />
+            <Link to="/about" className="text-primary-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all text-sm">
+              View Our Team <ArrowRight size={16} />
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

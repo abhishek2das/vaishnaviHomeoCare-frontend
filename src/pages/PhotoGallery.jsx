@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronLeft, ChevronRight, ZoomIn, ImageOff } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import PageHero from '../components/common/PageHero'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
 import { API_ENDPOINTS } from '../api/endpoints'
@@ -15,6 +17,12 @@ export default function PhotoGallery() {
   const [limit, setLimit] = useState(10)
 
   const displayed = images
+
+  const seoTitle = 'Photo Gallery — Vaishnavi Homeo Care'
+  const seoDescription = 'A visual journey through our world-class facilities, infrastructure, and care environment at Vaishnavi Homeo Care Clinic.'
+  const seoKeywords = 'photo gallery, clinic photos, facility images, Vaishnavi Homeo Care gallery'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
 
   const openLightbox = (idx) => setLightbox(idx)
   const closeLightbox = () => setLightbox(null)
@@ -65,6 +73,35 @@ export default function PhotoGallery() {
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": seoTitle,
+          "description": seoDescription,
+          "url": seoUrl,
+          "hasPart": images.slice(0,100).map(img => ({
+            "@type": "ImageObject",
+            "contentUrl": img.url || img.src || img.imageUrl || img.path || '',
+            "caption": img.caption || img.alt || ''
+          }))
+        })}</script>
+      </Helmet>
       <PageHero
         title="Photo Gallery"
         subtitle="A visual journey through our world-class facilities, infrastructure, and care environment."

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Quote, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import PageHero from '../components/common/PageHero'
 import StarRating from '../components/common/StarRating'
 import { SkeletonCard } from '../components/common/LoadingSkeleton'
@@ -11,6 +13,12 @@ export default function Testimonials() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [page, setPage] = useState(1)
+
+  const seoTitle = 'Patient Testimonials — Vaishnavi Homeo Care'
+  const seoDescription = 'Real patient testimonials and success stories from Vaishnavi Homeo Care Clinic. Read authentic reviews about treatment outcomes and patient experiences.'
+  const seoKeywords = 'patient testimonials, homeopathy reviews, Vaishnavi Homeo Care testimonials, patient reviews raipur'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
 
   useEffect(() => {
     const loadTestimonials = async () => {
@@ -43,6 +51,37 @@ export default function Testimonials() {
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": seoTitle,
+          "description": seoDescription,
+          "url": seoUrl,
+          "hasPart": data.slice(0,50).map(item => ({
+            "@type": "Review",
+            "author": item.author || item.name || item.patientName || 'Anonymous',
+            "datePublished": item.date || item.publishedAt || '',
+            "reviewBody": item.text || item.message || item.review || '',
+            "reviewRating": item.rating ? { "@type": "Rating", "ratingValue": item.rating } : undefined
+          }))
+        })}</script>
+      </Helmet>
       <PageHero
         title="Patient Testimonials"
         subtitle="Real stories from real patients — their experiences drive everything we do."

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
@@ -6,6 +7,12 @@ import { API_ENDPOINTS } from '../api/endpoints'
 import image from  '../assets/about_image.png'
 export default function Services() {
   const [serviceList, setServiceList] = useState([])
+
+  const seoTitle = 'Homeopathic Services — Vaishnavi Homeo Care Clinic'
+  const seoDescription = 'Comprehensive homeopathic care across 25+ specializations including migraine, women\'s health, digestive care, joint & spine management, and skin treatments.'
+  const seoKeywords = 'homeopathic services, migraine treatment, women\'s health homeopathy, piles treatment, homeopathy raipur, holistic care'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = image
 
   useEffect(() => {
     const loadServices = async () => {
@@ -34,6 +41,41 @@ export default function Services() {
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        {/* JSON-LD structured data */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "MedicalClinic",
+            "name": "Vaishnavi Homeo Care",
+            "description": "${seoDescription}",
+            "url": "${seoUrl}",
+            "logo": "${seoImage}",
+            "telephone": "+918103828005",
+            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 21.292918468904922,
+              "longitude": 81.71982356729511
+            }
+          }`}
+        </script>
+      </Helmet>
       <PageHero
         title="Our Homeopathic Services"
         subtitle="Comprehensive care across 25+ specializations with expert homeopathic practitioners and state-of-the-art holistic evaluation."

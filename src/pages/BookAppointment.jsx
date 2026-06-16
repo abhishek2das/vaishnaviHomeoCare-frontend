@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { CalendarDays, CheckCircle, User, Phone, MessageSquare, Loader } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 
 const initialForm = {
   name: '', mobile: '', date: '', message: '',
@@ -10,6 +12,7 @@ const initialForm = {
 function FormField({ label, icon: Icon, error, children }) {
   return (
     <div>
+      {/* Form field */}
       <label className="block text-sm font-semibold text-neutral-700 mb-1.5">
         {label} <span className="text-rose-500">*</span>
       </label>
@@ -100,9 +103,48 @@ export default function BookAppointment() {
   // Min date = today
   const today = new Date().toISOString().split('T')[0]
 
+  const seoTitle = 'Book Appointment — Vaishnavi Homeo Care Clinic'
+  const seoDescription = 'Schedule an online or in-clinic appointment with experienced homeopathic practitioners at Vaishnavi Homeo Care Clinic. Fast confirmation and flexible scheduling.'
+  const seoKeywords = 'book appointment homeopathy, homeopathic appointment, online consultation, Vaishnavi Homeo Care appointment'
+  const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const seoImage = hero_image
+
   if (submitted) {
     return (
       <div>
+        <Helmet>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+          <meta name="keywords" content={seoKeywords} />
+          <link rel="canonical" href={seoUrl} />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:url" content={seoUrl} />
+          <meta property="og:image" content={seoImage} />
+
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={seoTitle} />
+          <meta name="twitter:description" content={seoDescription} />
+          <meta name="twitter:image" content={seoImage} />
+          <script type="application/ld+json">
+            {`{
+              "@context": "https://schema.org",
+              "@type": "MedicalClinic",
+              "name": "Vaishnavi Homeo Care",
+              "description": "${seoDescription}",
+              "url": "${seoUrl}",
+              "telephone": "+918103828005",
+              "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 21.292918468904922,
+                "longitude": 81.71982356729511
+              }
+            }`}
+          </script>
+        </Helmet>
         <PageHero title="Book an Appointment" breadcrumbs={[{ label: 'Book Appointment' }]} />
         <section className="py-24 bg-white">
           <div className="max-w-lg mx-auto px-4 text-center">
@@ -146,6 +188,39 @@ export default function BookAppointment() {
 
   return (
     <div>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={seoUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "MedicalClinic",
+            "name": "Vaishnavi Homeo Care",
+            "description": "${seoDescription}",
+            "url": "${seoUrl}",
+            "telephone": "+918103828005",
+            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 21.292918468904922,
+              "longitude": 81.71982356729511
+            }
+          }`}
+        </script>
+      </Helmet>
       <PageHero
         title="Book an Appointment"
         subtitle="Schedule a consultation with our specialist doctors at your convenience."

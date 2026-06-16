@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import hero_image from '../assets/hero_image.png'
 import { Phone, Mail, MapPin, Clock, Send, User, MessageSquare, Loader, CheckCircle } from 'lucide-react'
 import PageHero from '../components/common/PageHero'
 import { API_ENDPOINTS } from '../api/endpoints'
@@ -124,6 +126,48 @@ export default function Contact() {
 
   return (
     <div>
+      <Helmet>
+        <title>Contact Vaishnavi Homeo Care — Get In Touch</title>
+        <meta name="description" content="Contact Vaishnavi Homeo Care Clinic for appointments, queries, and support. Reach us by phone, email or via the contact form." />
+        <meta name="keywords" content="contact vaishnavi homeo care, homeopathy clinic contact, call homeopathy clinic, appointment contact" />
+        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : ''} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Contact Vaishnavi Homeo Care — Get In Touch" />
+        <meta property="og:description" content="Contact Vaishnavi Homeo Care Clinic for appointments, queries, and support. Reach us by phone, email or via the contact form." />
+        <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : ''} />
+        <meta property="og:image" content={hero_image} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Contact Vaishnavi Homeo Care — Get In Touch" />
+        <meta name="twitter:description" content="Contact Vaishnavi Homeo Care Clinic for appointments, queries, and support. Reach us by phone, email or via the contact form." />
+        <meta name="twitter:image" content={hero_image} />
+        {/* JSON-LD structured data */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "MedicalClinic",
+            "name": "Vaishnavi Homeo Care",
+            "description": "Contact Vaishnavi Homeo Care Clinic for appointments, queries, and support.",
+            "url": "${typeof window !== 'undefined' ? window.location.href : ''}",
+            "telephone": "+918103828005",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "C-302, Wallfort Woods, Vidhan sabha road",
+              "addressLocality": "Raipur",
+               "addressRegion": "Chhattisgarh",
+    "postalCode": "492001",
+              "addressCountry": "IN"
+            },
+            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 21.292918468904922,
+              "longitude": 81.71982356729511
+            }
+          }`}
+        </script>
+      </Helmet>
       <PageHero
         title="Contact Us"
         subtitle="We're here to help. Reach out to us through any channel that works best for you."
