@@ -154,7 +154,7 @@ export default function Home() {
                   "postalCode": "492001",
                   "addressCountry": "IN"
                   },
-                  "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+                  "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
                   "geo": {
                     "@type": "GeoCoordinates",
                     "latitude": 21.292918468904922,

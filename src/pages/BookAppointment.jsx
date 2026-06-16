@@ -136,7 +136,7 @@ export default function BookAppointment() {
               "description": "${seoDescription}",
               "url": "${seoUrl}",
               "telephone": "+918103828005",
-              "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+              "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
               "geo": {
                 "@type": "GeoCoordinates",
                 "latitude": 21.292918468904922,
@@ -212,7 +212,7 @@ export default function BookAppointment() {
             "description": "${seoDescription}",
             "url": "${seoUrl}",
             "telephone": "+918103828005",
-            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
             "geo": {
               "@type": "GeoCoordinates",
               "latitude": 21.292918468904922,
@@ -331,7 +331,7 @@ export default function BookAppointment() {
                 <div className="space-y-2.5">
                   {[
                     { day: 'Monday – Thursday', time: '11:00 AM – 1:30 PM', location: 'Wallfort Woods' },
-                    { day: 'Friday', time: '5:30 PM – 7:30 PM', location: 'Kripa Day Care' },
+                    { day: 'Friday', time: '11:00 AM – 1:00 PM', location: 'Kripa Day Care' },
                    
                   ].map(s => (
                     <>

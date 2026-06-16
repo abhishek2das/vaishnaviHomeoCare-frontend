@@ -9,7 +9,7 @@ export default function Services() {
   const [serviceList, setServiceList] = useState([])
 
   const seoTitle = 'Homeopathic Services — Vaishnavi Homeo Care Clinic'
-  const seoDescription = 'Comprehensive homeopathic care across 25+ specializations including migraine, women\'s health, digestive care, joint & spine management, and skin treatments.'
+  const seoDescription = 'Expert homeopathic care tailored to diverse health needs through holistic evaluation and personalized treatment approaches.'
   const seoKeywords = 'homeopathic services, migraine treatment, women\'s health homeopathy, piles treatment, homeopathy raipur, holistic care'
   const seoUrl = typeof window !== 'undefined' ? window.location.href : ''
   const seoImage = image
@@ -67,7 +67,7 @@ export default function Services() {
             "url": "${seoUrl}",
             "logo": "${seoImage}",
             "telephone": "+918103828005",
-            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 17:30-19:30"],
+            "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
             "geo": {
               "@type": "GeoCoordinates",
               "latitude": 21.292918468904922,
@@ -78,7 +78,7 @@ export default function Services() {
       </Helmet>
       <PageHero
         title="Our Homeopathic Services"
-        subtitle="Comprehensive care across 25+ specializations with expert homeopathic practitioners and state-of-the-art holistic evaluation."
+        subtitle="Expert homeopathic care tailored to diverse health needs through holistic evaluation and personalized treatment approaches."
         breadcrumbs={[{ label: 'Services' }]}
       />
 
