@@ -153,7 +153,7 @@ export default function ImageUploader({
             <h2 className="text-lg font-semibold text-gray-900">Image Uploader</h2>
             <p className="text-sm text-gray-500">Upload a new image or choose one from the gallery.</p>
           </div>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button aria-label="Close uploader" onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={20} />
           </button>
         </div>

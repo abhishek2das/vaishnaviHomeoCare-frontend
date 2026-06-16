@@ -206,6 +206,7 @@ export default function AdminFAQ() {
                 {modalMode === 'add' ? 'Add FAQ' : 'Edit FAQ'}
               </h2>
               <button 
+                aria-label="Close dialog"
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >

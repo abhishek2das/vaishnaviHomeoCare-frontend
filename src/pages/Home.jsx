@@ -7,6 +7,7 @@ import StarRating from '../components/common/StarRating'
 import OnlineChip from '../components/common/OnlineChip'
 import { API_ENDPOINTS } from '../api/endpoints'
 import hero_image from '../assets/hero_image.webp'
+import about_us_image from '../assets/about_us_home.avif'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },
@@ -299,8 +300,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <img src="https://images.unsplash.com/photo-1550159793-ecaa76eaffde?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Clinic exterior" className="rounded-3xl shadow-strong w-full object-cover" style={{ height: '440px' }} />
+              <img src={about_us_image}
+                alt="About Vaishnavi Homeo Care Clinic" className="rounded-3xl shadow-strong w-full object-cover" style={{ height: '440px' }} />
               <div className="absolute -bottom-6 -right-6 bg-primary-600 rounded-2xl p-6 shadow-strong hidden md:block">
                 <div className="text-center text-white">
                   <div className="text-4xl font-display font-bold mb-1">14+</div>
@@ -310,7 +311,7 @@ export default function Home() {
             </div>
             <div>
               <div className="section-label">About Vaishnavi Homeo Care Clinic</div>
-              <h2 className="section-title mb-5">Your Trusted Healthcare Partner Since 2008</h2>
+              <h2 className="section-title mb-5">Your Trusted Healthcare Partner</h2>
               <p className="text-neutral-500 leading-relaxed mb-5">
                 Vaishnavi Homeo Care Clinic is one of India's premier homeopathic clinics, committed to delivering exceptional holistic care with compassion, innovation, and integrity.
               </p>

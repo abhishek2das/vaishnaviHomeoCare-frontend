@@ -63,7 +63,7 @@ const MediaSlider = ({ media, onMediaClick }) => {
           >
             {m.type === 'VIDEO' ? (
               <div className="w-full h-full relative bg-black">
-                <video src={m.url} className="w-full h-full object-cover opacity-80" />
+                <video src={m.url} className="w-full h-full object-contain opacity-80" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
                     <Play size={24} className="text-white fill-white ml-1" />
@@ -74,7 +74,7 @@ const MediaSlider = ({ media, onMediaClick }) => {
               <img
                 src={m.url}
                 alt=""
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             )}
             <div className="absolute inset-0 bg-primary-900/10 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -253,7 +253,7 @@ export default function PatientFeedback() {
                 key={item.id} 
                 className=" rounded-3xl shadow-soft-xl border border-gray-200 overflow-hidden flex flex-col group hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl"
               >
-                <div className="relative aspect-[3/2] p-3">
+                <div className="relative h-56 p-3">
                   <MediaSlider 
                     media={item.media} 
                     onMediaClick={(mIdx) => openLightbox(fIdx, mIdx)} 

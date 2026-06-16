@@ -394,8 +394,8 @@ export default function AdminCMS() {
                       <td className="py-3 px-4 text-sm text-green-600 font-bold">{stat.value}</td>
                       <td className="py-3 px-4 text-sm text-center">
                         <div className="flex justify-center space-x-2">
-                          <button onClick={() => openModal('stat', 'edit', stat)} className="text-amber-500 hover:text-amber-700 p-1 bg-amber-50 rounded"><Edit size={14} /></button>
-                          <button onClick={() => handleDelete('stat', stat.id)} className="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded"><Trash2 size={14} /></button>
+                          <button aria-label={`Edit statistic ${stat.key}`} onClick={() => openModal('stat', 'edit', stat)} className="text-amber-500 hover:text-amber-700 p-1 bg-amber-50 rounded"><Edit size={14} /></button>
+                          <button aria-label={`Delete statistic ${stat.key}`} onClick={() => handleDelete('stat', stat.id)} className="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded"><Trash2 size={14} /></button>
                         </div>
                       </td>
                     </tr>
@@ -427,8 +427,8 @@ export default function AdminCMS() {
                       <div className="w-full h-full flex items-center justify-center text-gray-400"><ImageIcon size={32}/></div>
                     )}
                     <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => openModal('doctor', 'edit', doc)} className="bg-white/90 text-amber-500 hover:text-amber-600 p-1.5 rounded shadow-sm"><Edit size={14}/></button>
-                      <button onClick={() => handleDelete('doctor', doc.id)} className="bg-white/90 text-red-500 hover:text-red-600 p-1.5 rounded shadow-sm"><Trash2 size={14}/></button>
+                      <button aria-label={`Edit doctor ${doc.name}`} onClick={() => openModal('doctor', 'edit', doc)} className="bg-white/90 text-amber-500 hover:text-amber-600 p-1.5 rounded shadow-sm"><Edit size={14}/></button>
+                      <button aria-label={`Delete doctor ${doc.name}`} onClick={() => handleDelete('doctor', doc.id)} className="bg-white/90 text-red-500 hover:text-red-600 p-1.5 rounded shadow-sm"><Trash2 size={14}/></button>
                     </div>
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
@@ -483,8 +483,8 @@ export default function AdminCMS() {
                       <td className="py-3 px-4 text-sm text-gray-600">{srv.description}</td>
                       <td className="py-3 px-4 text-sm text-center">
                         <div className="flex justify-center space-x-2">
-                          <button onClick={() => openModal('service', 'edit', srv)} className="text-amber-500 hover:text-amber-700 p-1.5 bg-amber-50 rounded-md"><Edit size={16} /></button>
-                          <button onClick={() => handleDelete('service', srv.id)} className="text-red-500 hover:text-red-700 p-1.5 bg-red-50 rounded-md"><Trash2 size={16} /></button>
+                          <button aria-label={`Edit service ${srv.title || srv.name || srv.id}`} onClick={() => openModal('service', 'edit', srv)} className="text-amber-500 hover:text-amber-700 p-1.5 bg-amber-50 rounded-md"><Edit size={16} /></button>
+                          <button aria-label={`Delete service ${srv.title || srv.name || srv.id}`} onClick={() => handleDelete('service', srv.id)} className="text-red-500 hover:text-red-700 p-1.5 bg-red-50 rounded-md"><Trash2 size={16} /></button>
                         </div>
                       </td>
                     </tr>
@@ -508,7 +508,7 @@ export default function AdminCMS() {
               <h2 className="text-xl font-bold text-gray-800 capitalize">
                 {modalMode} {modalType}
               </h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button aria-label="Close modal" onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X size={24} />
               </button>
             </div>

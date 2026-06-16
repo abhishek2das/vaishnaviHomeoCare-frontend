@@ -209,6 +209,7 @@ export default function AdminContacts() {
                 Message Details
               </h2>
               <button 
+                aria-label="Close dialog"
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >

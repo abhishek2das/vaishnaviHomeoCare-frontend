@@ -311,7 +311,7 @@ export default function AdminPatients() {
                 {modalMode === 'edit' && 'Edit Patient Record'}
                 {modalMode === 'view' && 'Patient Details'}
               </h2>
-              <button  onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors" >
+              <button aria-label="Close dialog" onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors" >
                 <X size={24} />
               </button>
             </div>

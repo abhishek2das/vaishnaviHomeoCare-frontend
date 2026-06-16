@@ -32,7 +32,7 @@ export default function Footer() {
 
             </Link>
             <p className="text-sm text-neutral-400 leading-relaxed mb-6">
-              Providing world-class homeopathic care with compassion and innovation since 2008. Your health is our highest priority.
+              Providing world-class homeopathic care with compassion and innovation. Your health is our highest priority.
             </p>
             <div className="flex items-center gap-3">
               {socials.map(({ icon: Icon, label, href }) => (

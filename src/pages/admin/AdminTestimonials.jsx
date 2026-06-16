@@ -226,6 +226,7 @@ export default function AdminTestimonials() {
                 {modalMode === 'add' ? 'Add Testimonial' : 'Edit Testimonial'}
               </h2>
               <button
+                aria-label="Close dialog"
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
