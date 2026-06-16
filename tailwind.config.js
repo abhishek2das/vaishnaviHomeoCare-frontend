@@ -43,8 +43,9 @@ export default {
         }
       },
       fontFamily: {
-        display: ['Literata', 'Georgia', 'serif'],
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        // Use local variable font families declared in src/index.css
+        display: ['Literata Variable', 'Literata', 'Georgia', 'serif'],
+        sans: ['Pliant', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {

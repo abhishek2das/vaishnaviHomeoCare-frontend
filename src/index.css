@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Local variable font declarations
+   Place the font files in: public/fonts/
+     - Literata-VariableFont_opsz,wght.woff2
+     - Pliant-VariableFont_wdth,wght.woff2
+*/
+@font-face {
+  font-family: 'Literata Variable';
+  src: url('./assets/fonts/Literata-VariableFont_opsz,wght.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pliant';
+  src: url('./assets/fonts/Pliant-VariableFont_wdth,wght.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 50% 200%;
+  font-style: normal;
+  font-display: swap;
+}
+
+
 .wavy-circle {
   --s: 300px; /* adjust to control the size */
   width: var(--s); 
@@ -74,11 +97,6 @@
     background-position: 0% 50%;
   }
 }
-
-.logo_font{
-  font-family: 'Sansita', sans-serif;
-}
-
 @layer base {
   * {
     scroll-behavior: smooth;

@@ -8,7 +8,7 @@ A complete, modern, responsive multi-page hospital website built with **React + 
 
 - **14 fully-built pages** with responsive layout
 - **Sticky header** with mega dropdown navigation + mobile hamburger menu
-- **Professional design system** — Playfair Display + DM Sans fonts, blue/teal/white palette
+- **Professional design system** — Playfair Display + Pliant Variable (local variable font) fonts, blue/teal/white palette
 - **Smooth animations** — fade-in, slide-up, float effects
 - **Dark footer** with quick links, social icons, and contact info
 - **Form validation** — Appointment, Enquiry, Contact forms with error states + success UI
@@ -120,7 +120,7 @@ src/
 
 ### Typography
 - **Display**: Playfair Display (headings)
-- **Body**: DM Sans (paragraph text, UI)
+- **Body**: Pliant Variable (local variable font for body text and UI)
 
 ### Components
 - `.btn-primary` — Blue CTA button
