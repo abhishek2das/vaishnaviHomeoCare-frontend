@@ -84,7 +84,7 @@ const router = createBrowserRouter([
       
       { path: '/testimonials', element: <Testimonials /> },
       { path: '/blog', element: <PressRelease /> },
-      { path: '/blog/:id', element: <PressReleaseDetail /> },
+      { path: '/blog/:slug', element: <PressReleaseDetail /> },
       { path: '/gallery', element: <PhotoGallery /> },
       { path: '/videos', element: <VideoGallery /> },
       { path: '/patient-feedback', element: <PatientFeedback /> },

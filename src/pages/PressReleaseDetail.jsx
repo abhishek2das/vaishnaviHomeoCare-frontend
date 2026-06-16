@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from '../api/endpoints'
 
 export default function PressReleaseDetail() {
   const params = useParams()
-  const id = params.id || null
+  const slug = params.slug || null
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [pressRelease, setPressRelease] = useState(null)
@@ -31,7 +31,7 @@ export default function PressReleaseDetail() {
     const loadPressRelease = async () => {
       setLoading(true)
       try {
-        const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_BY_ID(id))
+        const res = await fetch(API_ENDPOINTS.PRESS_RELEASES.GET_BY_SLUG(slug))
         if (!res.ok) throw new Error('Unable to fetch blog')
 
         const data = await res.json()
@@ -44,10 +44,10 @@ export default function PressReleaseDetail() {
       }
     }
 
-    if (id) {
+    if (slug) {
       loadPressRelease()
     }
-  }, [id])
+  }, [slug])
 
   if (loading) {
     return (

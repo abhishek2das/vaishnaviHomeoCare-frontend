@@ -106,9 +106,9 @@ export default function PressRelease() {
                         </div>
                         <h3 className="font-display font-bold text-neutral-800 mb-3 group-hover:text-primary-600 transition-colors leading-snug text-base">
                           <a
-                            href={`/blog/${pr.id}`}
-                            title={`Read the full article: ${pr.title}`}
-                            className="block text-inherit"
+                          href={`/blog/${pr.slug || pr.id}`}
+                          title={`Read the full article: ${pr.title}`}
+                          className="block text-inherit"
                           >
                             {pr.title}
                           </a>
@@ -124,7 +124,7 @@ export default function PressRelease() {
                           {pr.content && pr.content.length > 140 ? '...' : ''}
                         </p>
                         <a
-                          href={`/blog/${pr.id}`}
+                          href={`/blog/${pr.slug || pr.id}`}
                           title={`Read more about ${pr.title}`}
                           className="text-sm font-semibold text-primary-600 flex items-center gap-1.5 hover:gap-2.5 transition-all"
                         >

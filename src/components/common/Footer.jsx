@@ -6,7 +6,7 @@ const quickLinks = [
   { label: 'Our Services', path: '/services' },
   { label: 'Awards', path: '/awards' },
   { label: 'Patient FAQ', path: '/faq' },
-  { label: 'Blog', path: '/press' },
+  { label: 'Blog', path: '/blog' },
 ]
 
 const socials = [
