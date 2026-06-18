@@ -503,14 +503,25 @@ export default function AdminPressReleases() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
-                      <input
-                        type="text"
+                      <div className="flex justify-between items-end mb-1">
+                        <label className="block text-sm font-medium text-gray-700">Keywords</label>
+                        <span className="text-xs text-gray-500">Recommended: 4-5 keywords are enough</span>
+                      </div>
+                      <textarea
                         value={formData.keywords}
-                        onChange={(e) => setFormData({...formData, keywords: e.target.value})}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val.split(',').length <= 10) {
+                            setFormData({...formData, keywords: val});
+                          }
+                        }}
+                        rows={3}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                         placeholder="comma-separated keywords"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        {formData.keywords ? formData.keywords.split(',').filter(k => k.trim() !== '').length : 0} / 10 keywords used
+                      </p>
                     </div>
 
                     <div>
