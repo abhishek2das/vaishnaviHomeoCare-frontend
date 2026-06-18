@@ -13,15 +13,13 @@ export const doctors = [
 
 export const services = [
   { id: 1, icon: 'Heart', title: 'Chronic Diseases', description: 'Comprehensive management of long-term conditions using natural, constitutional remedies with personalized care plans.', color: 'blue' },
-  { id: 2, icon: 'Sparkles', title: 'Skin Diseases', description: 'Advanced holistic care for eczema, psoriasis, acne, and other skin conditions targeting the root cause.', color: 'teal' },
-  { id: 3, icon: 'Activity', title: 'Gastric & Digestive', description: 'Expert diagnosis and natural treatment for IBS, GERD, liver disorders, and all gastrointestinal conditions.', color: 'blue' },
-  { id: 4, icon: 'Bone', title: 'Joint Pain & Arthritis', description: 'Specialized homeopathic care for arthritis, joint pain, sports injuries, and musculoskeletal disorders without side effects.', color: 'teal' },
-  { id: 5, icon: 'Brain', title: 'Migraine & Headache', description: 'Advanced holistic treatment for chronic migraines, cluster headaches, and other pain conditions.', color: 'blue' },
-  { id: 6, icon: 'Zap', title: 'Thyroid Disorders', description: 'Complete natural care including hypothyroidism, hyperthyroidism, and hormone balancing.', color: 'teal' },
+  { id: 2, icon: 'Sparkles', title: 'Homeopathy for Skin Problems', description: 'We provide specialized homeopathic treatment for various skin conditions including acne, eczema, psoriasis, fungal infections, pigmentation, urticaria, and allergic skin disorders. Our treatments focus on treating the underlying cause to achieve long-lasting skin health.', color: 'teal' },
+  { id: 3, icon: 'Activity', title: 'Homeopathy for Piles (Hemorrhoids)', description: 'We provide personalized homeopathic treatment for piles (hemorrhoids), bleeding piles, non-bleeding piles, fissures, and related rectal disorders. Our natural treatment approach focuses on reducing pain, bleeding, itching, swelling, and discomfort while addressing the root cause of the condition.', color: 'blue' },
+  { id: 4, icon: 'Bone', title: 'Homeopathy for Joint Pain & Arthritis', description: 'We provide effective homeopathic treatment for joint pain, arthritis, cervical spondylosis, knee pain, back pain, and musculoskeletal disorders. Our personalized treatment plans focus on reducing pain.', color: 'teal' },
+  { id: 5, icon: 'Brain', title: 'Homeopathy for Migraine & Headache', description: 'Advanced holistic treatment for chronic migraines, cluster headaches, and other pain conditions.', color: 'blue' },
+  { id: 6, icon: 'Zap', title: 'Homeopathy for Thyroid Disorders', description: 'Complete natural care including hypothyroidism, hyperthyroidism, and hormone balancing.', color: 'teal' },
   { id: 7, icon: 'Droplets', title: 'Diabetes Management', description: 'Holistic diabetes care with personalized remedies, dietary counseling, and lifestyle management.', color: 'blue' },
-  { id: 8, icon: 'Ribbon', title: 'Female Disorders', description: 'Comprehensive women\'s health services including PCOS, menstrual disorders, and menopause management.', color: 'teal' },
-  { id: 9, icon: 'Wind', title: 'Mental Stress & Anxiety', description: 'Natural mental health treatment for anxiety, depression, stress disorders, and psychological well-being.', color: 'blue' },
-  { id: 10, icon: 'Plus', title: 'And Many More', description: 'Explore our full spectrum of holistic services across 25+ specializations with world-class natural expertise.', color: 'teal' },
+  { id: 8, icon: 'Ribbon', title: 'Homeopathy for PCOS', description: 'Women suffering from PCOS, irregular periods, hormonal imbalance, weight gain, or infertility concerns can benefit from our individualized homeopathic treatment plans designed to support hormonal balance.', color: 'teal' },
 ];
 
 export const testimonials = [

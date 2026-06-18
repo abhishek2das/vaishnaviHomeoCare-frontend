@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, CalendarDays, Phone, Shield, Award, Users, Heart, Star, ChevronLeft, ChevronRight, Quote, CheckCircle } from 'lucide-react'
+import { ArrowRight, CalendarDays, Phone, Shield, Award, Users, Heart, Star, ChevronLeft, ChevronRight, Quote, CheckCircle, Activity, Leaf, Stethoscope, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { services } from '../data/mockData'
@@ -8,6 +8,9 @@ import OnlineChip from '../components/common/OnlineChip'
 import { API_ENDPOINTS } from '../api/endpoints'
 import hero_image from '../assets/hero_image.webp'
 import about_us_image from '../assets/about_us_home.avif'
+import whychooseusimage1 from '../assets/whychooseusimage1.webp'
+import whychooseusimage2 from '../assets/whychooseusimage2.webp'
+import whychooseusimage3 from '../assets/whychooseusimage3.webp'
 
 const stats = [
   { value: '10+', label: 'Years of Excellence', icon: Award },
@@ -184,12 +187,13 @@ export default function Home() {
             <div className="animate-slide-up">
               <OnlineChip to="/appointment" text="Online & In-Clinic Treatment Available" /> <br />
               <div className="section-label mt-6">
-                Trusted Homeopathic Care
+                Your Trusted Homeopathy Doctor in Raipur 
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-neutral-900 leading-tight mb-6">
-                Homeopathy treatment is based on the {' '}
-                <span className="text-gradient-blue">Holistic</span>{' '}
-                approach.
+              <h1 className="text-4xl md:text-5xl lg:text-5xl font-display font-bold text-neutral-900 leading-tight mb-6"
+              style={{lineHeight : '56px'}}> 
+                Best Homeopathy Clinic in Raipur –   {' '}
+                <span className="text-gradient-blue">Personalized & Holistic</span>{' '}
+                Healthcare.
               </h1>
               <p className="text-lg text-neutral-500 leading-relaxed mb-8 max-w-lg">
                 Specialized homeopathic care for migraines, gynecological concerns, and piles. Our individualized treatment approach focuses on permanent cure, restoring balance, and enhancing overall health through safe and holistic remedies.
@@ -285,7 +289,7 @@ export default function Home() {
                 <h3 className="font-display font-semibold text-neutral-800 mt-4 mb-2 group-hover:text-primary-600 transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-sm text-neutral-500 leading-relaxed line-clamp-3">{service.description}</p>
+                <p className="text-sm text-neutral-500 leading-relaxed line-clamp-6">{service.description}</p>
               </div>
             ))}
           </div>
@@ -312,11 +316,14 @@ export default function Home() {
             <div>
               <div className="section-label">About Vaishnavi Homeo Care Clinic</div>
               <h2 className="section-title mb-5">Your Trusted Healthcare Partner</h2>
-              <p className="text-neutral-500 leading-relaxed mb-5">
-                Vaishnavi Homeo Care Clinic is one of India's premier homeopathic clinics, committed to delivering exceptional holistic care with compassion, innovation, and integrity.
+              <p className="text-neutral-600 leading-relaxed mb-3">
+                At <b>Vaishnavi Homeo Care</b>, we provide personalized and holistic homeopathic treatment that focuses on addressing the root cause of health conditions. Our goal is to help patients achieve long-term wellness through safe, natural, and effective remedies.
               </p>
-              <p className="text-neutral-500 leading-relaxed mb-8">
-                With decades of experience, expert homeopathic practitioners, and dedicated wellness centers across our three campuses, we are equipped to handle the most complex conditions with confidence.
+              <p className="text-neutral-600 leading-relaxed mb-3">
+                We offer specialized care for <b> migraines, gynecological disorders, piles, thyroid problems, PCOS, allergies, skin conditions, and hair loss, </b> with treatment plans tailored to each individual's needs. Our holistic approach aims to restore balance, strengthen immunity, and promote lasting health without harmful side effects.
+              </p>
+              <p className='text-neutral-600 leading-relaxed mb-3'> 
+                As a trusted <b> Homeopathy Clinic in Raipur </b>, we are committed to delivering compassionate care and effective homeopathic solutions for individuals and families seeking natural healing.
               </p>
               <div className="grid grid-cols-2 gap-5 mb-8">
                 {[
@@ -335,6 +342,60 @@ export default function Home() {
                 ))}
               </div>
               <Link to="/about" className="btn-primary">Learn More About Us <ArrowRight size={16} /></Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY CHOOSE US */}
+      <section className="py-20 bg-white overflow-hidden relative">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left side: Images Layout */}
+            <div className="relative h-[600px] w-full hidden md:block">
+              {/* Top Right */}
+              <div className="absolute top-0 right-0 w-[70%] h-[55%] rounded-3xl overflow-hidden shadow-2xl border-4 border-white z-10">
+                <img src={whychooseusimage1} alt="Why Choose Us 1" className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+              </div>
+              {/* Middle Left */}
+              <div className="absolute top-[20%] left-0 w-[60%] h-[50%] rounded-3xl overflow-hidden shadow-2xl border-4 border-white z-20">
+                <img src={whychooseusimage2} alt="Why Choose Us 2" className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+              </div>
+              {/* Bottom Right */}
+              <div className="absolute bottom-0 right-[15%] w-[50%] h-[45%] rounded-3xl overflow-hidden shadow-2xl border-4 border-white z-30">
+                <img src={whychooseusimage3} alt="Why Choose Us 3" className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+              </div>
+            </div>
+
+            {/* Right side: Text and Grid */}
+            <div>
+              <div className="section-label mb-4">Why Choose Us</div>
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-neutral-900 mb-4">Why Choose Vaishnavi Homeo Care?</h2>
+              <p className="text-neutral-500 text-lg mb-10 leading-relaxed max-w-xl">
+                Your Trusted Partner in Holistic Health. With Expertise in Homeopathy, We're Here to Guide You Towards Lasting Wellness and Vitality.
+              </p>
+              
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-10">
+                {[
+                  { title: 'Experienced Doctor', desc: 'Benefit from the expertise of highly qualified homeopathy doctors in Raipur, ensuring accurate diagnosis and effective care.', icon: Award },
+                  { title: 'Personalized Care', desc: 'Receive custom-tailored treatment plans designed specifically for your unique health profile, symptoms, and medical history.', icon: Users },
+                  { title: 'Natural Healing', desc: "Embrace a safe, side-effect-free, and natural healing approach that works in harmony with your body's vital forces.", icon: Leaf },
+                  { title: 'Chronic Diseases', desc: 'Find lasting relief and effective management strategies for stubborn chronic conditions that have resisted other treatments.', icon: Activity },
+                  { title: 'Root Cause', desc: 'We focus on identifying and treating the underlying root cause of your ailments, rather than just suppressing surface symptoms.', icon: Sparkles },
+                  { title: 'Holistic Solutions', desc: 'Experience comprehensive healthcare that nurtures your physical, mental, and emotional well-being for complete harmony.', icon: Heart },
+                ].map((item, index) => (
+                  <div key={index} className="flex flex-col gap-4 group">
+                    <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center border border-teal-100 group-hover:bg-teal-100 transition-colors">
+                      <item.icon size={24} className="text-teal-600" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <h3 className="text-neutral-800 font-semibold text-lg mb-2">{item.title}</h3>
+                      <p className="text-neutral-500 text-sm leading-relaxed line-clamp-3" title={item.desc}>{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
