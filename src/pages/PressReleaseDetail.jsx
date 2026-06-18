@@ -178,7 +178,7 @@ export default function PressReleaseDetail() {
           </div>
 
           {/* Article Title */}
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-neutral-900 mb-6 leading-tight">
+          <h1 className="font-mono text-sm font-bold text-primary-600 leading-tight">
             {pressRelease.title}
           </h1>
 

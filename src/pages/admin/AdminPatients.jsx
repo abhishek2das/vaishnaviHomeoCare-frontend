@@ -46,7 +46,17 @@ export default function AdminPatients() {
   const fetchPatients = async () => {
     try {
       setLoading(true);
-      const res = await fetchWithAuth(API_ENDPOINTS.PATIENTS.GET_ALL);
+      
+      let url = API_ENDPOINTS.PATIENTS.GET_ALL;
+      const params = new URLSearchParams();
+      if (genderFilter) params.append('gender', genderFilter);
+      if (searchQuery) params.append('search', searchQuery);
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+
+      const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to fetch patients');
       const data = await res.json();
       const formattedPatients = (data.content || []).map(p => ({
@@ -63,8 +73,11 @@ export default function AdminPatients() {
   };
 
   useEffect(() => {
-    fetchPatients();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchPatients();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [genderFilter, searchQuery]);
 
   // Handlers
   const handleDelete = async (id) => {
@@ -375,58 +388,14 @@ export default function AdminPatients() {
                   </div>
                 </div>
 
-                {/* Treatment Details */}
+                {/* Admin Notes */}
                 <div className="md:col-span-2 mt-2">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">Treatment Details</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Chief Complaint <span className="text-red-500">*</span></label>
-                      <textarea 
-                        name="chiefComplaint" required rows="2"
-                        value={formData.chiefComplaint} onChange={handleInputChange} disabled={modalMode === 'view'}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50 disabled:text-gray-600"
-                        placeholder="What are the main symptoms?"
-                      ></textarea>
-                    </div>
-                    
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">Notes</h3>
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="col-span-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Treatment Given</label>
-                      <textarea 
-                        name="treatmentGiven" rows="2"
-                        value={formData.treatmentGiven} onChange={handleInputChange} disabled={modalMode === 'view'}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50 disabled:text-gray-600"
-                        placeholder="Procedures, advice, etc."
-                      ></textarea>
-                    </div>
-                    <div className="col-span-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Medicines Prescribed</label>
-                      <textarea 
-                        name="medicinesPrescribed" rows="2"
-                        value={formData.medicinesPrescribed} onChange={handleInputChange} disabled={modalMode === 'view'}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50 disabled:text-gray-600"
-                        placeholder="Medication names and dosages"
-                      ></textarea>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Visit Date <span className="text-red-500">*</span></label>
-                      <input 
-                        type="date" name="visitDate" required
-                        value={formData.visitDate} onChange={handleInputChange} disabled={modalMode === 'view'}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50 disabled:text-gray-600"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Next Visit Date</label>
-                      <input 
-                        type="date" name="nextVisitDate"
-                        value={formData.nextVisitDate} onChange={handleInputChange} disabled={modalMode === 'view'}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50 disabled:text-gray-600"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Admin Notes</label>
                       <textarea 
-                        name="adminNotes" rows="2"
+                        name="adminNotes" rows="4"
                         value={formData.adminNotes} onChange={handleInputChange} disabled={modalMode === 'view'}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50 disabled:text-gray-600"
                         placeholder="Internal notes, not visible to patient"

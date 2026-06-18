@@ -20,7 +20,12 @@ export default function AdminContacts() {
       setLoading(true);
       setError(null);
 
-      const res = await fetchWithAuth(API_ENDPOINTS.CONTACTS.GET_ALL);
+      let url = API_ENDPOINTS.CONTACTS.GET_ALL;
+      if (searchQuery) {
+        url += `?search=${encodeURIComponent(searchQuery)}`;
+      }
+
+      const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to load contact inquiries.');
 
       const data = await res.json();
@@ -38,8 +43,11 @@ export default function AdminContacts() {
   };
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchContacts();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Filter logic
   const filteredContacts = useMemo(() => {

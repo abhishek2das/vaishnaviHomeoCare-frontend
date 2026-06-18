@@ -105,7 +105,7 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen flex bg-gray-50 overflow-hidden">
+    <div className="h-screen flex bg-gray-50 overflow-hidden">
       
       {/* Mobile Overlay */}
       {isMobile && isSidebarOpen && (

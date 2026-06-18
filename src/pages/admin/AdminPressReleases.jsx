@@ -75,7 +75,13 @@ export default function AdminPressReleases() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetchWithAuth(API_ENDPOINTS.PRESS_RELEASES.GET_ALL);
+      
+      let url = API_ENDPOINTS.PRESS_RELEASES.GET_ALL;
+      if (searchQuery) {
+        url += `?search=${encodeURIComponent(searchQuery)}`;
+      }
+      
+      const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to load Blogs');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
@@ -89,8 +95,11 @@ export default function AdminPressReleases() {
   };
 
   useEffect(() => {
-    fetchPressReleases();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchPressReleases();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Filter logic
   const filteredReleases = useMemo(() => {
@@ -379,13 +388,17 @@ export default function AdminPressReleases() {
             {modalMode === 'view' && (
               <div className="p-0">
                 {formData.coverImage && (
-                  <div className="w-full h-64 bg-gray-100">
-                    <img src={formData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                  <div className="w-full bg-gray-100 flex justify-center border-b border-gray-200">
+                    <img 
+                      src={formData.coverImage} 
+                      alt="Cover" 
+                      style={{ width: '880px', height: '394px', maxWidth: '100%', objectFit: 'contain' }} 
+                    />
                   </div>
                 )}
                 <div className="p-8">
                   <p className="text-sm text-green-600 font-semibold mb-2">Published: {formData.date}</p>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-6">{formData.title}</h1>
+                  <h1 className="text-lg font-bold text-green-600 mb-6">{formData.title}</h1>
                   <div 
                     className="prose max-w-none text-gray-700 prose-headings:text-gray-800 prose-a:text-green-600"
                     dangerouslySetInnerHTML={{ __html: formData.content }}

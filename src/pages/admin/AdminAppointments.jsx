@@ -22,7 +22,12 @@ export default function AdminAppointments() {
       setLoading(true);
       setError(null);
 
-      const res = await fetchWithAuth(API_ENDPOINTS.APPOINTMENTS.GET_ALL);
+      let url = API_ENDPOINTS.APPOINTMENTS.GET_ALL;
+      if (searchQuery) {
+        url += `?search=${encodeURIComponent(searchQuery)}`;
+      }
+
+      const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to load appointments');
 
       const data = await res.json();
@@ -46,8 +51,11 @@ export default function AdminAppointments() {
   };
 
   useEffect(() => {
-    fetchAppointments();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchAppointments();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Filter logic
   const getAppointmentDateValue = (app) => {
