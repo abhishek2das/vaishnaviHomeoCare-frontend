@@ -12,6 +12,11 @@ export default function AdminPressReleases() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10);
+  
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add', 'edit', 'view'
@@ -77,15 +82,19 @@ export default function AdminPressReleases() {
       setError(null);
       
       let url = API_ENDPOINTS.PRESS_RELEASES.GET_ALL;
-      if (searchQuery) {
-        url += `?search=${encodeURIComponent(searchQuery)}`;
-      }
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      params.append('page', currentPage);
+      params.append('limit', limit);
+      
+      url += `?${params.toString()}`;
       
       const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to load Blogs');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.content || [];
       setPressReleases(items);
+      setTotalPages(data.totalPages || 1);
     } catch (err) {
       setError(err.message || 'Unable to fetch Blog');
       setPressReleases([]);
@@ -99,7 +108,7 @@ export default function AdminPressReleases() {
       fetchPressReleases();
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, currentPage]);
 
   // Filter logic
   const filteredReleases = useMemo(() => {
@@ -265,7 +274,10 @@ export default function AdminPressReleases() {
             placeholder="Search articles by title..."
             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0);
+            }}
           />
         </div>
       </div>
@@ -359,6 +371,31 @@ export default function AdminPressReleases() {
               )}
             </tbody>
           </table>
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="text-sm text-gray-500">
+                Page <span className="font-medium text-gray-700">{currentPage + 1}</span> of <span className="font-medium text-gray-700">{totalPages}</span>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                  disabled={currentPage === 0}
+                  className="px-3 py-1 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  className="px-3 py-1 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       )}

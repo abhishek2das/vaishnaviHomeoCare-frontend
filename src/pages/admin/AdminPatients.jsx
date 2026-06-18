@@ -12,6 +12,11 @@ export default function AdminPatients() {
   const [genderFilter, setGenderFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +56,8 @@ export default function AdminPatients() {
       const params = new URLSearchParams();
       if (genderFilter) params.append('gender', genderFilter);
       if (searchQuery) params.append('search', searchQuery);
+      params.append('page', currentPage);
+      params.append('limit', limit);
       
       if (params.toString()) {
         url += `?${params.toString()}`;
@@ -64,6 +71,7 @@ export default function AdminPatients() {
         patientName: p.name
       }));
       setPatients(formattedPatients);
+      setTotalPages(data.totalPages || 1);
     } catch (err) {
       setError(err.message);
       console.error(err);
@@ -77,7 +85,7 @@ export default function AdminPatients() {
       fetchPatients();
     }, 300);
     return () => clearTimeout(timer);
-  }, [genderFilter, searchQuery]);
+  }, [genderFilter, searchQuery, currentPage]);
 
   // Handlers
   const handleDelete = async (id) => {
@@ -185,7 +193,10 @@ export default function AdminPatients() {
             placeholder="Search by name or phone..."
             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0);
+            }}
           />
         </div>
 
@@ -196,7 +207,10 @@ export default function AdminPatients() {
             <select
               className="w-full sm:w-auto border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
               value={genderFilter}
-              onChange={(e) => setGenderFilter(e.target.value)}
+              onChange={(e) => {
+                setGenderFilter(e.target.value);
+                setCurrentPage(0);
+              }}
             >
               <option value="">All Genders</option>
               <option value="Male">Male</option>
@@ -311,6 +325,31 @@ export default function AdminPatients() {
               )}
             </tbody>
           </table>
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="text-sm text-gray-500">
+                Page <span className="font-medium text-gray-700">{currentPage + 1}</span> of <span className="font-medium text-gray-700">{totalPages}</span>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                  disabled={currentPage === 0}
+                  className="px-3 py-1 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  className="px-3 py-1 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

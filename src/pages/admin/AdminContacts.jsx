@@ -11,6 +11,11 @@ export default function AdminContacts() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10);
+
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -21,9 +26,11 @@ export default function AdminContacts() {
       setError(null);
 
       let url = API_ENDPOINTS.CONTACTS.GET_ALL;
-      if (searchQuery) {
-        url += `?search=${encodeURIComponent(searchQuery)}`;
-      }
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      params.append('page', currentPage);
+      params.append('limit', limit);
+      url += `?${params.toString()}`;
 
       const res = await fetchWithAuth(url);
       if (!res.ok) throw new Error('Failed to load contact inquiries.');
@@ -34,6 +41,7 @@ export default function AdminContacts() {
         : data.content || data.contacts || [];
 
       setContacts(contactList);
+      setTotalPages(data.totalPages || 1);
     } catch (err) {
       console.error(err);
       setError(err.message || 'Unable to load contact inquiries.');
@@ -47,7 +55,7 @@ export default function AdminContacts() {
       fetchContacts();
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, currentPage]);
 
   // Filter logic
   const filteredContacts = useMemo(() => {
@@ -115,7 +123,10 @@ export default function AdminContacts() {
             placeholder="Search by name, email or phone..."
             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0);
+            }}
           />
         </div>
 
@@ -204,6 +215,31 @@ export default function AdminContacts() {
               )}
             </tbody>
           </table>
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="text-sm text-gray-500">
+                Page <span className="font-medium text-gray-700">{currentPage + 1}</span> of <span className="font-medium text-gray-700">{totalPages}</span>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                  disabled={currentPage === 0}
+                  className="px-3 py-1 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  className="px-3 py-1 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
