@@ -421,6 +421,9 @@ export default function AdminPressReleases() {
                           </div>
                         )}
                       </div>
+                      <p className="text-xs/5 text-amber-600 mt-2 tracking-wide">
+                        Blog image should be <strong className="font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">880 × 394 pixels</strong> in dimension, otherwise it will overflow the container.
+                      </p>
                     </div>
                     
                     <div>
