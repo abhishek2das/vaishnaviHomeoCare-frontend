@@ -103,7 +103,7 @@
   }
 
   body {
-    @apply font-sans text-neutral-700 bg-white antialiased;
+    @apply font-sans text-neutral-700 bg-white antialiased overflow-x-hidden overflow-y-hidden;
   }
 
   h1, h2, h3, h4, h5 {
