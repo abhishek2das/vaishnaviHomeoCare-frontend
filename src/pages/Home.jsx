@@ -130,13 +130,13 @@ export default function Home() {
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDescription} />
         <meta property="og:url" content={seoUrl} />
-        <meta property="og:image" content={seoImage} />
+        <meta property="og:image" content="https://vaishnavihomeocare.com/assets/site_logo_v2-D8VJc-ZF.webp"/>
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
         <meta name="twitter:description" content={seoDescription} />
-        <meta name="twitter:image" content={seoImage} />
+        <meta name="twitter:image" content="https://vaishnavihomeocare.com/assets/hero_image-DYQfEl5p.webp" />
         {/* JSON-LD structured data */}
         <script type="application/ld+json">
           {`{
