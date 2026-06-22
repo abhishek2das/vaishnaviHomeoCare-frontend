@@ -129,12 +129,12 @@ export default function BookAppointment() {
           <meta name="twitter:description" content={seoDescription} />
           <meta name="twitter:image" content={seoImage} />
           <script type="application/ld+json">
-            {`{
+            {JSON.stringify({
               "@context": "https://schema.org",
               "@type": "MedicalClinic",
               "name": "Vaishnavi Homeo Care",
-              "description": "${seoDescription}",
-              "url": "${seoUrl}",
+              "description": seoDescription,
+              "url": seoUrl,
               "telephone": "+918103828005",
               "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
               "geo": {
@@ -142,7 +142,7 @@ export default function BookAppointment() {
                 "latitude": 21.292918468904922,
                 "longitude": 81.71982356729511
               }
-            }`}
+            })}
           </script>
         </Helmet>
         <PageHero title="Book an Appointment" breadcrumbs={[{ label: 'Book Appointment' }]} />
@@ -205,12 +205,12 @@ export default function BookAppointment() {
         <meta name="twitter:description" content={seoDescription} />
         <meta name="twitter:image" content={seoImage} />
         <script type="application/ld+json">
-          {`{
+          {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "MedicalClinic",
             "name": "Vaishnavi Homeo Care",
-            "description": "${seoDescription}",
-            "url": "${seoUrl}",
+            "description": seoDescription,
+            "url": seoUrl,
             "telephone": "+918103828005",
             "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
             "geo": {
@@ -218,7 +218,7 @@ export default function BookAppointment() {
               "latitude": 21.292918468904922,
               "longitude": 81.71982356729511
             }
-          }`}
+          })}
         </script>
       </Helmet>
       <PageHero

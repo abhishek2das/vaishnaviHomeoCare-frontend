@@ -139,15 +139,15 @@ export default function Home() {
         <meta name="twitter:image" content="https://vaishnavihomeocare.com/assets/hero_image-DYQfEl5p.webp" />
         {/* JSON-LD structured data */}
         <script type="application/ld+json">
-          {`{
+          {JSON.stringify({
             "@context": "https://schema.org",
             "@graph": [
               {
                 "@type": "MedicalClinic",
                 "name": "Vaishnavi Homeo Care",
-                "description": "${seoDescription}",
-                "url": "${seoUrl}",
-                "logo": "${seoImage}",
+                "description": seoDescription,
+                "url": seoUrl,
+                "logo": seoImage,
                 "telephone": "+918103828005",
                 "address": {
                   "@type": "PostalAddress",
@@ -166,12 +166,12 @@ export default function Home() {
               },
               {
                 "@type": "WebSite",
-                "url": "${seoUrl}",
+                "url": seoUrl,
                 "name": "Vaishnavi Homeo Care",
-                "description": "${seoDescription}"
+                "description": seoDescription
               }
             ]
-          }`}
+          })}
         </script>
       </Helmet>
       {/* HERO */}

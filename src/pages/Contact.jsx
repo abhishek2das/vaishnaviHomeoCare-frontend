@@ -144,19 +144,19 @@ export default function Contact() {
         <meta name="twitter:image" content={hero_image} />
         {/* JSON-LD structured data */}
         <script type="application/ld+json">
-          {`{
+          {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "MedicalClinic",
             "name": "Vaishnavi Homeo Care",
             "description": "Contact Vaishnavi Homeo Care Clinic for appointments, queries, and support.",
-            "url": "${typeof window !== 'undefined' ? window.location.href : ''}",
+            "url": typeof window !== 'undefined' ? window.location.href : '',
             "telephone": "+918103828005",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "C-302, Wallfort Woods, Vidhan sabha road",
               "addressLocality": "Raipur",
-               "addressRegion": "Chhattisgarh",
-    "postalCode": "492001",
+              "addressRegion": "Chhattisgarh",
+              "postalCode": "492001",
               "addressCountry": "IN"
             },
             "openingHours": ["Mo-Thu 11:00-13:30", "Fri 11:00-13:00"],
@@ -165,7 +165,7 @@ export default function Contact() {
               "latitude": 21.292918468904922,
               "longitude": 81.71982356729511
             }
-          }`}
+          })}
         </script>
       </Helmet>
       <PageHero

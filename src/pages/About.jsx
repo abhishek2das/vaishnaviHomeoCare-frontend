@@ -110,13 +110,13 @@ export default function About() {
         <meta name="twitter:image" content={seoImage} />
         {/* JSON-LD structured data */}
         <script type="application/ld+json">
-          {`{
+          {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "MedicalClinic",
             "name": "Vaishnavi Homeo Care",
-            "description": "${seoDescription}",
-            "url": "${seoUrl}",
-            "logo": "${seoImage}",
+            "description": seoDescription,
+            "url": seoUrl,
+            "logo": seoImage,
             "telephone": "+918103828005",
             "address": {
               "@type": "PostalAddress",
@@ -132,7 +132,7 @@ export default function About() {
               "latitude": 21.292918468904922,
               "longitude": 81.71982356729511
             }
-          }`}
+          })}
         </script>
       </Helmet>
       <PageHero
