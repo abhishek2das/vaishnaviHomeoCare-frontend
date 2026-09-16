@@ -12,7 +12,7 @@ const quickLinks = [
 const socials = [
   { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61589584573491' },
 
-  { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/vaishnavihomeocarer/' },
+  { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/vaishnavihomeocare' },
   { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/channel/UCBjZIsKVo17OktrbJwzj_xA' },
 
 ]
