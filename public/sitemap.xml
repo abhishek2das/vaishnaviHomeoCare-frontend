@@ -66,17 +66,52 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://vaishnavihomeocare.com/blog/diabetes-management-with-homeopathy-a-holistic-approach-to-better-living</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://vaishnavihomeocare.com/blog/skin-diseases-causes-symptoms-prevention-natural-care</loc>
+    <loc>https://vaishnavihomeocare.com/blog/blogskin-diseases-causes-symptoms-prevention-natural-care</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://vaishnavihomeocare.com/blog/health-check-up-camp-organized</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/homeopathic-care-for-common-skin-problems-a-holistic-approach-to-healthier-skin</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/migraine-headaches-understanding-the-problem-and-the-homeopathic-approach-to-relief</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/homeopathic-care-for-common-gynecological-concerns-a-holistic-approach-by-dr-prachi-jha</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/piles-hemorrhoids-understanding-the-condition-and-the-homeopathic-approach-to-care</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/pterygium-treatment-surfers-eye-treatment-pterygium-homeopathy-eye-irritation-treatment-red-eye-treatment-dry-eye-care-eye-health-homeopathy-homeopathic-eye-care</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/acidity-and-acid-reflux-homeopathic-care-for-better-digestive-health-by-dr-prachi-jha</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/acute-cases-in-homeopathy-natural-care-for-fever-cough-cold-loose-motions-vomiting-toothache-body-ache-headache</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vaishnavihomeocare.com/blog/joint-pain-treatment-in-homeopathy-a-natural-and-holistic-approach-to-lasting-relief</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
