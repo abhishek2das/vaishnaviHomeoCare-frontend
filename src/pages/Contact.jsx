@@ -28,7 +28,7 @@ const contactDetails = [
   {
     icon: Clock, title: 'Working Hours',
     items: [
-      { label: 'Monday – Thursday', value: '10:00 AM – 1:30 PM', location: 'Wallfort Woods' },
+      { label: 'Monday – Thursday', value: '10:00 AM – 1:00 PM', location: 'Wallfort Woods' },
       { label: 'Friday', value:  '07:00 PM – 08:00 PM', location: 'Kripa Day Care' },
       
     ]
